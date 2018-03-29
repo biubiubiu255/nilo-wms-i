@@ -10,10 +10,10 @@ import com.nilo.wms.common.exception.SysErrorCode;
 import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.DateUtil;
-import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.XmlUtil;
 import com.nilo.wms.dao.flux.FluxOutboundDao;
 import com.nilo.wms.dao.platform.OutboundDao;
+import com.nilo.wms.dao.platform.OutboundItemDao;
 import com.nilo.wms.dto.*;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
@@ -31,10 +31,7 @@ import redis.clients.jedis.Jedis;
 import javax.annotation.Resource;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by admin on 2018/3/19.
@@ -51,12 +48,13 @@ public class OutboundServiceImpl implements OutboundService {
     @Autowired
     private OutboundDao outboundDao;
     @Autowired
+    private OutboundItemDao outboundItemDao;
+    @Autowired
     private FluxOutboundDao fluxOutboundDao;
     @Autowired
     private BasicDataService basicDataService;
 
     @Override
-    @Transactional
     public void createOutBound(OutboundHeader outBound) {
 
         AssertUtil.isNotNull(outBound, SysErrorCode.REQUEST_IS_NULL);
@@ -76,17 +74,8 @@ public class OutboundServiceImpl implements OutboundService {
         AssertUtil.isNotBlank(outBound.getReceiverInfo().getReceiverName(), CheckErrorCode.RECEIVER_NAME_EMPTY);
         AssertUtil.isNotBlank(outBound.getReceiverInfo().getReceiverPhone(), CheckErrorCode.RECEIVER_PHONE_EMPTY);
 
-        //保存
         OutboundDO outboundDO = outboundDao.queryByReferenceNo(outBound.getOrderNo());
         if (outboundDO != null) return;
-        OutboundDO insert = new OutboundDO();
-        insert.setReferenceNo(outBound.getOrderNo());
-        insert.setOrderType(outBound.getOrderType());
-        insert.setCustomerId(outBound.getCustomerId());
-        insert.setWarehouseId(outBound.getWarehouseId());
-        insert.setStatus(OutBoundStatusEnum.create.getCode());
-        outboundDao.insert(insert);
-
 
         //构建flux请求对象
         FLuxRequest request = new FLuxRequest();
@@ -125,10 +114,10 @@ public class OutboundServiceImpl implements OutboundService {
             throw new RuntimeException(response.getReturnDesc());
         }
 
+        //记录出库单信息
+        recordOutbound(outBound);
         //FBK扣减库存
-        if (StringUtil.equalsIgnoreCase("SELL", outBound.getOrderType())) {
-            basicDataService.successStorage(outBound.getOrderNo(), outBound.getCustomerId(), outBound.getWarehouseId());
-        }
+        basicDataService.successStorage(outBound.getOrderNo(), outBound.getCustomerId(), outBound.getWarehouseId());
     }
 
     @Override
@@ -278,4 +267,28 @@ public class OutboundServiceImpl implements OutboundService {
         }
     }
 
+    @Transactional
+    private void recordOutbound(OutboundHeader outBound) {
+        //保存
+        OutboundDO insert = new OutboundDO();
+        insert.setReferenceNo(outBound.getOrderNo());
+        insert.setOrderType(outBound.getOrderType());
+        insert.setCustomerId(outBound.getCustomerId());
+        insert.setWarehouseId(outBound.getWarehouseId());
+        insert.setStatus(OutBoundStatusEnum.create.getCode());
+        outboundDao.insert(insert);
+
+        List<OutboundItemDO> list = new ArrayList<>();
+        for (OutboundItem item : outBound.getItemList()) {
+            OutboundItemDO itemDO = new OutboundItemDO();
+            itemDO.setWarehouseId(outBound.getWarehouseId());
+            itemDO.setCustomerId(outBound.getCustomerId());
+            itemDO.setSku(item.getSku());
+            itemDO.setQty(item.getQty());
+            itemDO.setReferenceNo(outBound.getOrderNo());
+            list.add(itemDO);
+        }
+
+        outboundItemDao.insertBatch(list);
+    }
 }

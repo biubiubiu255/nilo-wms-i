@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nilo.wms.dao.platform.OutboundItemDao">
+
+    <!-- 实体bean与数据字段对应关系 -->
+    <resultMap id="OutboundItemDO" type="com.nilo.wms.dto.OutboundItemDO">
+        <result property="id" column="id" javaType="java.lang.Long"
+                jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="warehouseId" column="warehouse_id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="referenceNo" column="reference_no" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="sku" column="sku" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="qty" column="qty" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id ,customer_id,warehouse_id,reference_no,sku,qty
+    </sql>
+
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO t_outbound_item
+        ( customer_id,warehouse_id,reference_no,sku,qty)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.customerId},#{item.warehouseId}, #{item.referenceNo},#{item.sku},#{item.qty})
+        </foreach>
+    </insert>
+
+    <!-- 插入语句 -->
+    <insert id="insert" parameterType="com.nilo.wms.dto.OutboundItemDO" statementType="PREPARED"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO t_outbound_item
+        ( customer_id,warehouse_id,reference_no,sku,qty)
+        VALUES
+        (#{customerId},#{warehouseId}, #{referenceNo},#{sku},#{qty})
+    </insert>
+
+    <select id="queryByReferenceNo" resultMap="OutboundItemDO" statementType="PREPARED">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_outbound_item where reference_no=#{referenceNo}
+    </select>
+
+</mapper>
