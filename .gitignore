@@ -1,0 +1,12 @@
+*.iml
+.idea
+target
+bin
+.eclipse
+*.log
+.classpath
+.project
+.settings
+.svn
+logs
+logback.xml
