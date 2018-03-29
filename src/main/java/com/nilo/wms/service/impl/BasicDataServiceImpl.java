@@ -30,7 +30,6 @@ public class BasicDataServiceImpl implements BasicDataService {
     @Autowired
     private StorageDao storageDao;
 
-    private static final String LOCK_KEY = "wms_redis_lock_key";
 
     @Override
     public void updateSku(List<SkuInfo> list) {
@@ -138,7 +137,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         //获取redis锁
         Jedis jedis = RedisUtil.getResource();
         String requestId = UUID.randomUUID().toString();
-        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, LOCK_KEY, requestId);
+        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
         if (!getLock) {
             throw new WMSException(SysErrorCode.SYSTEM_ERROR);
         }
@@ -176,7 +175,7 @@ public class BasicDataServiceImpl implements BasicDataService {
             }
 
         }
-        RedisUtil.releaseDistributedLock(jedis, LOCK_KEY, requestId);
+        RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
         if (!lockSuccess) {
             throw new WMSException(BizErrorCode.STORAGE_NOT_ENOUGH, notEnoughSku);
         }
@@ -208,7 +207,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         //获取redis锁
         Jedis jedis = RedisUtil.getResource();
         String requestId = UUID.randomUUID().toString();
-        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, LOCK_KEY, requestId);
+        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
         if (!getLock) throw new WMSException(SysErrorCode.SYSTEM_ERROR);
 
         // 查询锁定列表
@@ -221,7 +220,7 @@ public class BasicDataServiceImpl implements BasicDataService {
             jedis.hset(key, RedisUtil.LOCK_STORAGE, "" + afterLockStorage);
         }
 
-        RedisUtil.releaseDistributedLock(jedis, LOCK_KEY, requestId);
+        RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
 
         RedisUtil.del(orderNoKey);
 
@@ -247,7 +246,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         //获取redis锁
         Jedis jedis = RedisUtil.getResource();
         String requestId = UUID.randomUUID().toString();
-        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, LOCK_KEY, requestId);
+        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
         if (!getLock) throw new WMSException(SysErrorCode.SYSTEM_ERROR);
 
         // 查询锁定列表
@@ -269,7 +268,7 @@ public class BasicDataServiceImpl implements BasicDataService {
 
         }
 
-        RedisUtil.releaseDistributedLock(jedis, LOCK_KEY, requestId);
+        RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
 
         RedisUtil.del(orderNoKey);
     }

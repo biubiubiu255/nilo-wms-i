@@ -27,6 +27,7 @@ public class RedisUtil {
     private static final String SET_IF_NOT_EXIST = "NX";
     private static final String SET_WITH_EXPIRE_TIME = "PX";
     private static final Long RELEASE_SUCCESS = 1L;
+    public static final String LOCK_KEY = "wms_redis_lock_key";
 
     private static JedisPool jedisPool = SpringContext.getBean("jedisPool", JedisPool.class);
 

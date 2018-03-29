@@ -155,6 +155,24 @@ public class OutboundServiceImpl implements OutboundService {
         if (!response.isSuccess()) {
             throw new RuntimeException(response.getReturnDesc());
         }
+
+        // 增加库存
+        List<OutboundItemDO> itemList = outboundItemDao.queryByReferenceNo(orderNo);
+        if (itemList != null) {
+            //获取redis锁
+            Jedis jedis = RedisUtil.getResource();
+            String requestId = UUID.randomUUID().toString();
+            boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
+            if (!getLock) {
+                throw new WMSException(SysErrorCode.SYSTEM_ERROR);
+            }
+            for (OutboundItemDO item : itemList) {
+                String key = RedisUtil.getSkuKey(outboundDO.getCustomerId(), outboundDO.getWarehouseId(), item.getSku());
+                String sto = jedis.hget(key, RedisUtil.STORAGE);
+                int stoInt = sto == null ? 0 : Integer.parseInt(sto) + item.getQty();
+                jedis.hset(key, RedisUtil.STORAGE, "" + stoInt);
+            }
+        }
     }
 
     @Override
