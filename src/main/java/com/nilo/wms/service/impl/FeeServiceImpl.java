@@ -1,0 +1,261 @@
+package com.nilo.wms.service.impl;
+
+import com.alibaba.fastjson.JSON;
+
+import com.nilo.mq.model.NotifyRequest;
+import com.nilo.wms.common.util.MailInfo;
+import com.nilo.wms.common.util.SendEmailUtil;
+import com.nilo.wms.common.util.StringUtil;
+import com.nilo.wms.dao.flux.WMSFeeDao;
+import com.nilo.wms.dto.*;
+import com.nilo.mq.producer.AbstractMQProducer;
+import com.nilo.wms.service.FeeService;
+import com.nilo.wms.service.RedisUtil;
+import com.nilo.wms.service.config.SystemConfig;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
+
+import java.math.BigDecimal;
+import java.util.*;
+
+/**
+ * Created by Administrator on 2017/6/9.
+ */
+@Service
+public class FeeServiceImpl implements FeeService {
+
+    private static final Logger logger = LoggerFactory.getLogger(FeeService.class);
+    public static String inbound_fee_prefix = "inbound.fee.";
+    public static String order_handler_fee_prefix = "order.handler.fee.";
+    public static String order_return_fee_prefix = "order.return.fee.";
+    public static String return_merchant_fee_prefix = "return.merchant.fee.";
+    @Autowired
+    private WMSFeeDao feeDao;
+    @Autowired
+    @Qualifier("notifyDataBusProducer")
+    private AbstractMQProducer notifyDataBusProducer;
+
+    @Override
+    public List<Fee> queryInboundOrder(String date) {
+        List<Fee> resultList = new ArrayList<>();
+
+        List<OrderHandler> list = feeDao.queryInBoundOrderHandler(date);
+        for (OrderHandler o : list) {
+            Fee f = new Fee();
+            f.setOrder_sn(o.getOrderNo());
+            f.setOrder_no(o.getNo());
+            f.setClass_id(o.getCategories());
+            f.setSeller_id(o.getMerchantId());
+            f.setSeller_name(o.getMerchantDes());
+            f.setFactor1(o.getCategories());
+            f.setSku(o.getSku());
+            f.setQty(o.getQty());
+
+            f.setFactor2(getFactor2(inbound_fee_prefix, o));
+
+            f.setReceivable_money(getMoney(inbound_fee_prefix, o.getCategories(), o.getQty(), false));
+
+            resultList.add(f);
+        }
+        return resultList;
+    }
+
+    @Override
+    public List<Fee> queryOrderHandlerFee(String date) {
+        List<Fee> resultList = new ArrayList<>();
+        List<OrderHandler> list = feeDao.queryOrderHandler(date);
+
+        Map<String, String> categoriesMap = new HashMap<>();
+
+        for (OrderHandler o : list) {
+            Fee f = new Fee();
+            f.setOrder_sn(o.getOrderNo());
+            f.setOrder_no(o.getNo());
+            f.setSeller_id(o.getMerchantId());
+            f.setSeller_name(o.getMerchantDes());
+            f.setFactor1(o.getCategories());
+            f.setSku(o.getSku());
+            f.setQty(o.getQty());
+
+            f.setFactor2(getFactor2(order_handler_fee_prefix, o));
+            f.setClass_id(o.getCategories());
+
+            if (StringUtil.isNotEmpty(categoriesMap.get(o.getOrderNo() + o.getCategories() + o.getMerchantId()))) {
+                f.setReceivable_money(getMoney(order_handler_fee_prefix, o.getCategories(), o.getQty(), true));
+            } else {
+                f.setReceivable_money(getMoney(order_handler_fee_prefix, o.getCategories(), o.getQty(), false));
+            }
+
+            //记录已计算该类别
+            categoriesMap.put(o.getOrderNo() + o.getCategories() + o.getMerchantId(), o.getCategories());
+            resultList.add(f);
+        }
+        return resultList;
+    }
+
+    @Override
+    public List<Fee> queryOrderReturnHandlerFee(String date) {
+        List<Fee> resultList = new ArrayList<>();
+
+        List<OrderHandler> list = feeDao.queryOrderReturn(date);
+
+        Map<String, String> categoriesMap = new HashMap<>();
+        for (OrderHandler o : list) {
+            Fee f = new Fee();
+            f.setOrder_sn(o.getOrderNo());
+            f.setOrder_no(o.getNo());
+            f.setSeller_id(o.getMerchantId());
+            f.setSeller_name(o.getMerchantDes());
+            f.setFactor1(o.getCategories());
+            f.setSku(o.getSku());
+            f.setQty(o.getQty());
+
+            f.setFactor2(getFactor2(order_return_fee_prefix, o));
+            f.setClass_id(o.getCategories());
+
+            if (StringUtil.isNotEmpty(categoriesMap.get(o.getOrderNo() + o.getCategories() + o.getMerchantId()))) {
+                f.setReceivable_money(getMoney(order_return_fee_prefix, o.getCategories(), o.getQty(), true));
+            } else {
+                f.setReceivable_money(getMoney(order_return_fee_prefix, o.getCategories(), o.getQty(), false));
+            }
+
+            //记录已计算该类别
+            categoriesMap.put(o.getOrderNo() + o.getCategories() + o.getMerchantId(), o.getCategories());
+            resultList.add(f);
+        }
+        return resultList;
+    }
+
+    @Override
+    public List<Fee> queryReturnMerchantHandlerFee(String date) {
+        List<Fee> resultList = new ArrayList<>();
+
+        List<OrderHandler> list = feeDao.queryReturnMerchant(date);
+        for (OrderHandler o : list) {
+            Fee f = new Fee();
+            f.setOrder_sn(o.getOrderNo());
+            f.setOrder_no(o.getNo());
+            f.setSeller_id(o.getMerchantId());
+            f.setSeller_name(o.getMerchantDes());
+            f.setFactor1(o.getCategories());
+            f.setQty(o.getQty());
+            f.setSku(o.getSku());
+
+            f.setFactor2(getFactor2(return_merchant_fee_prefix, o));
+            f.setClass_id(o.getCategories());
+
+            f.setReceivable_money(getMoney(return_merchant_fee_prefix, o.getCategories(), o.getQty(), false));
+
+            resultList.add(f);
+        }
+        return resultList;
+    }
+
+    @Override
+    public void syncToNOS(List<Fee> list, String date, String moneyType) {
+
+        if (list == null || list.size() == 0) return;
+
+        Jedis jedis = RedisUtil.getResource();
+        MerchantConfig merchantConfig = JSON.parseObject(jedis.get("System_merchant_config" + "1"),
+                MerchantConfig.class);
+        InterfaceConfig interfaceConfig = JSON.parseObject(
+                jedis.hget("System_interface_config" + "1", "wms_fee"), InterfaceConfig.class);
+        RedisUtil.returnResource(jedis);
+
+        //发送消息通知失败列表
+        Map<Fee, String> failedMap = new HashMap<>();
+
+        for (Fee f : list) {
+            //写入 nos
+            Map<String, Object> map = new HashMap<>();
+            map.put("list", Arrays.asList(f));
+            map.put("date", date);
+            map.put("type_id", "1");
+            map.put("charge_type", "1");
+            map.put("money_type", moneyType);
+            String data = JSON.toJSONString(map);
+            NotifyRequest notify = new NotifyRequest();
+
+            Map<String, String> params = new HashMap<>();
+            params.put("method", interfaceConfig.getOp());
+            params.put("sign", createNOSSign(data, merchantConfig.getKey()));
+            params.put("data", data);
+            params.put("app_key", "wms");
+            notify.setParam(params);
+            notify.setUrl(interfaceConfig.getUrl());
+            try {
+                notifyDataBusProducer.sendMessage(notify);
+            } catch (Exception e) {
+                failedMap.put(f, e.getMessage());
+                logger.error("WMS Fee send message failed.", e);
+            }
+        }
+        //出现通知失败，发送邮件
+        if (failedMap.size() > 0) {
+            MailInfo mailInfo = new MailInfo();
+            mailInfo.setSubject("WMS Fee Type: " + moneyType + " Date: " + date + " Notify Failed");
+            List to = new ArrayList<>();
+            to.add("ronny.zeng@kilimall.com");
+            mailInfo.setToAddress(to);
+            mailInfo.setContent(builTemplate(failedMap));
+            SendEmailUtil.sendEmail(mailInfo);
+        }
+    }
+
+    private String createNOSSign(String data, String key) {
+        String str = key + data + key;
+        return DigestUtils.md5Hex(str).toUpperCase();
+    }
+
+    /**
+     * @param prefix
+     * @param categories
+     * @param storage
+     * @param isNext     是否是续件
+     * @return
+     */
+    private double getMoney(String prefix, String categories, double storage, boolean isNext) {
+        FeePrice fee = SystemConfig.getFeeConfig().get(prefix + categories);
+        if (fee == null) {
+            fee = SystemConfig.getFeeConfig().get(prefix + "other");
+        }
+        BigDecimal price = null;
+
+        BigDecimal storageBigDecimal = BigDecimal.valueOf(storage);
+        if (isNext) {
+            price = fee.getNextPrice().multiply(storageBigDecimal);
+        } else {
+            // 配置信息中续件配置为0则表示不计算续件
+            BigDecimal nextStorage = BigDecimal.valueOf(storage - 1);
+            price = fee.getNextPrice() == null ? fee.getFirstPrice().multiply(storageBigDecimal) : fee.getFirstPrice().add(fee.getNextPrice().multiply(nextStorage));
+        }
+        return price.doubleValue();
+    }
+
+    private String getFactor2(String prefix, OrderHandler h) {
+        FeePrice fee = SystemConfig.getFeeConfig().get(prefix + h.getCategories());
+        if (fee == null) {
+            h.setCategories("9999");
+            fee = SystemConfig.getFeeConfig().get(prefix + "other");
+        }
+
+        return fee.getNextPrice() == null ? "" + fee.getFirstPrice().doubleValue() : "" + fee.getFirstPrice().doubleValue() + "/" + fee.getNextPrice();
+    }
+
+
+    private String builTemplate(Map<Fee, String> map) {
+
+        StringBuffer template = new StringBuffer("<table border=\"0\" cellpadding=\"3\" cellspacing=\"1\" bgcolor=\"#c1c1c1\"><tr bgcolor=\"#FFFFFF\"> <td>Order No</td> <td>SKU</td> <td>Fee</td><td>Error Msg</td> </tr>  ");
+        for (Map.Entry<Fee, String> entry : map.entrySet()) {
+            template.append("<tr bgcolor=\"#FFFFFF\"> <td>").append(entry.getKey().getOrder_no()).append("</td> <td>").append(entry.getKey().getSku()).append("</td> <td>").append(entry.getKey().getReceivable_money()).append("</td> <td>").append(entry.getValue()).append("</td></tr> ");
+        }
+        return template.append(" </table> ").toString();
+    }
+
+}

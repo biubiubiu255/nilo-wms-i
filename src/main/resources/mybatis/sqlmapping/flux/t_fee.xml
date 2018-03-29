@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nilo.wms.dao.flux.WMSFeeDao">
+
+
+    <!-- 实体bean与数据字段对应关系 -->
+    <resultMap id="orderHandlerDO" type="com.nilo.wms.dto.OrderHandler">
+        <result property="orderNo" column="order_no" javaType="java.lang.String"
+                jdbcType="VARCHAR" />
+        <result property="categories" column="categories" javaType="java.lang.String"
+                jdbcType="VARCHAR" />
+        <result property="merchantDes" column="merchantDes" javaType="java.lang.String"
+                jdbcType="VARCHAR" />
+        <result property="merchantId" column="merchantId" javaType="java.lang.String"
+                jdbcType="VARCHAR" />
+        <result property="sku" column="sku" javaType="java.lang.String"
+                jdbcType="VARCHAR" />
+        <result property="qty" column="qty" javaType="java.lang.Integer"
+                jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="queryInBoundOrderHandler" resultMap="orderHandlerDO">
+            select
+                   t.asnno           no,
+                   t.asnreference1  order_no,
+                   b.freightclass    categories,
+                   b.sku_group7      merchantId,
+                   c.descr_c         merchantDes,
+                   s.sku           sku,
+                   s.receivedqty_each     qty
+              from doc_asn_header t
+              left join doc_asn_details s on t.asnno = s.asnno
+              left join bas_sku b
+                on s.sku = b.sku
+              left join bas_customer c
+                on b.sku_group7 = c.customerid
+             where t.asntype = 'PO'
+               and to_char(t.edittime,'yyyy-MM-dd') = #{date}
+               and t.asnstatus = '99'
+    </select>
+
+    <select id="queryOrderHandler" resultMap="orderHandlerDO">
+        select
+        a.orderno no,
+        d.soreference1 order_no,
+        b.freightclass categories,
+        b.sku_group7  merchantId,
+        c.descr_c     merchantDes,
+        a.sku sku,
+        a.qty qty
+        from act_allocation_details a
+        left join doc_order_header d
+        on a.orderno = d.orderno
+        left join bas_sku b
+        on a.sku = b.sku
+        left join bas_customer c
+        on b.sku_group7 = c.customerid
+
+        where to_char(a.checktime, 'yyyy-MM-dd') = #{date}
+        and d.ordertype = 'SELL'
+        order by a.orderno
+
+    </select>
+
+    <select id="queryOrderReturn" resultMap="orderHandlerDO">
+            select
+                   t.asnno           no,
+                   t.asnreference1  order_no,
+                   b.freightclass    categories,
+                   b.sku_group7      merchantId,
+                   c.descr_c         merchantDes,
+                   s.sku           sku,
+                   s.receivedqty_each     qty
+              from doc_asn_header t
+              left join doc_asn_details s on t.asnno = s.asnno
+              left join bas_sku b
+                on s.sku = b.sku
+              left join bas_customer c
+                on b.sku_group7 = c.customerid
+             where t.asntype in ( 'TH','JS','TR')
+               and t.asnstatus = '99'
+               and to_char(t.edittime, 'yyyy-MM-dd') = #{date}
+             order by b.sku_group7
+    </select>
+
+    <select id="queryReturnMerchant" resultMap="orderHandlerDO">
+        select
+        a.orderno no,
+        d.soreference1 order_no,
+        b.freightclass categories,
+        b.sku_group7  merchantId,
+        c.descr_c     merchantDes,
+        a.sku sku,
+        a.qty qty
+        from act_allocation_details a
+        left join doc_order_header d
+        on a.orderno = d.orderno
+        left join bas_sku b
+        on a.sku = b.sku
+        left join bas_customer c
+        on b.sku_group7 = c.customerid
+        where to_char(a.checktime, 'yyyy-MM-dd') = #{date}
+        and d.ordertype = 'CT'
+        order by a.orderno
+    </select>
+
+</mapper>

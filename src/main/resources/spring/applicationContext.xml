@@ -1,0 +1,81 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+    <bean id="springContext" class="com.nilo.wms.service.SpringContext"/>
+
+    <context:component-scan base-package="com.nilo">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    </context:component-scan>
+
+
+    <bean id="configProperties"
+          class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>file:${user.home}/platform-wms.properties</value>
+                <!--要是有多个配置文件，只需在这里继续添加即可 -->
+            </list>
+        </property>
+    </bean>
+
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+        <property name="properties" ref="configProperties"/>
+    </bean>
+
+    <!-- 配置国际化资源 -->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <!-- basenames确定资源文件名 -->
+        <property name="basenames">
+            <list>
+                <value>i18n</value>
+            </list>
+        </property>
+        <property name="defaultEncoding" value="utf-8"></property>
+    </bean>
+
+
+    <!-- 配置redis数据库连接池 -->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="${redis.maxIdle}"></property>
+        <property name="maxTotal" value="${redis.maxTotal}"></property>
+        <property name="testOnBorrow" value="${redis.testOnBorrow}"></property>
+    </bean>
+
+    <!-- 配置redis共享连接池，业务层主要通过该bean访问redis服务器 -->
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg name="poolConfig" ref="jedisPoolConfig" />
+        <constructor-arg name="host" value="${redis.host}" />
+        <constructor-arg name="port" value="${redis.port}" type="int" />
+    </bean>
+
+    <bean class="com.nilo.mq.producer.ProducerStartup" init-method="initial"
+          destroy-method="destroy">
+        <property name="namesrvAddr" value="${mq.namesrvAddr}"/>
+        <property name="producers">
+            <list>
+                <ref bean="notifyDataBusProducer"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="notifyDataBusProducer" class="com.nilo.mq.producer.NotifyDataBusProducer"/>
+
+    <bean class="com.nilo.mq.consumer.ConsumerStartup" init-method="initial"
+          destroy-method="destroy">
+        <property name="namesrvAddr" value="${mq.namesrvAddr}"/>
+        <property name="consumers">
+            <list>
+                <ref bean="notifyFeeConsumer"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="notifyFeeConsumer" class="com.nilo.mq.consumer.NotifyDataBusConsumer"/>
+
+</beans>

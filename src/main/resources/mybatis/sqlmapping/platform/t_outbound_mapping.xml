@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nilo.wms.dao.platform.OutboundDao">
+
+    <!-- 实体bean与数据字段对应关系 -->
+    <resultMap id="OutboundDO" type="com.nilo.wms.dto.OutboundDO">
+        <result property="id" column="id" javaType="java.lang.Long"
+                jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="warehouseId" column="warehouse_id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="referenceNo" column="reference_no" javaType="java.lang.String"
+                 jdbcType="VARCHAR"/>
+        <result property="orderType" column="order_type" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="status" column="status" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+        <result property="updatedTime" column="updated_time" javaType="java.lang.Long"
+                jdbcType="INTEGER"/>
+        <result property="version" column="version" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id ,customer_id,warehouse_id,reference_no,order_type,status,created_time , updated_time ,version
+    </sql>
+
+    <!-- 插入语句 -->
+    <insert id="insert" parameterType="com.nilo.wms.dto.OutboundDO" statementType="PREPARED"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO t_outbound
+        ( customer_id,warehouse_id,reference_no,order_type,status,created_time , updated_time ,version)
+        VALUES
+        (#{customerId},#{warehouseId}, #{referenceNo},#{orderType},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+    </insert>
+    <!-- 动态更新语句 -->
+    <update id="update" parameterType="com.nilo.wms.dto.OutboundDO" statementType="PREPARED">
+        update t_outbound
+        <trim prefix="set" suffixOverrides="," suffix="where reference_no=#{referenceNo}">
+            <if test="status != null">
+                status = #{status},
+            </if>
+            updated_time=UNIX_TIMESTAMP(NOW()),version=UUID()
+        </trim>
+    </update>
+
+    <select id="queryByReferenceNo" resultMap="OutboundDO" statementType="PREPARED">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_outbound where reference_no=#{referenceNo}
+    </select>
+
+</mapper>

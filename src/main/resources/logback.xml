@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <property name="LOG_HOME" value="${catalina.base}/logs"/>
+    <property name="APP_NAME" value="wms-platform"/>
+
+    <!--<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>-->
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%d{HH:mm:ss.SSS}  %-5level %logger{64} - %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/${APP_NAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_HOME}/${APP_NAME}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{96} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.nilo.wms.dao" level="DEBUG"/>
+    <logger name="com.nilo.wms" level="DEBUG"/>
+
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ROLLING-FILE"/>
+    </root>
+
+</configuration>

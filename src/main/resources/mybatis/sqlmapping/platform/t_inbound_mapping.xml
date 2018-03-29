@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nilo.wms.dao.platform.InboundDao">
+
+    <!-- 实体bean与数据字段对应关系 -->
+    <resultMap id="InboundDO" type="com.nilo.wms.dto.InboundDO">
+        <result property="id" column="id" javaType="java.lang.Long"
+                jdbcType="INTEGER"/>
+        <result property="customerId" column="customer_id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="warehouseId" column="warehouse_id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="referenceNo" column="reference_no" javaType="java.lang.String"
+                 jdbcType="VARCHAR"/>
+        <result property="orderType" column="order_type" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="wmsOrderType" column="wms_order_type" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="status" column="status" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+        <result property="updatedTime" column="updated_time" javaType="java.lang.Long"
+                jdbcType="INTEGER"/>
+        <result property="version" column="version" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id ,customer_id,warehouse_id,asn_no,asn_no2,asn_type,status,created_time , updated_time ,version
+    </sql>
+
+    <!-- 插入语句 -->
+    <insert id="insert" parameterType="com.nilo.wms.dto.InboundDO" statementType="PREPARED"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO t_inbound
+        ( customer_id,warehouse_id,asn_no,asn_no2,asn_type,status,created_time , updated_time ,version)
+        VALUES
+        (#{customerId},#{warehouseId}, #{asnNo},#{asnNo2},#{asnType},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+    </insert>
+    <!-- 动态更新语句 -->
+    <update id="update" parameterType="com.nilo.wms.dto.InboundDO" statementType="PREPARED">
+        update t_inbound
+        <trim prefix="set" suffixOverrides="," suffix="where asn_no=#{asnNo}">
+            <if test="status != null">
+                status = #{status},
+            </if>
+            updated_time=UNIX_TIMESTAMP(NOW()),version=UUID()
+        </trim>
+    </update>
+
+    <select id="queryByAsnNo" resultMap="InboundDO" statementType="PREPARED">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_inbound where asn_no=#{asnNo}
+    </select>
+
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nilo.wms.dao.flux.StorageDao">
+
+
+    <!-- 实体bean与数据字段对应关系 -->
+    <resultMap id="storageInfo" type="com.nilo.wms.dto.StorageInfo">
+        <result property="sku" column="sku" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="storage" column="storage" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+        <result property="storeId" column="store_Id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="queryBy" resultMap="storageInfo">
+        SELECT B.SKU_GROUP7 as store_id,
+        a.sku as sku,
+        SUM(A.QTY - A.QTYALLOCATED - A.QTYONHOLD - A.QTYMVIN - A.QTYMVOUT) as storage
+        from inv_lot_loc_id a
+        LEFT JOIN BAS_SKU B
+        ON A.SKU = B.SKU and b.customerid=a.customerid
+        LEFT JOIN INV_LOT_ATT D
+        ON d.lotnum=a.lotnum
+        LEFT JOIN VIEW_MULTIWAREHOUSE C
+        ON A.LOCATIONID = C.LOCATIONID
+        WHERE D.LOTATT08 = 'N'
+        <if test="param.customerId !=null and param.customerId !='' ">
+            and a.customerid = #{param.customerId}
+        </if>
+        <if test="param.warehouseId !=null and param.warehouseId !='' ">
+            and c.warehouseid = #{param.warehouseId}
+        </if>
+        <if test="param.sku !=null and param.sku.size() > 0">
+            and a.sku in
+            <foreach collection="param.sku" item="s" index="index"
+                     open="(" close=")" separator=",">
+                #{s}
+            </foreach>
+        </if>
+        <if test="param.storeId !=null and param.storeId.size() > 0">
+            and B.SKU_GROUP7 in
+            <foreach collection="param.storeId" item="t" index="index"
+                     open="(" close=")" separator=",">
+                #{t}
+            </foreach>
+        </if>
+        group by B.SKU_GROUP7,a.sku
+    </select>
+
+</mapper>

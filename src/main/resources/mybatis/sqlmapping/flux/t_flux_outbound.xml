@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nilo.wms.dao.flux.FluxOutboundDao">
+
+    <!-- 实体bean与数据字段对应关系 -->
+    <resultMap id="orderHeader" type="com.nilo.wms.dto.FluxOutbound">
+        <result property="wmsOrderNo" column="orderno" javaType="java.lang.String"
+                jdbcType="VARCHAR" />
+        <result property="referenceNo" column="soreference1" javaType="java.lang.String"
+                jdbcType="VARCHAR" />
+        <result property="status" column="sostatus" javaType="java.lang.Integer"
+                jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="queryByReferenceNo" resultMap="orderHeader">
+            select orderno,soreference1,sostatus
+              from doc_order_header where soreference1 = #{referenceNo}
+    </select>
+
+</mapper>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+
+    <!-- 调度任务配置 -->
+    <bean autowire="no"
+          class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <!-- 通知调度 -->
+                <ref bean="inboundTrigger"/>
+                <ref bean="orderhandlerTrigger"/>
+                <ref bean="orderreturnTrigger"/>
+                <ref bean="returnmerchantTrigger"/>
+                <ref bean="emailTrigger"/>
+            </list>
+        </property>
+        <property name="autoStartup" value="true"/>
+    </bean>
+
+    <!-- 通知调度配置 begin  -->
+    <bean id="inboundTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="inboundTriggerDetail"/>
+        <property name="cronExpression" value="0 50 16 ? * *"/>
+    </bean>
+
+    <bean id="inboundTriggerDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="inbound"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <!-- 通知调度配置 end  -->
+
+    <!-- 通知调度配置 begin  -->
+    <bean id="orderhandlerTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="orderhandlerTriggerDetail"/>
+        <property name="cronExpression" value="0 50 15 ? * *"/>
+    </bean>
+
+    <bean id="orderhandlerTriggerDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="orderhandler"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <!-- 通知调度配置 end  -->
+
+
+    <!-- 通知调度配置 begin  -->
+    <bean id="orderreturnTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="orderreturnTriggerDetail"/>
+        <property name="cronExpression" value="0 50 17 ? * *"/>
+    </bean>
+
+    <bean id="orderreturnTriggerDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="orderreturn"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <!-- 通知调度配置 end  -->
+
+    <!-- 通知调度配置 begin  -->
+    <bean id="returnmerchantTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="returnmerchantTriggerDetail"/>
+        <property name="cronExpression" value="0 50 18 ? * *"/>
+    </bean>
+
+    <bean id="returnmerchantTriggerDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="returnmerchant"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <!-- 通知调度配置 end  -->
+
+    <!-- 通知调度配置 begin  -->
+    <bean id="emailTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="emailTriggerDetail"/>
+        <property name="cronExpression" value="0 50 19 ? * *"/>
+    </bean>
+
+    <bean id="emailTriggerDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="emailNotify"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <!-- 通知调度配置 end  -->
+
+    <bean id="inbound"
+          class="com.nilo.wms.service.scheduler.InBoundHandlerFeeScheduler"/>
+    <bean id="orderhandler"
+          class="com.nilo.wms.service.scheduler.OrderHandlerFeeScheduler"/>
+    <bean id="orderreturn"
+          class="com.nilo.wms.service.scheduler.OrderReturnHandlerFeeScheduler"/>
+    <bean id="returnmerchant"
+          class="com.nilo.wms.service.scheduler.ReturnMerchantHandlerFeeScheduler"/>
+    <bean id="emailNotify"
+          class="com.nilo.wms.service.scheduler.EmailScheduler"/>
+    <!-- 通知调度配置 end  -->
+
+</beans>
+
