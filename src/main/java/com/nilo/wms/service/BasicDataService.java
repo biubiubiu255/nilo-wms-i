@@ -11,7 +11,7 @@ public interface BasicDataService {
 
     void updateSku(List<SkuInfo> list);
 
-    void updateSupplier(SupplierInfo supplierInfo);
+    void updateSupplier(List<SupplierInfo> list);
 
     List<StorageInfo> queryStorage(StorageParam param);
 

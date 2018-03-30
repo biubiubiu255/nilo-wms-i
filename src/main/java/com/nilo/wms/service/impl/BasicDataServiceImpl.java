@@ -68,25 +68,28 @@ public class BasicDataServiceImpl implements BasicDataService {
     }
 
     @Override
-    public void updateSupplier(SupplierInfo supplierInfo) {
+    public void updateSupplier(List<SupplierInfo> list) {
 
-        AssertUtil.isNotNull(supplierInfo, SysErrorCode.REQUEST_IS_NULL);
-        AssertUtil.isNotBlank(supplierInfo.getCustomerId(), CheckErrorCode.STORE_EMPTY);
-        AssertUtil.isNotBlank(supplierInfo.getDescE(), CheckErrorCode.STORE_DESC_EMPTY);
-        AssertUtil.isNotBlank(supplierInfo.getAddress(), CheckErrorCode.STORE_ADDRESS_EMPTY);
+        AssertUtil.isNotNull(list, SysErrorCode.REQUEST_IS_NULL);
+        for (SupplierInfo supplierInfo : list) {
+            AssertUtil.isNotBlank(supplierInfo.getCustomerId(), CheckErrorCode.STORE_EMPTY);
+            AssertUtil.isNotBlank(supplierInfo.getDescE(), CheckErrorCode.STORE_DESC_EMPTY);
+            AssertUtil.isNotBlank(supplierInfo.getAddress(), CheckErrorCode.STORE_ADDRESS_EMPTY);
+        }
 
-        FLuxRequest request = new FLuxRequest();
-        String xmlData = XmlUtil.BeanToXML(supplierInfo);
-        //添加xml数据前缀
-        xmlData = "<xmldata>" + xmlData + "</xmldata>";
-        request.setData(xmlData);
-        request.setMessageid("CUSTOMER");
-        request.setMethod("putCustData");
-
-        //调用flux 请求
-        FluxResponse response = fluxHttpRequest.doRequest(request);
-        if (!response.isSuccess()) {
-            throw new RuntimeException(response.getReturnDesc());
+        for (SupplierInfo supplierInfo : list) {
+            FLuxRequest request = new FLuxRequest();
+            String xmlData = XmlUtil.BeanToXML(supplierInfo);
+            //添加xml数据前缀
+            xmlData = "<xmldata>" + xmlData + "</xmldata>";
+            request.setData(xmlData);
+            request.setMessageid("CUSTOMER");
+            request.setMethod("putCustData");
+            //调用flux 请求
+            FluxResponse response = fluxHttpRequest.doRequest(request);
+            if (!response.isSuccess()) {
+                throw new RuntimeException(response.getReturnDesc());
+            }
         }
     }
 

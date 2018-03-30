@@ -92,8 +92,14 @@ public class ApiController extends BaseController {
                 break;
             }
             case CUSTOMER: {
-                SupplierInfo supplierInfo = JSON.parseObject(data, SupplierInfo.class);
-                basicDataService.updateSupplier(supplierInfo);
+                List<SupplierInfo> list = new ArrayList<>();
+                if (data.startsWith("[")) {
+                    list = JSONArray.parseArray(data, SupplierInfo.class);
+                } else {
+                    SupplierInfo supplierInfo = JSON.parseObject(data, SupplierInfo.class);
+                    list.add(supplierInfo);
+                }
+                basicDataService.updateSupplier(list);
                 break;
             }
             case STORAGE: {

@@ -12,8 +12,10 @@ import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.DateUtil;
 import com.nilo.wms.common.util.XmlUtil;
+import com.nilo.wms.dao.flux.StorageDao;
 import com.nilo.wms.dao.platform.InboundDao;
 import com.nilo.wms.dto.*;
+import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.InboundService;
 import com.nilo.wms.service.RedisUtil;
@@ -45,6 +47,10 @@ public class InboundServiceImpl implements InboundService {
     private AbstractMQProducer notifyDataBusProducer;
     @Autowired
     private InboundDao inboundDao;
+    @Autowired
+    private StorageDao storageDao;
+    @Autowired
+    private BasicDataService basicDataService;
 
     @Override
     @Transactional
@@ -105,7 +111,6 @@ public class InboundServiceImpl implements InboundService {
     }
 
     @Override
-    @Transactional
     public void cancelInBound(String asnNo) {
 
         AssertUtil.isNotBlank(asnNo, CheckErrorCode.CLIENT_ORDER_EMPTY);
@@ -114,11 +119,7 @@ public class InboundServiceImpl implements InboundService {
         if (inboundDO == null) throw new WMSException(BizErrorCode.NOT_EXIST, asnNo);
         if (inboundDO.getStatus() == InboundStatusEnum.cancelled.getCode()) return;
 
-        InboundDO update = new InboundDO();
-        update.setAsnNo(asnNo);
-        update.setStatus(InboundStatusEnum.cancelled.getCode());
-        inboundDao.update(update);
-
+        // 通知flux
         FLuxRequest request = new FLuxRequest();
         String xmlData = "<xmldata><data><ordernos><OrderNo>" + asnNo + "</OrderNo><OrderType>" + inboundDO.getAsnType() + "</OrderType><CustomerID>" + inboundDO.getCustomerId() + "</CustomerID><WarehouseID>" + inboundDO.getWarehouseId() + "</WarehouseID></ordernos></data></xmldata>";
         request.setData(xmlData);
@@ -129,11 +130,32 @@ public class InboundServiceImpl implements InboundService {
         if (!response.isSuccess()) {
             throw new RuntimeException(response.getReturnDesc());
         }
+        //修改状态
+        InboundDO update = new InboundDO();
+        update.setAsnNo(asnNo);
+        update.setStatus(InboundStatusEnum.cancelled.getCode());
+        inboundDao.update(update);
     }
 
     @Override
     public void confirmASN(List<InboundHeader> list) {
 
+        if (list == null || list.size() == 0) {
+            return;
+        }
+        String customerId = "KILIMALL";
+        String warehouseId = "KE01";
+        //查询是否已经通知过
+        Iterator<InboundHeader> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            InboundHeader in = iterator.next();
+            InboundDO inboundDO = inboundDao.queryByAsnNo(in.getAsnNo());
+            if (inboundDO == null) {
+                iterator.remove();
+            } else if (inboundDO.getStatus() == InboundStatusEnum.closed.getCode()) {
+                iterator.remove();
+            }
+        }
 
         MerchantConfig merchantConfig = JSON.parseObject(RedisUtil.get("System_merchant_config" + "1"),
                 MerchantConfig.class);
@@ -160,6 +182,40 @@ public class InboundServiceImpl implements InboundService {
         } catch (Exception e) {
             logger.error("confirmSO send message failed.", e);
         }
+
+        //更新inbound状态
+        List<String> skuList = new ArrayList<>();
+        for (InboundHeader in : list) {
+            InboundDO update = new InboundDO();
+            update.setAsnNo(in.getAsnNo());
+            update.setStatus(InboundStatusEnum.closed.getCode());
+            inboundDao.update(update);
+            for (InboundItem item : in.getItemList()) {
+                skuList.add(item.getSku());
+            }
+        }
+
+
+        // 查询sku 仓库实际库存
+        StorageParam param = new StorageParam();
+        param.setSku(skuList);
+        List<StorageInfo> storageList = storageDao.queryBy(param);
+
+        //获取redis锁
+        Jedis jedis = RedisUtil.getResource();
+        String requestId = UUID.randomUUID().toString();
+        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
+        if (!getLock) throw new WMSException(SysErrorCode.SYSTEM_ERROR);
+        //更新库存
+        for (StorageInfo i : storageList) {
+            String key = RedisUtil.getSkuKey(customerId, warehouseId, i.getSku());
+            String lockSto = RedisUtil.hget(key, RedisUtil.LOCK_STORAGE);
+            i.setLockStorage(lockSto == null ? 0 : Integer.parseInt(lockSto));
+            jedis.hset(key, RedisUtil.STORAGE, "" + i.getStorage());
+        }
+        RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
+
+        basicDataService.storageChangeNotify(customerId, warehouseId, storageList);
     }
 
     @Override
