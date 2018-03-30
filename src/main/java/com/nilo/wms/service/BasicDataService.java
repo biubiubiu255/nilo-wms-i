@@ -22,4 +22,7 @@ public interface BasicDataService {
     void unLockStorage(String orderNo, String customerId, String warehouseId);
 
     void successStorage(String orderNo, String customerId, String warehouseId);
+
+    void updateStorage(String orderNo, String customerId, String warehouseId);
+
 }

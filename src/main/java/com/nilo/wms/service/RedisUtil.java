@@ -179,6 +179,30 @@ public class RedisUtil {
         }
     }
 
+    public static boolean hhasKey(String key, String field) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.hexists(key, field);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
+    public static Set<String> keys(String key) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.keys(key);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
     public static String getSkuKey(String customerId, String warehouseId, String sku) {
         customerId = customerId.toLowerCase();
         warehouseId = warehouseId.toLowerCase();

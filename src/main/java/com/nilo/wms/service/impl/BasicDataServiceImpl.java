@@ -273,5 +273,10 @@ public class BasicDataServiceImpl implements BasicDataService {
         RedisUtil.del(orderNoKey);
     }
 
+    @Override
+    public void updateStorage(String orderNo, String customerId, String warehouseId) {
+
+    }
+
 
 }
