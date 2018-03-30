@@ -178,12 +178,10 @@ public class OutboundServiceImpl implements OutboundService {
     @Override
     public void confirmSO(List<String> list, boolean result) {
 
-        Jedis jedis = RedisUtil.getResource();
-        MerchantConfig merchantConfig = JSON.parseObject(jedis.get("System_merchant_config" + "1"),
+        MerchantConfig merchantConfig = JSON.parseObject(RedisUtil.get("System_merchant_config" + "1"),
                 MerchantConfig.class);
         InterfaceConfig interfaceConfig = JSON.parseObject(
-                jedis.hget("System_interface_config" + "1", "wms_outbound_notify"), InterfaceConfig.class);
-        RedisUtil.returnResource(jedis);
+                RedisUtil.hget("System_interface_config" + "1", "wms_outbound_notify"), InterfaceConfig.class);
 
         Map<String, Object> map = new HashMap<>();
         map.put("list", list);

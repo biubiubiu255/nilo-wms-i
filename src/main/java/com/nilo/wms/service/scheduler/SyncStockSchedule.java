@@ -4,16 +4,21 @@
  */
 package com.nilo.wms.service.scheduler;
 
+import com.nilo.wms.common.exception.SysErrorCode;
+import com.nilo.wms.common.exception.WMSException;
+import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dto.SkuInfo;
 import com.nilo.wms.dto.StorageInfo;
 import com.nilo.wms.dto.StorageParam;
 import com.nilo.wms.dto.SupplierInfo;
 import com.nilo.wms.service.BasicDataService;
+import com.nilo.wms.service.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.Jedis;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 同步库存任务
@@ -28,14 +33,7 @@ public class SyncStockSchedule {
     public void execute() {
         try {
             logger.info("====start SyncStockSchedule ====");
-            StorageParam param = new StorageParam();
-            param.setCustomerId("KILIMALL");
-            param.setWarehouseId("KE01");
-            List<StorageInfo> list = basicDataService.queryStorage(param);
-            if (list == null || list.size() == 0) return;
-
-
-
+            basicDataService.syncStock("KILIMALL", "KE01");
             logger.info(" ======= end SyncStockSchedule =======");
         } catch (Exception ex) {
             logger.error("SyncStockSchedule failed. {}", ex.getMessage(), ex);

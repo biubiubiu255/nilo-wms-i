@@ -42,8 +42,6 @@ public class BasicDataServiceTest {
         list.add(item1);
         list.add(item2);
 
-
-
         header.setItemList(list);
 
         System.out.println(JSON.toJSONString(header));
@@ -55,7 +53,7 @@ public class BasicDataServiceTest {
 
     }
 
-    @Test
+    /*@Test*/
     public void multiLockStorage() {
 
         RedisUtil.hset(RedisUtil.getSkuKey("kilimall", "ke01", "1001"), RedisUtil.STORAGE, "4");
@@ -90,9 +88,9 @@ public class BasicDataServiceTest {
                     header.setItemList(list);
                     try {
                         basicDataService.lockStorage(header);
-                        System.out.println("Success==="+header.getOrderNo());
+                        System.out.println("Success===" + header.getOrderNo());
                     } catch (Exception e) {
-                        System.out.println("Failed==="+header.getOrderNo());
+                        System.out.println("Failed===" + header.getOrderNo());
                     }
 
                 }
@@ -116,5 +114,11 @@ public class BasicDataServiceTest {
 
     }
 
+    @Test
+    public void syncStock() {
+        String customerId = "KILIMALL";
+        String warehouseId = "KE01";
+        basicDataService.syncStock(customerId, warehouseId);
+    }
 
 }

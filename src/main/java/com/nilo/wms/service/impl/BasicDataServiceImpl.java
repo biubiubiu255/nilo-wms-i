@@ -1,17 +1,26 @@
 package com.nilo.wms.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.nilo.mq.model.NotifyRequest;
+import com.nilo.mq.producer.AbstractMQProducer;
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.CheckErrorCode;
 import com.nilo.wms.common.exception.SysErrorCode;
 import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
+import com.nilo.wms.common.util.DateUtil;
+import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.XmlUtil;
 import com.nilo.wms.dao.flux.StorageDao;
 import com.nilo.wms.dto.*;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.RedisUtil;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
@@ -23,13 +32,15 @@ import java.util.*;
  */
 @Service
 public class BasicDataServiceImpl implements BasicDataService {
+    private static final Logger logger = LoggerFactory.getLogger(BasicDataServiceImpl.class);
 
     @Resource(name = "fluxHttpRequest")
     private HttpRequest<FLuxRequest, FluxResponse> fluxHttpRequest;
-
     @Autowired
     private StorageDao storageDao;
-
+    @Autowired
+    @Qualifier("notifyDataBusProducer")
+    private AbstractMQProducer notifyDataBusProducer;
 
     @Override
     public void updateSku(List<SkuInfo> list) {
@@ -274,9 +285,100 @@ public class BasicDataServiceImpl implements BasicDataService {
     }
 
     @Override
-    public void updateStorage(String orderNo, String customerId, String warehouseId) {
+    public void syncStock(String customerId, String warehouseId) {
+        StorageParam param = new StorageParam();
+        param.setCustomerId(customerId);
+        param.setWarehouseId(warehouseId);
+        List<StorageInfo> list = queryStorage(param);
+        if (list == null || list.size() == 0) return;
 
+        customerId = customerId.toLowerCase();
+        warehouseId = warehouseId.toLowerCase();
+        Set<String> cacheSkuList = RedisUtil.keys(customerId + "_" + warehouseId + "_sku_*");
+
+
+        //获取redis锁
+        Jedis jedis = RedisUtil.getResource();
+        String requestId = UUID.randomUUID().toString();
+        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
+        if (!getLock) throw new WMSException(SysErrorCode.SYSTEM_ERROR);
+
+        //构建差异数据
+        List<StorageInfo> diffList = new ArrayList<>();
+        for (StorageInfo s : list) {
+            String key = RedisUtil.getSkuKey(customerId, warehouseId, s.getSku());
+            String storage = RedisUtil.hget(key, RedisUtil.STORAGE);
+            if (!StringUtil.equals(storage, "" + s.getStorage())) {
+                String lockStorage = RedisUtil.hget(key, RedisUtil.LOCK_STORAGE);
+                s.setLockStorage(lockStorage == null ? 0 : Integer.parseInt(lockStorage));
+                diffList.add(s);
+                continue;
+            }
+        }
+
+        //删掉 cache中多余的sku
+        Map<String, StorageInfo> wmsSkuList = new HashMap<>();
+        for (StorageInfo s : list) {
+            wmsSkuList.put(s.getSku(), s);
+        }
+        for (String s : cacheSkuList) {
+            String[] temp = s.split("_sku_");
+            if (!wmsSkuList.containsKey(temp[1])) {
+                String key = RedisUtil.getSkuKey(customerId, warehouseId, temp[1]);
+                jedis.del(key);
+            }
+        }
+
+        for (StorageInfo s : diffList) {
+            String key = RedisUtil.getSkuKey(customerId, warehouseId, s.getSku());
+            RedisUtil.hset(key, RedisUtil.STORAGE, "" + s.getStorage());
+            if (s.getLockStorage() != null) {
+                RedisUtil.hset(key, RedisUtil.LOCK_STORAGE, "" + s.getLockStorage());
+            }
+        }
+
+        RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
+
+        //通知上游系统 库存变更
+        storageChangeNotify(customerId, warehouseId, diffList);
     }
 
+    @Override
+    public void storageChangeNotify(String customerId, String warehouseId, List<StorageInfo> list) {
+
+        if (list == null || list.size() == 0) return;
+
+        MerchantConfig merchantConfig = JSON.parseObject(RedisUtil.get("System_merchant_config" + "1"),
+                MerchantConfig.class);
+        InterfaceConfig interfaceConfig = JSON.parseObject(
+                RedisUtil.hget("System_interface_config" + "1", "storage_change_notify"), InterfaceConfig.class);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", list);
+
+        String data = JSON.toJSONString(map);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("method", interfaceConfig.getOp());
+        params.put("sign", createNOSSign(data, merchantConfig.getKey()));
+        params.put("data", data);
+        params.put("app_key", "wms");
+        params.put("request_id", UUID.randomUUID().toString());
+        params.put("timestamp", "" + DateUtil.getSysTimeStamp());
+
+        NotifyRequest notify = new NotifyRequest();
+        notify.setParam(params);
+        notify.setUrl(interfaceConfig.getUrl());
+        try {
+            notifyDataBusProducer.sendMessage(notify);
+        } catch (Exception e) {
+            logger.error("confirmSO send message failed.", e);
+        }
+    }
+
+    private String createNOSSign(String data, String key) {
+        String str = key + data + key;
+        return DigestUtils.md5Hex(str).toUpperCase();
+    }
 
 }

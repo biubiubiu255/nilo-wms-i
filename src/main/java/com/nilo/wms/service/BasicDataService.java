@@ -23,6 +23,8 @@ public interface BasicDataService {
 
     void successStorage(String orderNo, String customerId, String warehouseId);
 
-    void updateStorage(String orderNo, String customerId, String warehouseId);
+    void syncStock(String customerId, String warehouseId);
+
+    void storageChangeNotify(String customerId, String warehouseId, List<StorageInfo> list);
 
 }
