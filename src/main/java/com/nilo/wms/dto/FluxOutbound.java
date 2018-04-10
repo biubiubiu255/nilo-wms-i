@@ -14,6 +14,16 @@ public class FluxOutbound {
     private int status;
     @JSONField(name = "status_desc")
     private String statusDesc;
+    @JSONField(name = "weight")
+    private Double weight;
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
 
     public String getWmsOrderNo() {
         return wmsOrderNo;

@@ -11,11 +11,14 @@
                 jdbcType="VARCHAR" />
         <result property="status" column="sostatus" javaType="java.lang.Integer"
                 jdbcType="VARCHAR" />
+        <result property="weight" column="weight" javaType="java.lang.Double"
+                jdbcType="VARCHAR" />
     </resultMap>
 
     <select id="queryByReferenceNo" resultMap="orderHeader">
-            select orderno,soreference1,sostatus
-              from doc_order_header where soreference1 = #{referenceNo}
+            select h.orderno,h.soreference1,h.sostatus,s.grossweight
+              from doc_order_header h left join DOC_Order_Packing_Summary s
+               on h.orderno = s.orderno
+               where h.soreference1 = #{referenceNo}
     </select>
-
 </mapper>

@@ -54,7 +54,7 @@ public class ConfirmSODataController extends BaseController {
             outboundService.confirmSO(successList, true);
         }
         if (cancelList.size() > 0) {
-            outboundService.confirmSO(cancelList, true);
+            outboundService.confirmSO(cancelList, false);
         }
         return xmlSuccessReturn();
     }
