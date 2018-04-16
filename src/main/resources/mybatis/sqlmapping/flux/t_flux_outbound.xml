@@ -15,10 +15,25 @@
                 jdbcType="VARCHAR" />
     </resultMap>
 
+    <resultMap id="weight" type="com.nilo.wms.dto.FluxWeight">
+        <result property="waybillNum" column="traceId" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="weight" column="grossweight" javaType="java.lang.Double"
+                jdbcType="VARCHAR"/>
+    </resultMap>
     <select id="queryByReferenceNo" resultMap="orderHeader">
             select h.orderno,h.soreference1,h.sostatus,s.grossweight
               from doc_order_header h left join DOC_Order_Packing_Summary s
                on h.orderno = s.orderno
                where h.soreference1 = #{referenceNo}
+    </select>
+
+    <select id="queryWeight" resultMap="weight">
+        select traceId,grossweight from DOC_Order_Packing_Summary
+        where traceId in
+        <foreach collection="list" item="t" index="index"
+                 open="(" close=")" separator=",">
+            #{t}
+        </foreach>
     </select>
 </mapper>

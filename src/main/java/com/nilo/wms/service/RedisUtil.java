@@ -63,7 +63,7 @@ public class RedisUtil {
                 return true;
             } else {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(100 + (int) Math.random() * 10);
                 } catch (Exception e) {
 
                 }

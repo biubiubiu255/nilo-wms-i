@@ -81,6 +81,7 @@ public class RequestParam {
     }
 
     public void checkParam() {
+        AssertUtil.isNotBlank(request_id, CheckErrorCode.REQUEST_ID_EMPTY);
         AssertUtil.isNotBlank(app_key, CheckErrorCode.APP_KEY_EMPTY);
         AssertUtil.isNotBlank(data, CheckErrorCode.DATA_EMPTY);
         AssertUtil.isNotBlank(sign, CheckErrorCode.SIGN_EMPTY);

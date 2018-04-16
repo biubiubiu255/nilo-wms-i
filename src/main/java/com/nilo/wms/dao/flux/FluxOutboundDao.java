@@ -1,9 +1,6 @@
 package com.nilo.wms.dao.flux;
 
-import com.nilo.wms.dto.FluxOutbound;
-import com.nilo.wms.dto.OutboundHeader;
-import com.nilo.wms.dto.StorageInfo;
-import com.nilo.wms.dto.StorageParam;
+import com.nilo.wms.dto.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +14,5 @@ public interface FluxOutboundDao {
 
     FluxOutbound queryByReferenceNo(String referenceNo);
 
+    List<FluxWeight> queryWeight(List<String> list);
 }

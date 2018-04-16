@@ -5,11 +5,12 @@ package com.nilo.wms.common.exception;
  * Created by ronny on 2017/8/23.
  */
 public enum CheckErrorCode implements ErrorCode {
-    APP_KEY_EMPTY("App Key is empty", "100000"),
-    DATA_EMPTY("Data is empty.", "100001"),
-    SIGN_EMPTY("Sign is empty.", "100002"),
+    REQUEST_ID_EMPTY("request_id is empty", "100000"),
+    APP_KEY_EMPTY("app_key is empty", "100000"),
+    DATA_EMPTY("data is empty.", "100001"),
+    SIGN_EMPTY("sign is empty.", "100002"),
     Method_EMPTY("method is empty.", "100003"),
-    TIMESTAMP_EMPTY("Timestamp is empty.", "100004"),
+    TIMESTAMP_EMPTY("timestamp is empty.", "100004"),
     METHOD_NOT_EXIST("method is not exist.", "100005"),
     TIMESTAMP_ERROR("Request timeout", "100006"),
     SING_ERROR("Sign is error.", "100007"),
