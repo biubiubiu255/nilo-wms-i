@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.nilo.wms.dao.platform.ClientConfigDao">
+<mapper namespace="com.nilo.wms.dao.platform.InterfaceConfigDao">
 
     <!-- 实体bean与数据字段对应关系 -->
     <resultMap id="interfaceConfig" type="com.nilo.wms.dto.InterfaceConfig">
@@ -24,9 +24,11 @@
         <result property="version" column="version" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
     </resultMap>
+
     <sql id="Base_Column_List">
         id ,client_code,method,biz_type,url,request_method,status,created_time , updated_time ,version
     </sql>
+
     <!-- 插入语句 -->
     <insert id="insert" parameterType="com.nilo.wms.dto.InterfaceConfig" statementType="PREPARED"
             useGeneratedKeys="true"
@@ -37,7 +39,7 @@
         (#{clientCode},#{method}, #{bizType},#{url},#{requestMethod},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
     </insert>
 
-    <select id="queryByCode" resultMap="clientConfig" statementType="PREPARED">
+    <select id="queryByCode" resultMap="interfaceConfig" statementType="PREPARED">
         SELECT
         <include refid="Base_Column_List"/>
         FROM t_config_interface where client_code=#{clientCode}

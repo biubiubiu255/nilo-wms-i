@@ -16,11 +16,11 @@
     <resultMap id="details" type="com.nilo.wms.dto.flux.FluxInboundDetails">
         <result property="sku" column="sku" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="qty" column="EXPECTEDQTY" javaType="java.lang.Double"
+        <result property="qty" column="EXPECTEDQTY" javaType="java.lang.Integer"
                 jdbcType="VARCHAR"/>
-        <result property="receivedQty" column="RECEIVEDQTY" javaType="java.lang.Double"
+        <result property="receivedQty" column="RECEIVEDQTY" javaType="java.lang.Integer"
                 jdbcType="VARCHAR"/>
-        <result property="receivedQty" column="RECEIVEDTIME" javaType="java.lang.Double"
+        <result property="receivedTime" column="RECEIVEDTIME" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -29,7 +29,7 @@
         select h.asnno, h.asnreference1,h.asnstatus from doc_asn_header h where h.customerid=#{customerId} and h.asnreference1=#{referenceNo}
     </select>
 
-    <select id="queryDetailsByAsnNo" resultMap="weight">
+    <select id="queryDetailsByAsnNo" resultMap="details">
         select d.sku,d.expectedqty,d.receivedqty,to_char(d.receivedtime,'yyyy-MM-dd HH:mm:SS') from doc_asn_details d
         where d.customerid=#{customerId} and d.asnno=#{asnNo}
     </select>

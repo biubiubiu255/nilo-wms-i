@@ -29,7 +29,7 @@ public class InBoundHandlerFeeScheduler  {
             String dateString = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
             //查询入库
             List<Fee> list = feeService.queryInboundOrder("kilimall",dateString);
-            feeService.syncToNOS(list, "",dateString, MoneyType.In_Bound.getCode());
+            feeService.syncToNOS(list, "kilimall",dateString, MoneyType.In_Bound.getCode());
             logger.info("====end  inbound fee====");
         } catch (Exception ex) {
             logger.error("get delivery fee faild." ,ex.getMessage(),ex);

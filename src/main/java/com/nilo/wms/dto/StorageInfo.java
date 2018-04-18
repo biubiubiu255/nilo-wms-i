@@ -9,15 +9,21 @@ public class StorageInfo {
 
     @JSONField(name = "sku")
     private String sku;
-
     private Integer storage;
-
     @JSONField(name = "lock_storage")
     private Integer lockStorage;
-
-
     @JSONField(name = "store_id")
     private String storeId;
+    @JSONField(name = "safe_storage")
+    private Integer safeStorage;
+
+    public Integer getSafeStorage() {
+        return safeStorage;
+    }
+
+    public void setSafeStorage(Integer safeStorage) {
+        this.safeStorage = safeStorage;
+    }
 
     public String getSku() {
         return sku;

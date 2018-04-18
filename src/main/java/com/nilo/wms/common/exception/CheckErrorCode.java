@@ -39,7 +39,7 @@ public enum CheckErrorCode implements ErrorCode {
     RECEIVER_ADDRESS_EMPTY("receiver address empty.", "100029"),
     RECEIVER_PHONE_EMPTY("receiver contact_number empty.", "100030"),
     CLIENT_ID_EMPTY("client_id empty.", "100031"),
-    STORE_ADDRESS_EMPTY("store_address empty.", "100032"),
+    STORE_ADDRESS_EMPTY("address empty.", "100032"),
 
     ;
 

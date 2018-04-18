@@ -10,6 +10,8 @@
                 jdbcType="VARCHAR"/>
         <result property="storage" column="storage" javaType="java.lang.Integer"
                 jdbcType="INTEGER"/>
+        <result property="safeStorage" column="safe_storage" javaType="java.lang.Integer"
+                jdbcType="VARCHAR"/>
         <result property="storeId" column="store_Id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
     </resultMap>
@@ -17,6 +19,7 @@
     <select id="queryBy" resultMap="storageInfo">
         SELECT B.SKU_GROUP7 as store_id,
         a.sku as sku,
+        b.ReservedField03 as safe_storage,
         SUM(A.QTY - A.QTYALLOCATED - A.QTYONHOLD - A.QTYMVIN - A.QTYMVOUT) as storage
         from inv_lot_loc_id a
         LEFT JOIN BAS_SKU B
@@ -46,7 +49,7 @@
                 #{t}
             </foreach>
         </if>
-        group by B.SKU_GROUP7,a.sku
+        group by B.SKU_GROUP7,a.sku,b.ReservedField03
     </select>
 
 </mapper>

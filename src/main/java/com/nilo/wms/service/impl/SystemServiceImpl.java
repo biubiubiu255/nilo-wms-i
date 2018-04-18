@@ -71,7 +71,9 @@ public class SystemServiceImpl implements SystemService {
             for (FeeConfig c : list) {
                 FeePrice fee = new FeePrice();
                 fee.setFirstPrice(new BigDecimal(c.getFirstPrice()));
-                fee.setNextPrice(new BigDecimal(c.getSecondPrice()));
+                if (c.getSecondPrice() != null) {
+                    fee.setNextPrice(new BigDecimal(c.getSecondPrice()));
+                }
                 feeConf.put(c.getFeeType() + c.getClassType(), fee);
             }
 

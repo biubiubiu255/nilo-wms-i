@@ -29,9 +29,9 @@ public class ReturnMerchantHandlerFeeScheduler {
             calendar.add(calendar.DATE, -1);//把日期往后增加一天.整数往后推,负数往前移动
             String dateString = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
             //查询入库
-            List<Fee> list = feeService.queryReturnMerchantHandlerFee("",dateString);
+            List<Fee> list = feeService.queryReturnMerchantHandlerFee("kilimall",dateString);
             //写入 nos
-            feeService.syncToNOS(list, "",dateString, MoneyType.Return_Merchant.getCode());
+            feeService.syncToNOS(list, "kilimall",dateString, MoneyType.Return_Merchant.getCode());
             logger.info("====start return merchant fee====");
         } catch (Exception ex) {
             logger.error("get delivery fee faild.", ex.getMessage(), ex);

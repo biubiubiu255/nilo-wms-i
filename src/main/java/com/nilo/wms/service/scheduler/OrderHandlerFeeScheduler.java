@@ -29,9 +29,9 @@ public class OrderHandlerFeeScheduler  {
             calendar.add(calendar.DATE, -1);//把日期往后增加一天.整数往后推,负数往前移动
             String dateString = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
             //查询入库
-            List<Fee> list = feeService.queryOrderHandlerFee("",dateString);
+            List<Fee> list = feeService.queryOrderHandlerFee("kilimall",dateString);
             //写入 nos
-            feeService.syncToNOS(list,"",dateString, MoneyType.Order_Handler.getCode());
+            feeService.syncToNOS(list,"kilimall",dateString, MoneyType.Order_Handler.getCode());
             logger.info("====end order handler fee====");
         } catch (Exception ex) {
             logger.error("get delivery fee faild." , ex.getMessage(),ex);

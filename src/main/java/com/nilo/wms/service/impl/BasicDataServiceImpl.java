@@ -50,11 +50,13 @@ public class BasicDataServiceImpl implements BasicDataService {
     public void updateSku(List<SkuInfo> list) {
 
         AssertUtil.isNotNull(list, SysErrorCode.REQUEST_IS_NULL);
+        String customerId = SessionLocal.getPrincipal().getCustomerId();
 
         for (SkuInfo s : list) {
             AssertUtil.isNotBlank(s.getSku(), CheckErrorCode.SKU_EMPTY);
             AssertUtil.isNotBlank(s.getDescE(), CheckErrorCode.SKU_DESC_EMPTY);
             AssertUtil.isNotBlank(s.getStoreId(), CheckErrorCode.STORE_EMPTY);
+            s.setCustomerId(customerId);
         }
 
         FLuxRequest request = new FLuxRequest();
