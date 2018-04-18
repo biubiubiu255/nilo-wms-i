@@ -31,7 +31,7 @@ public class SkuStorageInfoController extends BaseController {
 
     @RequestMapping(value = "/storageInfo.html", method = {RequestMethod.POST})
     @ResponseBody
-    public String orderLockStock(String clientCode, String sku) {
+    public String storageInfo(String clientCode, String sku) {
 
         Map<String, Object> map = new HashMap<>();
 

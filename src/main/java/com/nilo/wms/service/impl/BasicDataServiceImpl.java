@@ -134,8 +134,6 @@ public class BasicDataServiceImpl implements BasicDataService {
         //check
         AssertUtil.isNotNull(header, SysErrorCode.REQUEST_IS_NULL);
         AssertUtil.isNotBlank(header.getOrderNo(), CheckErrorCode.CLIENT_ORDER_EMPTY);
-        AssertUtil.isNotBlank(header.getCustomerId(), CheckErrorCode.CUSTOMER_EMPTY);
-        AssertUtil.isNotBlank(header.getWarehouseId(), CheckErrorCode.WAREHOUSE_EMPTY);
         AssertUtil.isNotNull(header.getItemList(), CheckErrorCode.ITEM_EMPTY);
         for (OutboundItem item : header.getItemList()) {
             AssertUtil.isNotBlank(item.getSku(), CheckErrorCode.SKU_EMPTY);
@@ -286,7 +284,11 @@ public class BasicDataServiceImpl implements BasicDataService {
     @Override
     public void syncStock(String clientCode) {
 
+        AssertUtil.isNotBlank(clientCode, CheckErrorCode.APP_KEY_EMPTY);
         ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
+        if (config == null) {
+            throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
+        }
 
         StorageParam param = new StorageParam();
         param.setWarehouseId(config.getWarehouseId());

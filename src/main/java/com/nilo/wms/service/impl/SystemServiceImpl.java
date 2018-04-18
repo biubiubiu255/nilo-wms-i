@@ -24,10 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 public class SystemServiceImpl implements SystemService {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private static final String fee_config_name = "wms_fee_config.properties";
-
     @Autowired
     private ClientConfigDao clientConfigDao;
     @Autowired
