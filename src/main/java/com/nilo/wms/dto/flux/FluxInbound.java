@@ -18,6 +18,16 @@ public class FluxInbound {
     private String statusDesc;
     @JSONField(name = "order_items_list")
     private List<FluxInboundDetails> list;
+    @JSONField(name = "weight")
+    private Double weight;
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
 
     public List<FluxInboundDetails> getList() {
         return list;

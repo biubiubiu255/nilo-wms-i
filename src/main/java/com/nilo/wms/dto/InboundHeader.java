@@ -19,9 +19,9 @@ import java.util.List;
 public class InboundHeader {
     private String customerId;
     @JSONField(name = "client_order_sn")
-    private String asnNo;
+    private String referenceNo;
     @JSONField(name = "client_order_sn2")
-    private String asnNo2;
+    private String referenceNo2;
     @JSONField(name = "order_type")
     private String asnType;
     private String warehouseId;
@@ -57,23 +57,21 @@ public class InboundHeader {
     public void setItemList(List<InboundItem> itemList) {
         this.itemList = itemList;
     }
-
-    @XmlElement(name = "ASNReference2")
-    public String getAsnNo2() {
-        return asnNo2;
-    }
-
-    public void setAsnNo2(String asnNo2) {
-        this.asnNo2 = asnNo2;
-    }
-
     @XmlElement(name = "OrderNo")
-    public String getAsnNo() {
-        return asnNo;
+    public String getReferenceNo() {
+        return referenceNo;
     }
 
-    public void setAsnNo(String asnNo) {
-        this.asnNo = asnNo;
+    public void setReferenceNo(String referenceNo) {
+        this.referenceNo = referenceNo;
+    }
+    @XmlElement(name = "ASNReference2")
+    public String getReferenceNo2() {
+        return referenceNo2;
+    }
+
+    public void setReferenceNo2(String referenceNo2) {
+        this.referenceNo2 = referenceNo2;
     }
 
     @XmlElement(name = "OrderType")
@@ -193,36 +191,5 @@ public class InboundHeader {
 
     public void setUserDefine5(String userDefine5) {
         this.userDefine5 = userDefine5;
-    }
-    public static void main(String[] args) {
-        InboundHeader header = new InboundHeader();
-        header.setAsnNo("asn_no_0001");
-        header.setAsnNo2("asn_no_001(02)");
-        header.setAsnType("PO");
-        header.setUserDefine1("111");
-        header.setUserDefine2("2222");
-        header.setSupplierId("11");
-        header.setSupplierName("&&*** Shop");
-        header.setCarrierId("1");
-        header.setCarrierName("Sai Shi");
-        header.setWarehouseId("KE01");
-        header.setOrderTime(DateUtil.getSysTimeStamp());
-        List<InboundItem> itemList = new ArrayList<>();
-        InboundItem item = new InboundItem();
-        item.setSku("100123");
-        item.setQty(2);
-        itemList.add(item);
-        InboundItem item1 = new InboundItem();
-        try {
-            BeanUtils.copyProperties(item1, item);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        itemList.add(item1);
-        header.setItemList(itemList);
-
-        System.out.println(JSON.toJSONString(header));
     }
 }

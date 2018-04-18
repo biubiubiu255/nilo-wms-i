@@ -11,7 +11,7 @@
                 jdbcType="VARCHAR" />
         <result property="status" column="sostatus" javaType="java.lang.Integer"
                 jdbcType="VARCHAR" />
-        <result property="weight" column="weight" javaType="java.lang.Double"
+        <result property="weight" column="grossweight" javaType="java.lang.Double"
                 jdbcType="VARCHAR" />
     </resultMap>
 
@@ -28,13 +28,6 @@
               from doc_order_header h left join DOC_Order_Packing_Summary s
                on h.orderno = s.orderno
                where h.customerId = #{customerId} and h.soreference1 = #{referenceNo}
-    </select>
-
-    <select id="queryByReferenceNo" resultMap="orderHeader">
-        select h.orderno,h.soreference1,h.sostatus,s.grossweight
-        from doc_order_header h left join DOC_Order_Packing_Summary s
-        on h.orderno = s.orderno
-        where h.soreference1 = #{referenceNo}
     </select>
 
     <select id="queryWeight" resultMap="weight">

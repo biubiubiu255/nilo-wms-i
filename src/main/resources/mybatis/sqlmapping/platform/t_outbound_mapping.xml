@@ -55,7 +55,7 @@
     <select id="queryByReferenceNo" resultMap="OutboundDO" statementType="PREPARED">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM t_outbound where customer_id = #{customerId} and reference_no=#{referenceNo}
+        FROM t_outbound where client_code = #{clientCode} and reference_no=#{referenceNo}
     </select>
 
     <select id="queryByList" resultMap="OutboundDO" statementType="PREPARED">

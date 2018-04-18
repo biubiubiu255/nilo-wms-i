@@ -64,7 +64,7 @@ public class InboundServiceImpl implements InboundService {
     public void createInBound(InboundHeader inbound) {
 
         AssertUtil.isNotNull(inbound, SysErrorCode.REQUEST_IS_NULL);
-        AssertUtil.isNotBlank(inbound.getAsnNo(), CheckErrorCode.CLIENT_ORDER_EMPTY);
+        AssertUtil.isNotBlank(inbound.getReferenceNo(), CheckErrorCode.CLIENT_ORDER_EMPTY);
         AssertUtil.isNotBlank(inbound.getAsnType(), CheckErrorCode.ORDER_TYPE_EMPTY);
         AssertUtil.isNotBlank(inbound.getOrderTime(), CheckErrorCode.ADD_TIME_EMPTY);
         AssertUtil.isNotNull(inbound.getItemList(), CheckErrorCode.ITEM_EMPTY);
@@ -72,12 +72,12 @@ public class InboundServiceImpl implements InboundService {
         //保存
         Principal principal = SessionLocal.getPrincipal();
         String clientCode = principal.getClientCode();
-        InboundDO inboundDO = inboundDao.queryByAsnNo(clientCode, inbound.getAsnNo());
+        InboundDO inboundDO = inboundDao.queryByReferenceNo(clientCode, inbound.getReferenceNo());
         if (inboundDO != null) return;
         InboundDO insert = new InboundDO();
         insert.setClientCode(clientCode);
-        insert.setAsnNo2(inbound.getAsnNo2());
-        insert.setAsnNo(inbound.getAsnNo());
+        insert.setReferenceNo(inbound.getReferenceNo());
+        insert.setReferenceNo2(inbound.getReferenceNo2());
         insert.setCustomerId(inbound.getCustomerId());
         insert.setWarehouseId(inbound.getWarehouseId());
         insert.setStatus(InboundStatusEnum.create.getCode());
@@ -119,19 +119,19 @@ public class InboundServiceImpl implements InboundService {
     }
 
     @Override
-    public void cancelInBound(String asnNo) {
+    public void cancelInBound(String referenceNo) {
 
-        AssertUtil.isNotBlank(asnNo, CheckErrorCode.CLIENT_ORDER_EMPTY);
+        AssertUtil.isNotBlank(referenceNo, CheckErrorCode.CLIENT_ORDER_EMPTY);
 
         String clientCode = SessionLocal.getPrincipal().getClientCode();
 
-        InboundDO inboundDO = inboundDao.queryByAsnNo(clientCode, asnNo);
-        if (inboundDO == null) throw new WMSException(BizErrorCode.NOT_EXIST, asnNo);
+        InboundDO inboundDO = inboundDao.queryByReferenceNo(clientCode, referenceNo);
+        if (inboundDO == null) throw new WMSException(BizErrorCode.NOT_EXIST, referenceNo);
         if (inboundDO.getStatus() == InboundStatusEnum.cancelled.getCode()) return;
 
         // 通知flux
         FLuxRequest request = new FLuxRequest();
-        String xmlData = "<xmldata><data><ordernos><OrderNo>" + asnNo + "</OrderNo><OrderType>" + inboundDO.getAsnType() + "</OrderType><CustomerID>" + inboundDO.getCustomerId() + "</CustomerID><WarehouseID>" + inboundDO.getWarehouseId() + "</WarehouseID></ordernos></data></xmldata>";
+        String xmlData = "<xmldata><data><ordernos><OrderNo>" + referenceNo + "</OrderNo><OrderType>" + inboundDO.getAsnType() + "</OrderType><CustomerID>" + inboundDO.getCustomerId() + "</CustomerID><WarehouseID>" + inboundDO.getWarehouseId() + "</WarehouseID></ordernos></data></xmldata>";
         request.setData(xmlData);
         request.setMessageid("ASNC");
         request.setMethod("cancelASNData");
@@ -142,7 +142,8 @@ public class InboundServiceImpl implements InboundService {
         }
         //修改状态
         InboundDO update = new InboundDO();
-        update.setAsnNo(asnNo);
+        update.setClientCode(clientCode);
+        update.setReferenceNo(referenceNo);
         update.setStatus(InboundStatusEnum.cancelled.getCode());
         inboundDao.update(update);
     }
@@ -159,7 +160,7 @@ public class InboundServiceImpl implements InboundService {
         Iterator<InboundHeader> iterator = list.iterator();
         while (iterator.hasNext()) {
             InboundHeader in = iterator.next();
-            InboundDO inboundDO = inboundDao.queryByAsnNo(clientCode, in.getAsnNo());
+            InboundDO inboundDO = inboundDao.queryByReferenceNo(clientCode, in.getReferenceNo());
             if (inboundDO == null) {
                 iterator.remove();
             } else if (inboundDO.getStatus() == InboundStatusEnum.closed.getCode()) {
@@ -194,7 +195,8 @@ public class InboundServiceImpl implements InboundService {
         List<String> skuList = new ArrayList<>();
         for (InboundHeader in : list) {
             InboundDO update = new InboundDO();
-            update.setAsnNo(in.getAsnNo());
+            update.setClientCode(clientCode);
+            update.setReferenceNo(in.getReferenceNo());
             update.setStatus(InboundStatusEnum.closed.getCode());
             inboundDao.update(update);
             for (InboundItem item : in.getItemList()) {

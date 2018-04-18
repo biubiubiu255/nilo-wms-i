@@ -11,8 +11,8 @@ public class InboundDO extends BaseDo<Long> {
     private String clientCode;
     private String customerId;
     private String warehouseId;
-    private String asnNo;
-    private String asnNo2;
+    private String referenceNo;
+    private String referenceNo2;
     private String asnType;
     private int status;
 
@@ -40,20 +40,20 @@ public class InboundDO extends BaseDo<Long> {
         this.warehouseId = warehouseId;
     }
 
-    public String getAsnNo() {
-        return asnNo;
+    public String getReferenceNo() {
+        return referenceNo;
     }
 
-    public void setAsnNo(String asnNo) {
-        this.asnNo = asnNo;
+    public void setReferenceNo(String referenceNo) {
+        this.referenceNo = referenceNo;
     }
 
-    public String getAsnNo2() {
-        return asnNo2;
+    public String getReferenceNo2() {
+        return referenceNo2;
     }
 
-    public void setAsnNo2(String asnNo2) {
-        this.asnNo2 = asnNo2;
+    public void setReferenceNo2(String referenceNo2) {
+        this.referenceNo2 = referenceNo2;
     }
 
     public String getAsnType() {

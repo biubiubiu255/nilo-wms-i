@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface OutboundDao extends BaseDao<Long, OutboundDO> {
 
-    OutboundDO queryByReferenceNo(String clientCode,String referenceNo);
+    OutboundDO queryByReferenceNo(@Param(value="clientCode")String clientCode, @Param(value="referenceNo")String referenceNo);
 
-    List<OutboundDO> queryByList(String clientCode, List<String> referenceNoList);
+    List<OutboundDO> queryByList(@Param(value="clientCode")String clientCode, @Param(value="referenceNoList")List<String> referenceNoList);
 
 }

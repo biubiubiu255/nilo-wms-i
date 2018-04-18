@@ -65,7 +65,7 @@ public class ConfirmASNDataController extends BaseController {
         List<InboundHeader> list = new ArrayList<>();
         for (NotifyOrder n : notify.getList()) {
             InboundHeader asn = new InboundHeader();
-            asn.setAsnNo(n.getOrderNo());
+            asn.setReferenceNo(n.getOrderNo());
             List<InboundItem> itemList = new ArrayList<>();
             for (NotifyOrderItem i : n.getItem()) {
                 InboundItem item = new InboundItem();
