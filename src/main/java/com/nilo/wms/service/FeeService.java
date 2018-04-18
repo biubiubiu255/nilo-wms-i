@@ -9,13 +9,13 @@ import java.util.List;
  */
 public interface FeeService {
 
-    List<Fee> queryInboundOrder(String date);
+    List<Fee> queryInboundOrder(String clientCode,String date);
 
-    List<Fee> queryOrderHandlerFee(String date);
+    List<Fee> queryOrderHandlerFee(String clientCode,String date);
 
-    List<Fee> queryOrderReturnHandlerFee(String date);
+    List<Fee> queryOrderReturnHandlerFee(String clientCode,String date);
 
-    List<Fee> queryReturnMerchantHandlerFee(String date);
+    List<Fee> queryReturnMerchantHandlerFee(String clientCode,String date);
 
-    void syncToNOS(List<Fee> list, String date, String moneyType);
+    void syncToNOS(List<Fee> list,String clientCode, String date, String moneyType);
 }

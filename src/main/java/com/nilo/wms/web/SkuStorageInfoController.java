@@ -31,14 +31,11 @@ public class SkuStorageInfoController extends BaseController {
 
     @RequestMapping(value = "/storageInfo.html", method = {RequestMethod.POST})
     @ResponseBody
-    public String orderLockStock(String sku) {
+    public String orderLockStock(String clientCode, String sku) {
 
         Map<String, Object> map = new HashMap<>();
 
-        String customerId = "KILIMALL";
-        String warehouseId = "KE01";
-
-        String key = RedisUtil.getSkuKey(customerId, warehouseId, sku);
+        String key = RedisUtil.getSkuKey(clientCode, sku);
         String storage = RedisUtil.hget(key, RedisUtil.STORAGE);
         String lockSto = RedisUtil.hget(key, RedisUtil.LOCK_STORAGE);
 
@@ -57,8 +54,6 @@ public class SkuStorageInfoController extends BaseController {
         }
 
         StorageParam param = new StorageParam();
-        param.setWarehouseId(warehouseId);
-        param.setCustomerId(customerId);
         param.setSku(Arrays.asList(sku));
         List<StorageInfo> list = storageDao.queryBy(param);
         if (list != null && list.size() == 1) {

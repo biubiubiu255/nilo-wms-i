@@ -3,6 +3,7 @@ package com.nilo.wms.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.nilo.mq.model.NotifyRequest;
 import com.nilo.mq.producer.AbstractMQProducer;
+import com.nilo.wms.common.SessionLocal;
 import com.nilo.wms.common.enums.OutBoundStatusEnum;
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.CheckErrorCode;
@@ -19,6 +20,7 @@ import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.OutboundService;
 import com.nilo.wms.service.RedisUtil;
+import com.nilo.wms.service.config.SystemConfig;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +76,8 @@ public class OutboundServiceImpl implements OutboundService {
         AssertUtil.isNotBlank(outBound.getReceiverInfo().getReceiverName(), CheckErrorCode.RECEIVER_NAME_EMPTY);
         AssertUtil.isNotBlank(outBound.getReceiverInfo().getReceiverPhone(), CheckErrorCode.RECEIVER_PHONE_EMPTY);
 
-        OutboundDO outboundDO = outboundDao.queryByReferenceNo(outBound.getOrderNo());
+        String clientCode = SessionLocal.getPrincipal().getClientCode();
+        OutboundDO outboundDO = outboundDao.queryByReferenceNo(clientCode, outBound.getOrderNo());
         if (outboundDO != null) return;
 
         //构建flux请求对象
@@ -117,7 +120,7 @@ public class OutboundServiceImpl implements OutboundService {
         //记录出库单信息
         recordOutbound(outBound);
         //FBK扣减库存
-        basicDataService.successStorage(outBound.getOrderNo(), outBound.getCustomerId(), outBound.getWarehouseId());
+        basicDataService.successStorage(outBound.getOrderNo());
     }
 
     @Override
@@ -126,11 +129,13 @@ public class OutboundServiceImpl implements OutboundService {
 
         AssertUtil.isNotBlank(orderNo, CheckErrorCode.CLIENT_ORDER_EMPTY);
 
-        OutboundDO outboundDO = outboundDao.queryByReferenceNo(orderNo);
+        String clientCode = SessionLocal.getPrincipal().getClientCode();
+        OutboundDO outboundDO = outboundDao.queryByReferenceNo(clientCode, orderNo);
         if (outboundDO == null) throw new WMSException(BizErrorCode.NOT_EXIST, orderNo);
         if (outboundDO.getStatus() == OutBoundStatusEnum.cancelled.getCode()) return;
 
         OutboundDO update = new OutboundDO();
+        update.setClientCode(clientCode);
         update.setReferenceNo(orderNo);
         update.setStatus(OutBoundStatusEnum.cancelled.getCode());
         outboundDao.update(update);
@@ -167,7 +172,7 @@ public class OutboundServiceImpl implements OutboundService {
                 throw new WMSException(SysErrorCode.SYSTEM_ERROR);
             }
             for (OutboundItemDO item : itemList) {
-                String key = RedisUtil.getSkuKey(outboundDO.getCustomerId(), outboundDO.getWarehouseId(), item.getSku());
+                String key = RedisUtil.getSkuKey(clientCode, item.getSku());
                 String sto = jedis.hget(key, RedisUtil.STORAGE);
                 int stoInt = sto == null ? 0 : Integer.parseInt(sto) + item.getQty();
                 jedis.hset(key, RedisUtil.STORAGE, "" + stoInt);
@@ -178,10 +183,15 @@ public class OutboundServiceImpl implements OutboundService {
     @Override
     public void confirmSO(List<String> list, boolean result) {
 
-        MerchantConfig merchantConfig = JSON.parseObject(RedisUtil.get("System_merchant_config" + "1"),
-                MerchantConfig.class);
-        InterfaceConfig interfaceConfig = JSON.parseObject(
-                RedisUtil.hget("System_interface_config" + "1", "wms_outbound_notify"), InterfaceConfig.class);
+        if (list == null || list.size() == 0) return;
+
+        String clientCode = SessionLocal.getPrincipal().getClientCode();
+        List<OutboundDO> outList = outboundDao.queryByList(clientCode, list);
+        if (outList == null || outList.size() == 0) {
+            throw new WMSException(BizErrorCode.OUTBOUND_NOT_EXIST);
+        }
+        ClientConfig clientConfig = SystemConfig.getClientConfig().get(clientCode);
+        InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("wms_outbound_notify");
 
         Map<String, Object> map = new HashMap<>();
         map.put("list", list);
@@ -193,8 +203,8 @@ public class OutboundServiceImpl implements OutboundService {
         String data = JSON.toJSONString(map);
 
         Map<String, String> params = new HashMap<>();
-        params.put("method", interfaceConfig.getOp());
-        params.put("sign", createNOSSign(data, merchantConfig.getKey()));
+        params.put("method", interfaceConfig.getMethod());
+        params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
         params.put("data", data);
         params.put("app_key", "wms");
         params.put("request_id", UUID.randomUUID().toString());
@@ -285,8 +295,10 @@ public class OutboundServiceImpl implements OutboundService {
 
     @Transactional
     private void recordOutbound(OutboundHeader outBound) {
+
         //保存
         OutboundDO insert = new OutboundDO();
+        insert.setClientCode(SessionLocal.getPrincipal().getClientCode());
         insert.setReferenceNo(outBound.getOrderNo());
         insert.setOrderType(outBound.getOrderType());
         insert.setCustomerId(outBound.getCustomerId());

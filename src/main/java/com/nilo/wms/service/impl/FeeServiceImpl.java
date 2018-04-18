@@ -30,10 +30,6 @@ import java.util.*;
 public class FeeServiceImpl implements FeeService {
 
     private static final Logger logger = LoggerFactory.getLogger(FeeService.class);
-    public static String inbound_fee_prefix = "inbound.fee.";
-    public static String order_handler_fee_prefix = "order.handler.fee.";
-    public static String order_return_fee_prefix = "order.return.fee.";
-    public static String return_merchant_fee_prefix = "return.merchant.fee.";
     @Autowired
     private WMSFeeDao feeDao;
     @Autowired
@@ -41,7 +37,7 @@ public class FeeServiceImpl implements FeeService {
     private AbstractMQProducer notifyDataBusProducer;
 
     @Override
-    public List<Fee> queryInboundOrder(String date) {
+    public List<Fee> queryInboundOrder(String clientCode, String date) {
         List<Fee> resultList = new ArrayList<>();
 
         List<OrderHandler> list = feeDao.queryInBoundOrderHandler(date);
@@ -56,9 +52,9 @@ public class FeeServiceImpl implements FeeService {
             f.setSku(o.getSku());
             f.setQty(o.getQty());
 
-            f.setFactor2(getFactor2(inbound_fee_prefix, o));
+            f.setFactor2(getFactor2(clientCode, "inbound", o));
 
-            f.setReceivable_money(getMoney(inbound_fee_prefix, o.getCategories(), o.getQty(), false));
+            f.setReceivable_money(getMoney(clientCode, "inbound", o.getCategories(), o.getQty(), false));
 
             resultList.add(f);
         }
@@ -66,7 +62,7 @@ public class FeeServiceImpl implements FeeService {
     }
 
     @Override
-    public List<Fee> queryOrderHandlerFee(String date) {
+    public List<Fee> queryOrderHandlerFee(String clientCode, String date) {
         List<Fee> resultList = new ArrayList<>();
         List<OrderHandler> list = feeDao.queryOrderHandler(date);
 
@@ -82,13 +78,13 @@ public class FeeServiceImpl implements FeeService {
             f.setSku(o.getSku());
             f.setQty(o.getQty());
 
-            f.setFactor2(getFactor2(order_handler_fee_prefix, o));
+            f.setFactor2(getFactor2(clientCode, "handle", o));
             f.setClass_id(o.getCategories());
 
             if (StringUtil.isNotEmpty(categoriesMap.get(o.getOrderNo() + o.getCategories() + o.getMerchantId()))) {
-                f.setReceivable_money(getMoney(order_handler_fee_prefix, o.getCategories(), o.getQty(), true));
+                f.setReceivable_money(getMoney(clientCode, "handle", o.getCategories(), o.getQty(), true));
             } else {
-                f.setReceivable_money(getMoney(order_handler_fee_prefix, o.getCategories(), o.getQty(), false));
+                f.setReceivable_money(getMoney(clientCode, "handle", o.getCategories(), o.getQty(), false));
             }
 
             //记录已计算该类别
@@ -99,7 +95,7 @@ public class FeeServiceImpl implements FeeService {
     }
 
     @Override
-    public List<Fee> queryOrderReturnHandlerFee(String date) {
+    public List<Fee> queryOrderReturnHandlerFee(String clientCode, String date) {
         List<Fee> resultList = new ArrayList<>();
 
         List<OrderHandler> list = feeDao.queryOrderReturn(date);
@@ -115,13 +111,13 @@ public class FeeServiceImpl implements FeeService {
             f.setSku(o.getSku());
             f.setQty(o.getQty());
 
-            f.setFactor2(getFactor2(order_return_fee_prefix, o));
+            f.setFactor2(getFactor2(clientCode, "return", o));
             f.setClass_id(o.getCategories());
 
             if (StringUtil.isNotEmpty(categoriesMap.get(o.getOrderNo() + o.getCategories() + o.getMerchantId()))) {
-                f.setReceivable_money(getMoney(order_return_fee_prefix, o.getCategories(), o.getQty(), true));
+                f.setReceivable_money(getMoney(clientCode, "return", o.getCategories(), o.getQty(), true));
             } else {
-                f.setReceivable_money(getMoney(order_return_fee_prefix, o.getCategories(), o.getQty(), false));
+                f.setReceivable_money(getMoney(clientCode, "return", o.getCategories(), o.getQty(), false));
             }
 
             //记录已计算该类别
@@ -132,7 +128,7 @@ public class FeeServiceImpl implements FeeService {
     }
 
     @Override
-    public List<Fee> queryReturnMerchantHandlerFee(String date) {
+    public List<Fee> queryReturnMerchantHandlerFee(String clientCode, String date) {
         List<Fee> resultList = new ArrayList<>();
 
         List<OrderHandler> list = feeDao.queryReturnMerchant(date);
@@ -146,10 +142,10 @@ public class FeeServiceImpl implements FeeService {
             f.setQty(o.getQty());
             f.setSku(o.getSku());
 
-            f.setFactor2(getFactor2(return_merchant_fee_prefix, o));
+            f.setFactor2(getFactor2(clientCode, "return_merchant", o));
             f.setClass_id(o.getCategories());
 
-            f.setReceivable_money(getMoney(return_merchant_fee_prefix, o.getCategories(), o.getQty(), false));
+            f.setReceivable_money(getMoney(clientCode, "return_merchant", o.getCategories(), o.getQty(), false));
 
             resultList.add(f);
         }
@@ -157,13 +153,13 @@ public class FeeServiceImpl implements FeeService {
     }
 
     @Override
-    public void syncToNOS(List<Fee> list, String date, String moneyType) {
+    public void syncToNOS(List<Fee> list, String clientCode, String date, String moneyType) {
 
         if (list == null || list.size() == 0) return;
 
         Jedis jedis = RedisUtil.getResource();
-        MerchantConfig merchantConfig = JSON.parseObject(jedis.get("System_merchant_config" + "1"),
-                MerchantConfig.class);
+        ClientConfig clientConfig = JSON.parseObject(jedis.get("System_merchant_config" + "1"),
+                ClientConfig.class);
         InterfaceConfig interfaceConfig = JSON.parseObject(
                 jedis.hget("System_interface_config" + "1", "wms_fee"), InterfaceConfig.class);
         RedisUtil.returnResource(jedis);
@@ -183,8 +179,8 @@ public class FeeServiceImpl implements FeeService {
             NotifyRequest notify = new NotifyRequest();
 
             Map<String, String> params = new HashMap<>();
-            params.put("method", interfaceConfig.getOp());
-            params.put("sign", createNOSSign(data, merchantConfig.getKey()));
+            params.put("method", interfaceConfig.getMethod());
+            params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
             params.put("data", data);
             params.put("app_key", "wms");
             notify.setParam(params);
@@ -220,10 +216,10 @@ public class FeeServiceImpl implements FeeService {
      * @param isNext     是否是续件
      * @return
      */
-    private double getMoney(String prefix, String categories, double storage, boolean isNext) {
-        FeePrice fee = SystemConfig.getFeeConfig().get(prefix + categories);
+    private double getMoney(String clientCode, String prefix, String categories, double storage, boolean isNext) {
+        FeePrice fee = SystemConfig.getFeeConfig().get(clientCode).get(prefix + categories);
         if (fee == null) {
-            fee = SystemConfig.getFeeConfig().get(prefix + "other");
+            fee = SystemConfig.getFeeConfig().get(clientCode).get(prefix + "other");
         }
         BigDecimal price = null;
 
@@ -238,11 +234,11 @@ public class FeeServiceImpl implements FeeService {
         return price.doubleValue();
     }
 
-    private String getFactor2(String prefix, OrderHandler h) {
-        FeePrice fee = SystemConfig.getFeeConfig().get(prefix + h.getCategories());
+    private String getFactor2(String clientCode, String prefix, OrderHandler h) {
+        FeePrice fee = SystemConfig.getFeeConfig().get(clientCode).get(prefix + h.getCategories());
         if (fee == null) {
             h.setCategories("9999");
-            fee = SystemConfig.getFeeConfig().get(prefix + "other");
+            fee = SystemConfig.getFeeConfig().get(clientCode).get(prefix + "other");
         }
 
         return fee.getNextPrice() == null ? "" + fee.getFirstPrice().doubleValue() : "" + fee.getFirstPrice().doubleValue() + "/" + fee.getNextPrice();

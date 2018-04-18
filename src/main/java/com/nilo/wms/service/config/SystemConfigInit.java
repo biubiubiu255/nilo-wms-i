@@ -16,6 +16,9 @@ public class SystemConfigInit implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
+        // 加载客户配置
+        systemService.loadingAndRefreshClientConfig();
+
         // 加载 仓库计费配置文件
         systemService.loadingAndRefreshWMSFeeConfig();
 

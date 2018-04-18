@@ -19,12 +19,12 @@ public interface BasicDataService {
 
     void lockStorage(OutboundHeader header);
 
-    void unLockStorage(String orderNo, String customerId, String warehouseId);
+    void unLockStorage(String orderNo);
 
-    void successStorage(String orderNo, String customerId, String warehouseId);
+    void successStorage(String orderNo);
 
-    void syncStock(String customerId, String warehouseId);
+    void syncStock(String clientCode);
 
-    void storageChangeNotify(String customerId, String warehouseId, List<StorageInfo> list);
+    void storageChangeNotify(List<StorageInfo> list);
 
 }

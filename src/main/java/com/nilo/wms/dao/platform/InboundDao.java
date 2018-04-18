@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InboundDao extends BaseDao<Long, InboundDO> {
 
-    InboundDO queryByAsnNo(String asnNo);
+    InboundDO queryByAsnNo(String clientCode, String asnNo);
 }

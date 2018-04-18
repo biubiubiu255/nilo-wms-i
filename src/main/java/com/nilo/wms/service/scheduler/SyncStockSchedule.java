@@ -33,7 +33,7 @@ public class SyncStockSchedule {
     public void execute() {
         try {
             logger.info("====start SyncStockSchedule ====");
-            basicDataService.syncStock("KILIMALL", "KE01");
+            basicDataService.syncStock("kilimall");
             logger.info(" ======= end SyncStockSchedule =======");
         } catch (Exception ex) {
             logger.error("SyncStockSchedule failed. {}", ex.getMessage(), ex);

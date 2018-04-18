@@ -56,28 +56,4 @@ public class BaseController {
         return "<xmldata><Response><return><returnCode>0000</returnCode><returnDesc>ok</returnDesc><returnFlag>1</returnFlag></return></Response></xmldata>";
     }
 
-    public static void main(String[] args) {
-        OutboundHeader header = new OutboundHeader();
-        header.setOrderNo("1000000011");
-        header.setCustomerId("kilimall");
-        header.setWarehouseId("ke01");
-
-        OutboundItem item1 = new OutboundItem();
-        item1.setSku("1001");
-        item1.setQty(2);
-
-        OutboundItem item2 = new OutboundItem();
-        item2.setSku("1002");
-        item2.setQty(3);
-        List<OutboundItem> list = new ArrayList<>();
-        list.add(item1);
-        list.add(item2);
-
-
-
-        header.setItemList(list);
-
-        System.out.println(JSON.toJSONString(header));
-
-    }
 }

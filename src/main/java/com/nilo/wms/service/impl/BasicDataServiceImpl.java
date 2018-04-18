@@ -3,6 +3,7 @@ package com.nilo.wms.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.nilo.mq.model.NotifyRequest;
 import com.nilo.mq.producer.AbstractMQProducer;
+import com.nilo.wms.common.SessionLocal;
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.CheckErrorCode;
 import com.nilo.wms.common.exception.SysErrorCode;
@@ -16,12 +17,14 @@ import com.nilo.wms.dto.*;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.RedisUtil;
+import com.nilo.wms.service.config.SystemConfig;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Client;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
@@ -111,12 +114,10 @@ public class BasicDataServiceImpl implements BasicDataService {
         AssertUtil.isNotBlank(param.getWarehouseId(), CheckErrorCode.WAREHOUSE_EMPTY);
         AssertUtil.isNotNull(param.getSku(), CheckErrorCode.SKU_EMPTY);
 
+        String clientCode = SessionLocal.getPrincipal().getClientCode();
         List<StorageInfo> list = storageDao.queryBy(param);
-        String customerId = param.getCustomerId();
-        String warehouseId = param.getWarehouseId();
-
         for (StorageInfo s : list) {
-            String key = RedisUtil.getSkuKey(customerId, warehouseId, s.getSku());
+            String key = RedisUtil.getSkuKey(clientCode, s.getSku());
             String lockSto = RedisUtil.hget(key, RedisUtil.LOCK_STORAGE);
             int lockStoInt = ((lockSto == null ? 0 : Integer.parseInt(lockSto)));
             s.setLockStorage(lockStoInt);
@@ -137,12 +138,10 @@ public class BasicDataServiceImpl implements BasicDataService {
             AssertUtil.isNotBlank(item.getSku(), CheckErrorCode.SKU_EMPTY);
             AssertUtil.isNotNull(item.getQty(), CheckErrorCode.QTY_EMPTY);
         }
-
-        String customerId = header.getCustomerId().toLowerCase();
-        String warehouseId = header.getWarehouseId().toLowerCase();
+        String clientCode = SessionLocal.getPrincipal().getClientCode();
 
         // 判断订单号是否已锁定
-        String orderNoKey = RedisUtil.getLockOrderKey(customerId, warehouseId, header.getOrderNo());
+        String orderNoKey = RedisUtil.getLockOrderKey(clientCode, header.getOrderNo());
         boolean keyExist = RedisUtil.hasKey(orderNoKey);
         if (keyExist) {
             return;
@@ -162,7 +161,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         for (OutboundItem item : header.getItemList()) {
             String sku = item.getSku();
             int qty = item.getQty();
-            String key = RedisUtil.getSkuKey(customerId, warehouseId, sku);
+            String key = RedisUtil.getSkuKey(clientCode, sku);
             String lockSto = jedis.hget(key, RedisUtil.LOCK_STORAGE);
             int lockStoInt = ((lockSto == null ? 0 : Integer.parseInt(lockSto))) + qty;
             String sto = jedis.hget(key, RedisUtil.STORAGE);
@@ -201,18 +200,15 @@ public class BasicDataServiceImpl implements BasicDataService {
 
 
     @Override
-    public void unLockStorage(String orderNo, String customerId, String warehouseId) {
+    public void unLockStorage(String orderNo) {
 
         //check
         AssertUtil.isNotBlank(orderNo, CheckErrorCode.CLIENT_ORDER_EMPTY);
-        AssertUtil.isNotBlank(customerId, CheckErrorCode.CUSTOMER_EMPTY);
-        AssertUtil.isNotBlank(warehouseId, CheckErrorCode.WAREHOUSE_EMPTY);
 
-        customerId = customerId.toLowerCase();
-        warehouseId = warehouseId.toLowerCase();
+        String clientCode = SessionLocal.getPrincipal().getClientCode();
 
         // 判断订单号是否已锁定
-        String orderNoKey = RedisUtil.getLockOrderKey(customerId, warehouseId, orderNo);
+        String orderNoKey = RedisUtil.getLockOrderKey(clientCode, orderNo);
         boolean keyExist = RedisUtil.hasKey(orderNoKey);
         if (!keyExist) {
             return;
@@ -228,7 +224,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         Set<String> skuList = jedis.hkeys(orderNoKey);
         for (String sku : skuList) {
             int qty = Integer.parseInt(jedis.hget(orderNoKey, sku));
-            String key = RedisUtil.getSkuKey(customerId, warehouseId, sku);
+            String key = RedisUtil.getSkuKey(clientCode, sku);
             String lockSto = jedis.hget(key, RedisUtil.LOCK_STORAGE);
             int afterLockStorage = Integer.parseInt(lockSto) - qty;
             jedis.hset(key, RedisUtil.LOCK_STORAGE, "" + afterLockStorage);
@@ -241,17 +237,14 @@ public class BasicDataServiceImpl implements BasicDataService {
     }
 
     @Override
-    public void successStorage(String orderNo, String customerId, String warehouseId) {
+    public void successStorage(String orderNo) {
         //check
         AssertUtil.isNotBlank(orderNo, CheckErrorCode.CLIENT_ORDER_EMPTY);
-        AssertUtil.isNotBlank(customerId, CheckErrorCode.CUSTOMER_EMPTY);
-        AssertUtil.isNotBlank(warehouseId, CheckErrorCode.WAREHOUSE_EMPTY);
 
-        customerId = customerId.toLowerCase();
-        warehouseId = warehouseId.toLowerCase();
+        String clientCode = SessionLocal.getPrincipal().getClientCode();
 
         // 判断订单号是否已锁定
-        String orderNoKey = RedisUtil.getLockOrderKey(customerId, warehouseId, orderNo);
+        String orderNoKey = RedisUtil.getLockOrderKey(clientCode, orderNo);
         boolean keyExist = RedisUtil.hasKey(orderNoKey);
         if (!keyExist) {
             return;
@@ -269,13 +262,13 @@ public class BasicDataServiceImpl implements BasicDataService {
             int qty = Integer.parseInt(jedis.hget(orderNoKey, sku));
 
             //扣减锁定库存
-            String key = RedisUtil.getSkuKey(customerId, warehouseId, sku);
+            String key = RedisUtil.getSkuKey(clientCode, sku);
             String lockSto = jedis.hget(key, RedisUtil.LOCK_STORAGE);
             int afterLockStorage = Integer.parseInt(lockSto) - qty;
             jedis.hset(key, RedisUtil.LOCK_STORAGE, "" + afterLockStorage);
 
             //扣减库存
-            String key2 = RedisUtil.getSkuKey(customerId, warehouseId, sku);
+            String key2 = RedisUtil.getSkuKey(clientCode, sku);
             String sto = jedis.hget(key2, RedisUtil.STORAGE);
             int stoInt = Integer.parseInt(sto) - qty;
             jedis.hset(key, RedisUtil.STORAGE, "" + stoInt);
@@ -288,17 +281,16 @@ public class BasicDataServiceImpl implements BasicDataService {
     }
 
     @Override
-    public void syncStock(String customerId, String warehouseId) {
+    public void syncStock(String clientCode) {
+
+        ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
+
         StorageParam param = new StorageParam();
-        param.setCustomerId(customerId);
-        param.setWarehouseId(warehouseId);
+        param.setWarehouseId(config.getWarehouseId());
+        param.setCustomerId(config.getCustomerId());
         List<StorageInfo> list = queryStorage(param);
         if (list == null || list.size() == 0) return;
-
-        customerId = customerId.toLowerCase();
-        warehouseId = warehouseId.toLowerCase();
-        Set<String> cacheSkuList = RedisUtil.keys(customerId + "_" + warehouseId + "_sku_*");
-
+        Set<String> cacheSkuList = RedisUtil.keys(RedisUtil.getSkuKey(clientCode, "*"));
 
         //获取redis锁
         Jedis jedis = RedisUtil.getResource();
@@ -309,7 +301,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         //构建差异数据
         List<StorageInfo> diffList = new ArrayList<>();
         for (StorageInfo s : list) {
-            String key = RedisUtil.getSkuKey(customerId, warehouseId, s.getSku());
+            String key = RedisUtil.getSkuKey(clientCode, s.getSku());
             String storage = RedisUtil.hget(key, RedisUtil.STORAGE);
             if (!StringUtil.equals(storage, "" + s.getStorage())) {
                 String lockStorage = RedisUtil.hget(key, RedisUtil.LOCK_STORAGE);
@@ -327,13 +319,13 @@ public class BasicDataServiceImpl implements BasicDataService {
         for (String s : cacheSkuList) {
             String[] temp = s.split("_sku_");
             if (!wmsSkuList.containsKey(temp[1])) {
-                String key = RedisUtil.getSkuKey(customerId, warehouseId, temp[1]);
+                String key = RedisUtil.getSkuKey(clientCode, temp[1]);
                 jedis.del(key);
             }
         }
 
         for (StorageInfo s : diffList) {
-            String key = RedisUtil.getSkuKey(customerId, warehouseId, s.getSku());
+            String key = RedisUtil.getSkuKey(clientCode, s.getSku());
             RedisUtil.hset(key, RedisUtil.STORAGE, "" + s.getStorage());
             if (s.getLockStorage() != null) {
                 RedisUtil.hset(key, RedisUtil.LOCK_STORAGE, "" + s.getLockStorage());
@@ -341,29 +333,25 @@ public class BasicDataServiceImpl implements BasicDataService {
         }
 
         RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
-
         //通知上游系统 库存变更
-        storageChangeNotify(customerId, warehouseId, diffList);
+        storageChangeNotify(diffList);
     }
 
     @Override
-    public void storageChangeNotify(String customerId, String warehouseId, List<StorageInfo> list) {
+    public void storageChangeNotify(List<StorageInfo> list) {
 
         if (list == null || list.size() == 0) return;
 
-        MerchantConfig merchantConfig = JSON.parseObject(RedisUtil.get("System_merchant_config" + "1"),
-                MerchantConfig.class);
-        InterfaceConfig interfaceConfig = JSON.parseObject(
-                RedisUtil.hget("System_interface_config" + "1", "storage_change_notify"), InterfaceConfig.class);
+        String clientCode = SessionLocal.getPrincipal().getClientCode();
+        ClientConfig clientConfig = SystemConfig.getClientConfig().get(clientCode);
+        InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("storage_change_notify");
 
         Map<String, Object> map = new HashMap<>();
         map.put("list", list);
-
         String data = JSON.toJSONString(map);
-
         Map<String, String> params = new HashMap<>();
-        params.put("method", interfaceConfig.getOp());
-        params.put("sign", createNOSSign(data, merchantConfig.getKey()));
+        params.put("method", interfaceConfig.getMethod());
+        params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
         params.put("data", data);
         params.put("app_key", "wms");
         params.put("request_id", UUID.randomUUID().toString());

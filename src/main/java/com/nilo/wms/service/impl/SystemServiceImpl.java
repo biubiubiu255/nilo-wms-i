@@ -1,20 +1,21 @@
 package com.nilo.wms.service.impl;
 
-import com.nilo.wms.dto.FeePrice;
+import com.nilo.wms.dao.platform.ClientConfigDao;
+import com.nilo.wms.dao.platform.FeeConfigDao;
+import com.nilo.wms.dao.platform.InterfaceConfigDao;
+import com.nilo.wms.dto.*;
 import com.nilo.wms.service.SystemService;
 import com.nilo.wms.service.config.SystemConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -27,9 +28,34 @@ public class SystemServiceImpl implements SystemService {
 
     private static final String fee_config_name = "wms_fee_config.properties";
 
-    private final static int WORKING = 1;
-    private final static int SUSPENDING = 0;
-    private AtomicInteger customerCaching = new AtomicInteger(WORKING);
+    @Autowired
+    private ClientConfigDao clientConfigDao;
+    @Autowired
+    private InterfaceConfigDao interfaceConfigDao;
+    @Autowired
+    private FeeConfigDao feeConfigDao;
+
+    @Override
+    public void loadingAndRefreshClientConfig() {
+
+        List<ClientConfig> list = clientConfigDao.queryAll();
+
+        Map<String, ClientConfig> clientConfigMap = new HashMap<>();
+
+        Map<String, Map<String, InterfaceConfig>> interfaceConfigMap = new HashMap<>();
+
+        for (ClientConfig c : list) {
+            clientConfigMap.put(c.getClientCode(), c);
+            List<InterfaceConfig> interfaceConfigList = interfaceConfigDao.queryByCode(c.getClientCode());
+            Map<String, InterfaceConfig> map = new HashMap<>();
+            for (InterfaceConfig i : interfaceConfigList) {
+                map.put(i.getBizType(), i);
+            }
+            interfaceConfigMap.put(c.getClientCode(), map);
+        }
+        SystemConfig.setClientConfig(clientConfigMap);
+        SystemConfig.setInterfaceConfig(interfaceConfigMap);
+    }
 
     /**
      * 刷新 wms 费用配置
@@ -37,38 +63,19 @@ public class SystemServiceImpl implements SystemService {
     @Override
     public void loadingAndRefreshWMSFeeConfig() {
 
-        File file = new File(System.getProperty("user.home") + File.separator + fee_config_name);
-        if (!file.exists()) {
-            logger.warn("Config file is not exist at path of {}", file.getName());
-            throw new RuntimeException("File is not exist");
-        }
-        Properties properties = new Properties();
-        try {
-            properties.load(new FileInputStream(file));
-        } catch (IOException e) {
-            //ignore
-        }
+        Map<String, Map<String, FeePrice>> feeConfig = new HashMap<>();
 
-        Enumeration enum1 = properties.propertyNames();
-        Map<String, FeePrice> feeConfig = new HashMap<>();
-        while (enum1.hasMoreElements()) {
-            String strKey = (String) enum1.nextElement();
-            String strValue = properties.getProperty(strKey);
-            FeePrice fee = new FeePrice();
-            if (strValue.indexOf(",") != -1) {
-                String[] str = strValue.split(",");
-                BigDecimal first = BigDecimal.valueOf(Double.parseDouble(str[0]));
-                BigDecimal next = BigDecimal.valueOf(Double.parseDouble(str[1]));
-
-                fee.setFirstPrice(first);
-                fee.setNextPrice(next);
-            } else {
-                BigDecimal first = BigDecimal.valueOf(Double.parseDouble(strValue));
-
-                fee.setFirstPrice(first);
+        for (Map.Entry<String, ClientConfig> entry : SystemConfig.getClientConfig().entrySet()) {
+            List<FeeConfig> list = feeConfigDao.queryByClientCode(entry.getValue().getClientCode());
+            Map<String, FeePrice> feeConf = new HashMap<>();
+            for (FeeConfig c : list) {
+                FeePrice fee = new FeePrice();
+                fee.setFirstPrice(new BigDecimal(c.getFirstPrice()));
+                fee.setNextPrice(new BigDecimal(c.getSecondPrice()));
+                feeConf.put(c.getFeeType() + c.getClassType(), fee);
             }
-            feeConfig.put(strKey, fee);
+
+            feeConfig.put(entry.getKey(), feeConf);
         }
-        SystemConfig.setFeeConfig(feeConfig);
     }
 }

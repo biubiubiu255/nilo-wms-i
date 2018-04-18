@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nilo.wms.dao.platform.ClientConfigDao">
+
+    <!-- 实体bean与数据字段对应关系 -->
+    <resultMap id="interfaceConfig" type="com.nilo.wms.dto.InterfaceConfig">
+        <result property="clientCode" column="client_code" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="method" column="method" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="bizType" column="biz_type" javaType="java.lang.String"
+                 jdbcType="VARCHAR"/>
+        <result property="url" column="url" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="requestMethod" column="request_method" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="status" column="status" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+        <result property="createdTime" column="created_time" javaType="java.lang.Long"
+                jdbcType="INTEGER"/>
+        <result property="updatedTime" column="updated_time" javaType="java.lang.Long"
+                jdbcType="INTEGER"/>
+        <result property="version" column="version" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id ,client_code,method,biz_type,url,request_method,status,created_time , updated_time ,version
+    </sql>
+    <!-- 插入语句 -->
+    <insert id="insert" parameterType="com.nilo.wms.dto.InterfaceConfig" statementType="PREPARED"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO t_config_interface
+        ( client_code,method,biz_type,url,request_method,status,created_time , updated_time ,version)
+        VALUES
+        (#{clientCode},#{method}, #{bizType},#{url},#{requestMethod},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+    </insert>
+
+    <select id="queryByCode" resultMap="clientConfig" statementType="PREPARED">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_config_interface where client_code=#{clientCode}
+    </select>
+
+</mapper>

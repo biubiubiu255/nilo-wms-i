@@ -7,10 +7,10 @@ import com.nilo.wms.common.exception.CheckErrorCode;
 import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.StringUtil;
-import com.nilo.wms.dto.MerchantConfig;
+import com.nilo.wms.dto.ClientConfig;
 import com.nilo.wms.service.RedisUtil;
+import com.nilo.wms.service.config.SystemConfig;
 import org.apache.commons.codec.digest.DigestUtils;
-import redis.clients.jedis.Jedis;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -101,12 +101,10 @@ public class RequestParam {
             throw new WMSException(CheckErrorCode.DECODE_ERROR);
         }
 
+        ClientConfig config = SystemConfig.getClientConfig().get(app_key);
         //校验sign
-        MerchantConfig config = JSON.parseObject(RedisUtil.get("System_merchant_config" + app_key),
-                MerchantConfig.class);
-
         if (config == null) throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
-        boolean check = checkSign(config.getKey(), data, sign);
+        boolean check = checkSign(config.getWmsKey(), data, sign);
         AssertUtil.isTrue(check, BizErrorCode.SIGN_ERROR);
 
     }

@@ -21,11 +21,20 @@
         <result property="weight" column="grossweight" javaType="java.lang.Double"
                 jdbcType="VARCHAR"/>
     </resultMap>
+
+
     <select id="queryByReferenceNo" resultMap="orderHeader">
             select h.orderno,h.soreference1,h.sostatus,s.grossweight
               from doc_order_header h left join DOC_Order_Packing_Summary s
                on h.orderno = s.orderno
                where h.soreference1 = #{referenceNo}
+    </select>
+
+    <select id="queryByReferenceNo" resultMap="orderHeader">
+        select h.orderno,h.soreference1,h.sostatus,s.grossweight
+        from doc_order_header h left join DOC_Order_Packing_Summary s
+        on h.orderno = s.orderno
+        where h.soreference1 = #{referenceNo}
     </select>
 
     <select id="queryWeight" resultMap="weight">

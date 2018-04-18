@@ -46,9 +46,6 @@ public class BasicDataServiceTest {
 
         System.out.println(JSON.toJSONString(header));
 
-        RedisUtil.hset(RedisUtil.getSkuKey(header.getCustomerId(), header.getWarehouseId(), "1001"), RedisUtil.STORAGE, "10");
-        RedisUtil.hset(RedisUtil.getSkuKey(header.getCustomerId(), header.getWarehouseId(), "1002"), RedisUtil.STORAGE, "10");
-
         basicDataService.lockStorage(header);
 
     }
@@ -56,10 +53,6 @@ public class BasicDataServiceTest {
     /*@Test*/
     public void multiLockStorage() {
 
-        RedisUtil.hset(RedisUtil.getSkuKey("kilimall", "ke01", "1001"), RedisUtil.STORAGE, "4");
-        RedisUtil.hset(RedisUtil.getSkuKey("kilimall", "ke01", "1002"), RedisUtil.STORAGE, "6");
-        RedisUtil.hset(RedisUtil.getSkuKey("kilimall", "ke01", "1001"), RedisUtil.LOCK_STORAGE, "0");
-        RedisUtil.hset(RedisUtil.getSkuKey("kilimall", "ke01", "1002"), RedisUtil.LOCK_STORAGE, "0");
         Vector<Thread> threads = new Vector<Thread>();
 
         for (int i = 0; i < 10; i++) {
@@ -107,10 +100,6 @@ public class BasicDataServiceTest {
                 e.printStackTrace();
             }
         }
-        System.out.println(RedisUtil.hget(RedisUtil.getSkuKey("kilimall", "ke01", "1001"), RedisUtil.STORAGE));
-        System.out.println(RedisUtil.hget(RedisUtil.getSkuKey("kilimall", "ke01", "1002"), RedisUtil.STORAGE));
-        System.out.println(RedisUtil.hget(RedisUtil.getSkuKey("kilimall", "ke01", "1001"), RedisUtil.LOCK_STORAGE));
-        System.out.println(RedisUtil.hget(RedisUtil.getSkuKey("kilimall", "ke01", "1002"), RedisUtil.LOCK_STORAGE));
 
     }
 
@@ -118,7 +107,6 @@ public class BasicDataServiceTest {
     public void syncStock() {
         String customerId = "KILIMALL";
         String warehouseId = "KE01";
-        basicDataService.syncStock(customerId, warehouseId);
     }
 
 }

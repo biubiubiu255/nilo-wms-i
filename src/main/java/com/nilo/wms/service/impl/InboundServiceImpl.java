@@ -3,8 +3,8 @@ package com.nilo.wms.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.nilo.mq.model.NotifyRequest;
 import com.nilo.mq.producer.AbstractMQProducer;
+import com.nilo.wms.common.SessionLocal;
 import com.nilo.wms.common.enums.InboundStatusEnum;
-import com.nilo.wms.common.enums.OutBoundStatusEnum;
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.CheckErrorCode;
 import com.nilo.wms.common.exception.SysErrorCode;
@@ -19,7 +19,7 @@ import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.InboundService;
 import com.nilo.wms.service.RedisUtil;
-import org.apache.commons.beanutils.BeanUtils;
+import com.nilo.wms.service.config.SystemConfig;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -65,9 +64,11 @@ public class InboundServiceImpl implements InboundService {
         AssertUtil.isNotNull(inbound.getItemList(), CheckErrorCode.ITEM_EMPTY);
 
         //保存
-        InboundDO inboundDO = inboundDao.queryByAsnNo(inbound.getAsnNo());
+        String clientCode = SessionLocal.getPrincipal().getClientCode();
+        InboundDO inboundDO = inboundDao.queryByAsnNo(clientCode, inbound.getAsnNo());
         if (inboundDO != null) return;
         InboundDO insert = new InboundDO();
+        insert.setClientCode(clientCode);
         insert.setAsnNo2(inbound.getAsnNo2());
         insert.setAsnNo(inbound.getAsnNo());
         insert.setCustomerId(inbound.getCustomerId());
@@ -115,7 +116,9 @@ public class InboundServiceImpl implements InboundService {
 
         AssertUtil.isNotBlank(asnNo, CheckErrorCode.CLIENT_ORDER_EMPTY);
 
-        InboundDO inboundDO = inboundDao.queryByAsnNo(asnNo);
+        String clientCode = SessionLocal.getPrincipal().getClientCode();
+
+        InboundDO inboundDO = inboundDao.queryByAsnNo(clientCode, asnNo);
         if (inboundDO == null) throw new WMSException(BizErrorCode.NOT_EXIST, asnNo);
         if (inboundDO.getStatus() == InboundStatusEnum.cancelled.getCode()) return;
 
@@ -143,32 +146,29 @@ public class InboundServiceImpl implements InboundService {
         if (list == null || list.size() == 0) {
             return;
         }
-        String customerId = "KILIMALL";
-        String warehouseId = "KE01";
+        String clientCode = SessionLocal.getPrincipal().getClientCode();
+
         //查询是否已经通知过
         Iterator<InboundHeader> iterator = list.iterator();
         while (iterator.hasNext()) {
             InboundHeader in = iterator.next();
-            InboundDO inboundDO = inboundDao.queryByAsnNo(in.getAsnNo());
+            InboundDO inboundDO = inboundDao.queryByAsnNo(clientCode, in.getAsnNo());
             if (inboundDO == null) {
                 iterator.remove();
             } else if (inboundDO.getStatus() == InboundStatusEnum.closed.getCode()) {
                 iterator.remove();
             }
         }
-
-        MerchantConfig merchantConfig = JSON.parseObject(RedisUtil.get("System_merchant_config" + "1"),
-                MerchantConfig.class);
-        InterfaceConfig interfaceConfig = JSON.parseObject(
-                RedisUtil.hget("System_interface_config" + "1", "wms_inbound_notify"), InterfaceConfig.class);
+        ClientConfig clientConfig = SystemConfig.getClientConfig().get(clientCode);
+        InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("wms_inbound_notify");
 
         Map<String, Object> map = new HashMap<>();
         map.put("list", list);
         map.put("status", 99);
         String data = JSON.toJSONString(map);
         Map<String, String> params = new HashMap<>();
-        params.put("method", interfaceConfig.getOp());
-        params.put("sign", createNOSSign(data, merchantConfig.getKey()));
+        params.put("method", interfaceConfig.getMethod());
+        params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
         params.put("data", data);
         params.put("app_key", "wms");
         params.put("request_id", UUID.randomUUID().toString());
@@ -195,7 +195,6 @@ public class InboundServiceImpl implements InboundService {
             }
         }
 
-
         // 查询sku 仓库实际库存
         StorageParam param = new StorageParam();
         param.setSku(skuList);
@@ -208,14 +207,14 @@ public class InboundServiceImpl implements InboundService {
         if (!getLock) throw new WMSException(SysErrorCode.SYSTEM_ERROR);
         //更新库存
         for (StorageInfo i : storageList) {
-            String key = RedisUtil.getSkuKey(customerId, warehouseId, i.getSku());
+            String key = RedisUtil.getSkuKey(clientCode, i.getSku());
             String lockSto = RedisUtil.hget(key, RedisUtil.LOCK_STORAGE);
             i.setLockStorage(lockSto == null ? 0 : Integer.parseInt(lockSto));
             jedis.hset(key, RedisUtil.STORAGE, "" + i.getStorage());
         }
         RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
 
-        basicDataService.storageChangeNotify(customerId, warehouseId, storageList);
+        basicDataService.storageChangeNotify(storageList);
     }
 
     @Override

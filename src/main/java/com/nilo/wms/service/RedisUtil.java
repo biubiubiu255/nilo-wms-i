@@ -203,15 +203,11 @@ public class RedisUtil {
         }
     }
 
-    public static String getSkuKey(String customerId, String warehouseId, String sku) {
-        customerId = customerId.toLowerCase();
-        warehouseId = warehouseId.toLowerCase();
-        return customerId + "_" + warehouseId + "_sku_" + sku;
+    public static String getSkuKey(String clientCode, String sku) {
+        return "wms_" + clientCode + "_sku_" + sku;
     }
 
-    public static String getLockOrderKey(String customerId, String warehouseId, String orderNo) {
-        customerId = customerId.toLowerCase();
-        warehouseId = warehouseId.toLowerCase();
-        return customerId + "_" + warehouseId + "_lock_order_" + orderNo;
+    public static String getLockOrderKey(String clientCode, String orderNo) {
+        return "wms_" + clientCode + "_lock_order_" + orderNo;
     }
 }

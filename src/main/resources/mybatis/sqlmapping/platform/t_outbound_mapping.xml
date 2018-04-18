@@ -7,12 +7,14 @@
     <resultMap id="OutboundDO" type="com.nilo.wms.dto.OutboundDO">
         <result property="id" column="id" javaType="java.lang.Long"
                 jdbcType="INTEGER"/>
+        <result property="clientCode" column="client_code" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
         <result property="customerId" column="customer_id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="warehouseId" column="warehouse_id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="referenceNo" column="reference_no" javaType="java.lang.String"
-                 jdbcType="VARCHAR"/>
+                jdbcType="VARCHAR"/>
         <result property="orderType" column="order_type" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="status" column="status" javaType="java.lang.Integer"
@@ -24,7 +26,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id ,customer_id,warehouse_id,reference_no,order_type,status,created_time , updated_time ,version
+        id ,client_code,customer_id,warehouse_id,reference_no,order_type,status,created_time , updated_time ,version
     </sql>
 
     <!-- 插入语句 -->
@@ -32,14 +34,15 @@
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_outbound
-        ( customer_id,warehouse_id,reference_no,order_type,status,created_time , updated_time ,version)
+        ( client_code,customer_id,warehouse_id,reference_no,order_type,status,created_time , updated_time ,version)
         VALUES
-        (#{customerId},#{warehouseId}, #{referenceNo},#{orderType},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+        (#{clientCode},#{customerId},#{warehouseId}, #{referenceNo},#{orderType},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
     </insert>
     <!-- 动态更新语句 -->
     <update id="update" parameterType="com.nilo.wms.dto.OutboundDO" statementType="PREPARED">
         update t_outbound
-        <trim prefix="set" suffixOverrides="," suffix="where reference_no=#{referenceNo}">
+        <trim prefix="set" suffixOverrides=","
+              suffix="where client_code = #{clientCode} and  reference_no=#{referenceNo}">
             <if test="status != null">
                 status = #{status},
             </if>
@@ -50,7 +53,16 @@
     <select id="queryByReferenceNo" resultMap="OutboundDO" statementType="PREPARED">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM t_outbound where reference_no=#{referenceNo}
+        FROM t_outbound where customer_id = #{customerId} and reference_no=#{referenceNo}
     </select>
 
+    <select id="queryByList" resultMap="OutboundDO" statementType="PREPARED">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_outbound where client_code = #{clientCode} and reference_no in
+        <foreach collection="referenceNoList" item="item" index="index"
+                 open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

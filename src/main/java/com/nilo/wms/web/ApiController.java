@@ -2,6 +2,8 @@ package com.nilo.wms.web;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.nilo.wms.common.Principal;
+import com.nilo.wms.common.SessionLocal;
 import com.nilo.wms.common.enums.MethodEnum;
 import com.nilo.wms.common.exception.CheckErrorCode;
 import com.nilo.wms.common.util.AssertUtil;
@@ -53,6 +55,12 @@ public class ApiController extends BaseController {
         MethodEnum method = param.getMethod();
         String data = param.getData();
 
+        //设置调用api主体信息
+        Principal principal = new Principal();
+        principal.setClientCode(param.getApp_key());
+        principal.setMethod(method.getCode());
+        SessionLocal.setPrincipal(principal);
+
         switch (method) {
             case CREATE_OUTBOUND: {
                 OutboundHeader outBound = JSON.parseObject(data, OutboundHeader.class);
@@ -61,17 +69,11 @@ public class ApiController extends BaseController {
             }
             case CANCEL_OUTBOUND: {
                 String orderNo = JSON.parseObject(data).getString("client_order_sn");
-                String customerId = JSON.parseObject(data).getString("client_id");
-                customerId = "KILIMALL";
-                String warehouseId = JSON.parseObject(data).getString("warehouse_id");
                 outBoundService.cancelOutBound(orderNo);
                 break;
             }
             case CANCEL_INBOUND: {
                 String orderNo = JSON.parseObject(data).getString("client_order_sn");
-                String customerId = JSON.parseObject(data).getString("client_id");
-                customerId = "KILIMALL";
-                String warehouseId = JSON.parseObject(data).getString("warehouse_id");
                 inboundService.cancelInBound(orderNo);
                 break;
             }
@@ -104,29 +106,21 @@ public class ApiController extends BaseController {
             }
             case STORAGE: {
                 StorageParam storageParam = JSON.parseObject(data, StorageParam.class);
-                storageParam.setCustomerId("KILIMALL");
                 List<StorageInfo> list = basicDataService.queryStorage(storageParam);
                 return toJsonTrueData(list);
             }
             case STORAGE_DETAIL: {
                 StorageParam storageParam = JSON.parseObject(data, StorageParam.class);
-                storageParam.setCustomerId("KILIMALL");
                 List<StorageInfo> list = basicDataService.queryStorageDetail(storageParam);
                 return toJsonTrueData(list);
             }
             case OUTBOUND_INFO: {
                 String orderNo = JSON.parseObject(data).getString("client_order_sn");
-                String customerId = JSON.parseObject(data).getString("client_id");
-                customerId = "KILIMALL";
-                String warehouseId = JSON.parseObject(data).getString("warehouse_id");
                 FluxOutbound order = outBoundService.queryFlux(orderNo);
                 return toJsonTrueData(order);
             }
             case INBOUND_INFO: {
                 String orderNo = JSON.parseObject(data).getString("client_order_sn");
-                String customerId = JSON.parseObject(data).getString("client_id");
-                customerId = "KILIMALL";
-                String warehouseId = JSON.parseObject(data).getString("warehouse_id");
                 FluxInbound inbound = inboundService.queryFlux(orderNo);
                 return toJsonTrueData(inbound);
             }
@@ -137,11 +131,7 @@ public class ApiController extends BaseController {
             }
             case UN_LOCK_STORAGE: {
                 String orderNo = JSON.parseObject(data).getString("client_order_sn");
-                String customerId = JSON.parseObject(data).getString("client_id");
-                customerId = "KILIMALL";
-                String warehouseId = JSON.parseObject(data).getString("warehouse_id");
-
-                basicDataService.unLockStorage(orderNo, customerId, warehouseId);
+                basicDataService.unLockStorage(orderNo);
                 break;
             }
             default:

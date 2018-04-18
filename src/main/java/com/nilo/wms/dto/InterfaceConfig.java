@@ -8,48 +8,54 @@ import com.nilo.wms.common.enums.InterfaceStatusEnum;
  */
 public class InterfaceConfig {
 
-    private String merchantId;
+    private String clientCode;
 
     private String method;
 
-    private String op;
+    private String bizType;
 
     private String url;
 
     private String requestMethod;
 
-    private InterfaceStatusEnum status;
+    private Integer status;
 
-    public InterfaceStatusEnum getStatus() {
-        return status;
+    private Long createdTime;
+
+    private Long updatedTime;
+
+    private String version;
+
+    public Long getCreatedTime() {
+        return createdTime;
     }
 
-    public void setStatus(InterfaceStatusEnum status) {
-        this.status = status;
+    public void setCreatedTime(Long createdTime) {
+        this.createdTime = createdTime;
     }
 
-    public String getOp() {
-        return op;
+    public Long getUpdatedTime() {
+        return updatedTime;
     }
 
-    public void setOp(String op) {
-        this.op = op;
+    public void setUpdatedTime(Long updatedTime) {
+        this.updatedTime = updatedTime;
     }
 
-    public String getUrl() {
-        return url;
+    public String getVersion() {
+        return version;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
-    public String getMerchantId() {
-        return merchantId;
+    public String getClientCode() {
+        return clientCode;
     }
 
-    public void setMerchantId(String merchantId) {
-        this.merchantId = merchantId;
+    public void setClientCode(String clientCode) {
+        this.clientCode = clientCode;
     }
 
     public String getMethod() {
@@ -60,6 +66,22 @@ public class InterfaceConfig {
         this.method = method;
     }
 
+    public String getBizType() {
+        return bizType;
+    }
+
+    public void setBizType(String bizType) {
+        this.bizType = bizType;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public String getRequestMethod() {
         return requestMethod;
     }
@@ -68,10 +90,11 @@ public class InterfaceConfig {
         this.requestMethod = requestMethod;
     }
 
-    public Integer getStatusCode() {
-        if (this.status == null) {
-            return null;
-        }
-        return this.status.getCode();
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

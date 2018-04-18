@@ -6,12 +6,13 @@ package com.nilo.wms.common.exception;
  */
 public enum BizErrorCode implements ErrorCode {
 
-    APP_KEY_NOT_EXIST("App key not exist", "200001"),
+    APP_KEY_NOT_EXIST("app_key not exist", "200001"),
     SIGN_ERROR("Sign error", "200002"),
     NOT_EXIST("{0} not exist.", "200003"),
     OUTBOUND_ALREADY_EXIST("OutBound {0} already exist.", "200004"),
     INBOUND_ALREADY_EXIST("ASN {0} already exist.", "200005"),
     STORAGE_NOT_ENOUGH("Sku {0} storage not enough.", "200006"),
+    OUTBOUND_NOT_EXIST("OutBound not exist.", "200007"),
     ORDER_TYPE_NOT_EXIST("order_type not exist.", "100031"),
     ;
 

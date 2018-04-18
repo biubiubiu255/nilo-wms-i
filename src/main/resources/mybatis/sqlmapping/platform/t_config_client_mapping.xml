@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nilo.wms.dao.platform.ClientConfigDao">
+
+    <!-- 实体bean与数据字段对应关系 -->
+    <resultMap id="clientConfig" type="com.nilo.wms.dto.ClientConfig">
+        <result property="clientCode" column="client_code" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="clientName" column="client_name" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="clientKey" column="client_key" javaType="java.lang.String"
+                 jdbcType="VARCHAR"/>
+        <result property="wmsKey" column="wms_key" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+
+        <result property="customerId" column="wms_customer_id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="warehouseId" column="wms_warehouse_id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+
+        <result property="status" column="status" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+        <result property="createdTime" column="created_time" javaType="java.lang.Long"
+                jdbcType="INTEGER"/>
+        <result property="updatedTime" column="updated_time" javaType="java.lang.Long"
+                jdbcType="INTEGER"/>
+        <result property="version" column="version" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id ,client_code,client_name,client_key,wms_key,wms_customer_id,wms_warehouse_id,status,created_time , updated_time ,version
+    </sql>
+    <!-- 插入语句 -->
+    <insert id="insert" parameterType="com.nilo.wms.dto.ClientConfig" statementType="PREPARED"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO t_config_client
+        ( client_code,client_name,client_key,wms_key,wms_customer_id,wms_warehouse_id,status,created_time , updated_time ,version)
+        VALUES
+        (#{clientCode},#{clientName}, #{clientKey},#{wmsKey},#{customerId},#{warehouseId},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+    </insert>
+
+    <select id="queryAll" resultMap="clientConfig" statementType="PREPARED">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_config_client
+    </select>
+
+</mapper>
