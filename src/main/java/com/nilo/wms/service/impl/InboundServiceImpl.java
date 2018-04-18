@@ -3,6 +3,7 @@ package com.nilo.wms.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.nilo.mq.model.NotifyRequest;
 import com.nilo.mq.producer.AbstractMQProducer;
+import com.nilo.wms.common.Principal;
 import com.nilo.wms.common.SessionLocal;
 import com.nilo.wms.common.enums.InboundStatusEnum;
 import com.nilo.wms.common.exception.BizErrorCode;
@@ -12,9 +13,14 @@ import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.DateUtil;
 import com.nilo.wms.common.util.XmlUtil;
+import com.nilo.wms.dao.flux.FluxInboundDao;
 import com.nilo.wms.dao.flux.StorageDao;
 import com.nilo.wms.dao.platform.InboundDao;
 import com.nilo.wms.dto.*;
+import com.nilo.wms.dto.flux.FLuxRequest;
+import com.nilo.wms.dto.flux.FluxInbound;
+import com.nilo.wms.dto.flux.FluxInboundDetails;
+import com.nilo.wms.dto.flux.FluxResponse;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.InboundService;
@@ -50,6 +56,8 @@ public class InboundServiceImpl implements InboundService {
     private StorageDao storageDao;
     @Autowired
     private BasicDataService basicDataService;
+    @Autowired
+    private FluxInboundDao fluxInboundDao;
 
     @Override
     @Transactional
@@ -59,12 +67,11 @@ public class InboundServiceImpl implements InboundService {
         AssertUtil.isNotBlank(inbound.getAsnNo(), CheckErrorCode.CLIENT_ORDER_EMPTY);
         AssertUtil.isNotBlank(inbound.getAsnType(), CheckErrorCode.ORDER_TYPE_EMPTY);
         AssertUtil.isNotBlank(inbound.getOrderTime(), CheckErrorCode.ADD_TIME_EMPTY);
-        AssertUtil.isNotBlank(inbound.getWarehouseId(), CheckErrorCode.WAREHOUSE_EMPTY);
-        AssertUtil.isNotBlank(inbound.getCustomerId(), CheckErrorCode.CLIENT_ID_EMPTY);
         AssertUtil.isNotNull(inbound.getItemList(), CheckErrorCode.ITEM_EMPTY);
 
         //保存
-        String clientCode = SessionLocal.getPrincipal().getClientCode();
+        Principal principal = SessionLocal.getPrincipal();
+        String clientCode = principal.getClientCode();
         InboundDO inboundDO = inboundDao.queryByAsnNo(clientCode, inbound.getAsnNo());
         if (inboundDO != null) return;
         InboundDO insert = new InboundDO();
@@ -218,9 +225,15 @@ public class InboundServiceImpl implements InboundService {
     }
 
     @Override
-    public FluxInbound queryFlux(String asnNo) {
+    public FluxInbound queryFlux(String referenceNo) {
 
-        return null;
+        Principal principal = SessionLocal.getPrincipal();
+        FluxInbound inbound = fluxInboundDao.queryByReferenceNo(principal.getCustomerId(), referenceNo);
+        if (inbound != null) {
+            List<FluxInboundDetails> list = fluxInboundDao.queryDetailsByAsnNo(principal.getCustomerId(), inbound.getWmsAsnNo());
+            inbound.setList(list);
+        }
+        return inbound;
     }
 
     private String createNOSSign(String data, String key) {

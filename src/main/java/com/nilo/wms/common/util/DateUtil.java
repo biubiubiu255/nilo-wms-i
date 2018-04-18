@@ -33,27 +33,9 @@ public class DateUtil {
         return Long.valueOf(System.currentTimeMillis() / 1000L);
     }
 
-    /**
-     * @deprecated
-     */
-    @Deprecated
     public static Long getTimeStamp(Date date) {
         return date == null ? null : Long.valueOf(date.getTime() / 1000L);
     }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public static String getDateByTimeStamp(Long timeStamp, String format, Locale locale) {
-        if (timeStamp != null && !StringUtil.isBlank(format) && locale != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat(format, locale);
-            return sdf.format(new Date(timeStamp.longValue() * 1000L));
-        } else {
-            return "";
-        }
-    }
-
 
     public static String format(Date date, String format) {
         return date != null && !StringUtil.isBlank(format) ? (new SimpleDateFormat(format)).format(date) : "";
@@ -65,122 +47,16 @@ public class DateUtil {
     }
 
     public static String format(Long time, String format) {
-        if(time ==null) return "";
+        if (time == null) return "";
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return StringUtil.isBlank(format) ? "" : sdf.format(new Date(time * 1000l));
     }
 
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public static String formatShort(Date date) {
-        return format(date, "yyyyMMdd");
-    }
 
     public static String formatWeb(Date date) {
         return format(date, "yyyy-MM-dd");
     }
 
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public static String formatMonth(Date date) {
-        return format(date, "yyyyMM");
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public static String formatTime(Date date) {
-        return format(date, "HHmmss");
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public static String getTimestamp(int n) {
-        return formatCurrent("yyyyMMddHHmmss") + RandomStringUtils.randomNumeric(n);
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public static String getYesterdayDate(String format) {
-        return getDateCompareToday(format, -1, 0);
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public static String getDateCompareToday(String format, int daysAfter, int monthAfter) {
-        Calendar today = Calendar.getInstance();
-        if (daysAfter != 0) {
-            today.add(5, daysAfter);
-        }
-
-        if (monthAfter != 0) {
-            today.add(2, monthAfter);
-        }
-
-        return format(today.getTime(), format);
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public static String getLastMonth(String format) {
-        Calendar today = Calendar.getInstance();
-        today.add(2, -1);
-        return format(today.getTime(), format);
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public static String getDateStrByTimeStamp(Long timeStamp, String format, String localeCode) {
-        Calendar c = Calendar.getInstance(TimeZone.getTimeZone(localeCode));
-        c.setTimeInMillis(timeStamp.longValue() * 1000L);
-        String year = String.valueOf(c.get(1));
-        int month = c.get(2) + 1;
-        String monthStr = String.valueOf(month);
-        if (month < 10) {
-            monthStr = "0" + monthStr;
-        }
-
-        String day = c.get(5) < 10 ? "0" + String.valueOf(c.get(5)) : String.valueOf(c.get(5));
-        String hour = c.get(11) < 10 ? "0" + String.valueOf(c.get(11)) : String.valueOf(c.get(11));
-        String minute = c.get(12) < 10 ? "0" + String.valueOf(c.get(12)) : String.valueOf(c.get(12));
-        String second = c.get(13) < 10 ? "0" + String.valueOf(c.get(13)) : String.valueOf(c.get(13));
-        String time = year + monthStr + day + hour + minute + second;
-        return format(parseDateLongFormat(time), format);
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public static Date parseDateLongFormat(String sDate) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-        Date d = null;
-        if (sDate != null && sDate.length() == "yyyyMMddHHmmss".length()) {
-            try {
-                d = dateFormat.parse(sDate);
-            } catch (ParseException var4) {
-                return null;
-            }
-        }
-
-        return d;
-    }
 
     public static String currentDateTime(String pattern, String timezoneId) {
         return format(System.currentTimeMillis(), pattern, timezoneId);

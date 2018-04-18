@@ -13,8 +13,16 @@ public class OutboundDO extends BaseDo<Long> {
     private String warehouseId;
     private String referenceNo;
     private String orderType;
+    private String waybillNum;
     private int status;
 
+    public String getWaybillNum() {
+        return waybillNum;
+    }
+
+    public void setWaybillNum(String waybillNum) {
+        this.waybillNum = waybillNum;
+    }
 
     public String getClientCode() {
         return clientCode;

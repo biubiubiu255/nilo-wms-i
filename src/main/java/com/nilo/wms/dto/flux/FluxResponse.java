@@ -2,7 +2,7 @@
  * KILIMALL Inc.
  * Copyright (c) 2015-2016 All Rights Reserved.
  */
-package com.nilo.wms.dto;
+package com.nilo.wms.dto.flux;
 
 import com.nilo.wms.common.util.StringUtil;
 

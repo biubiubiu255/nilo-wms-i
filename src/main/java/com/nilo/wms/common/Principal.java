@@ -17,6 +17,26 @@ public class Principal implements Serializable {
 
     private String method;
 
+    private String customerId;
+
+    private String warehouseId;
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getWarehouseId() {
+        return warehouseId;
+    }
+
+    public void setWarehouseId(String warehouseId) {
+        this.warehouseId = warehouseId;
+    }
+
     public String getMethod() {
         return method;
     }

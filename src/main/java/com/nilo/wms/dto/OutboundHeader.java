@@ -16,15 +16,11 @@ import java.util.List;
 @XmlRootElement(name = "header")
 @XmlAccessorType(XmlAccessType.NONE)
 public class OutboundHeader {
-    @JSONField(name = "client_id")
     private String customerId;
-    @JSONField(name = "warehouse_id")
     private String warehouseId;
     @JSONField(name = "client_order_sn")
     private String orderNo;
-
     private String wmsNo;
-
     @JSONField(name = "add_time")
     private Long orderTime;
     @JSONField(name = "order_type")
@@ -43,9 +39,7 @@ public class OutboundHeader {
     private String carrierId = "STANDARD";
     @JSONField(name = "carrier_name")
     private String carrierName = "STANDARD";
-
     private String notes;
-
     private String voucher;
     @JSONField(name = "already_paid")
     private String amountReceived;
@@ -73,10 +67,7 @@ public class OutboundHeader {
 
     @XmlElement(name = "CustomerID")
     public String getCustomerId() {
-        if (StringUtil.equals(customerId, "1")) {
-            return "KILIMALL";
-        }
-        return "KILIMALL";
+        return customerId;
     }
 
     public void setCustomerId(String customerId) {

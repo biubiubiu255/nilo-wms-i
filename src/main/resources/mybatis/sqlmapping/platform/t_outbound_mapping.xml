@@ -17,6 +17,8 @@
                 jdbcType="VARCHAR"/>
         <result property="orderType" column="order_type" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
+        <result property="waybillNum" column="waybill_num" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
         <result property="status" column="status" javaType="java.lang.Integer"
                 jdbcType="INTEGER"/>
         <result property="updatedTime" column="updated_time" javaType="java.lang.Long"
@@ -26,7 +28,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id ,client_code,customer_id,warehouse_id,reference_no,order_type,status,created_time , updated_time ,version
+        id ,client_code,customer_id,warehouse_id,reference_no,order_type,waybill_num,status,created_time , updated_time ,version
     </sql>
 
     <!-- 插入语句 -->
@@ -34,9 +36,9 @@
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_outbound
-        ( client_code,customer_id,warehouse_id,reference_no,order_type,status,created_time , updated_time ,version)
+        ( client_code,customer_id,warehouse_id,reference_no,order_type,waybill_num,status,created_time , updated_time ,version)
         VALUES
-        (#{clientCode},#{customerId},#{warehouseId}, #{referenceNo},#{orderType},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+        (#{clientCode},#{customerId},#{warehouseId}, #{referenceNo},#{orderType},#{waybillNum},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
     </insert>
     <!-- 动态更新语句 -->
     <update id="update" parameterType="com.nilo.wms.dto.OutboundDO" statementType="PREPARED">

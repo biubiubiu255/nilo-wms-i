@@ -5,12 +5,10 @@
  */
 package com.nilo.wms.service;
 
-import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.util.HttpUtil;
 import com.nilo.wms.common.util.StringUtil;
-import com.nilo.wms.dto.FLuxRequest;
-import com.nilo.wms.dto.FluxResponse;
-import com.nilo.wms.service.config.SystemConfig;
+import com.nilo.wms.dto.flux.FLuxRequest;
+import com.nilo.wms.dto.flux.FluxResponse;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;

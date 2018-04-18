@@ -1,6 +1,7 @@
 package com.nilo.wms.dao.flux;
 
 import com.nilo.wms.dto.*;
+import com.nilo.wms.dto.flux.FluxOutbound;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Repository
 public interface FluxOutboundDao {
 
-    FluxOutbound queryByReferenceNo(String referenceNo);
+    FluxOutbound queryByReferenceNo(@Param(value = "customerId") String customerId, @Param(value = "referenceNo") String referenceNo);
 
     List<FluxWeight> queryWeight(List<String> list);
 }

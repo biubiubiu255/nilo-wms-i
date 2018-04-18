@@ -3,6 +3,7 @@ package com.nilo.wms.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.nilo.mq.model.NotifyRequest;
 import com.nilo.mq.producer.AbstractMQProducer;
+import com.nilo.wms.common.Principal;
 import com.nilo.wms.common.SessionLocal;
 import com.nilo.wms.common.enums.OutBoundStatusEnum;
 import com.nilo.wms.common.exception.BizErrorCode;
@@ -16,6 +17,9 @@ import com.nilo.wms.dao.flux.FluxOutboundDao;
 import com.nilo.wms.dao.platform.OutboundDao;
 import com.nilo.wms.dao.platform.OutboundItemDao;
 import com.nilo.wms.dto.*;
+import com.nilo.wms.dto.flux.FLuxRequest;
+import com.nilo.wms.dto.flux.FluxOutbound;
+import com.nilo.wms.dto.flux.FluxResponse;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.OutboundService;
@@ -60,8 +64,6 @@ public class OutboundServiceImpl implements OutboundService {
     public void createOutBound(OutboundHeader outBound) {
 
         AssertUtil.isNotNull(outBound, SysErrorCode.REQUEST_IS_NULL);
-        AssertUtil.isNotBlank(outBound.getWarehouseId(), CheckErrorCode.WAREHOUSE_EMPTY);
-        AssertUtil.isNotBlank(outBound.getCustomerId(), CheckErrorCode.CLIENT_ID_EMPTY);
 
         AssertUtil.isNotBlank(outBound.getOrderNo(), CheckErrorCode.CLIENT_ORDER_EMPTY);
         AssertUtil.isNotBlank(outBound.getOrderType(), CheckErrorCode.ORDER_TYPE_EMPTY);
@@ -76,7 +78,12 @@ public class OutboundServiceImpl implements OutboundService {
         AssertUtil.isNotBlank(outBound.getReceiverInfo().getReceiverName(), CheckErrorCode.RECEIVER_NAME_EMPTY);
         AssertUtil.isNotBlank(outBound.getReceiverInfo().getReceiverPhone(), CheckErrorCode.RECEIVER_PHONE_EMPTY);
 
-        String clientCode = SessionLocal.getPrincipal().getClientCode();
+        //设置仓库信息
+        Principal principal = SessionLocal.getPrincipal();
+        String clientCode = principal.getClientCode();
+        outBound.setCustomerId(principal.getCustomerId());
+        outBound.setWarehouseId(principal.getWarehouseId());
+
         OutboundDO outboundDO = outboundDao.queryByReferenceNo(clientCode, outBound.getOrderNo());
         if (outboundDO != null) return;
 
@@ -129,7 +136,8 @@ public class OutboundServiceImpl implements OutboundService {
 
         AssertUtil.isNotBlank(orderNo, CheckErrorCode.CLIENT_ORDER_EMPTY);
 
-        String clientCode = SessionLocal.getPrincipal().getClientCode();
+        Principal principal = SessionLocal.getPrincipal();
+        String clientCode = principal.getClientCode();
         OutboundDO outboundDO = outboundDao.queryByReferenceNo(clientCode, orderNo);
         if (outboundDO == null) throw new WMSException(BizErrorCode.NOT_EXIST, orderNo);
         if (outboundDO.getStatus() == OutBoundStatusEnum.cancelled.getCode()) return;
@@ -142,8 +150,8 @@ public class OutboundServiceImpl implements OutboundService {
 
         OutBoundSimpleBean cancelOrder = new OutBoundSimpleBean();
         cancelOrder.setOrderNo(orderNo);
-        cancelOrder.setCustomerID(outboundDO.getCustomerId());
-        cancelOrder.setWarehouseID(outboundDO.getWarehouseId());
+        cancelOrder.setCustomerID(principal.getCustomerId());
+        cancelOrder.setWarehouseID(principal.getWarehouseId());
         cancelOrder.setOrderType(outboundDO.getOrderType());
 
         //构建flux请求对象
@@ -210,6 +218,7 @@ public class OutboundServiceImpl implements OutboundService {
         params.put("request_id", UUID.randomUUID().toString());
         params.put("timestamp", "" + DateUtil.getSysTimeStamp());
 
+        // 通知状态变更
         NotifyRequest notify = new NotifyRequest();
         notify.setParam(params);
         notify.setUrl(interfaceConfig.getUrl());
@@ -219,12 +228,30 @@ public class OutboundServiceImpl implements OutboundService {
             logger.error("confirmSO send message failed.", e);
         }
 
+
+        // 修改DMS重量
+        List<String> waybillList = new ArrayList<>();
+        for(OutboundDO o : outList){
+            waybillList.add(o.getWaybillNum());
+        }
+        InterfaceConfig config = SystemConfig.getInterfaceConfig().get(clientCode).get("update_weight");
+        List<FluxWeight> weightList  = fluxOutboundDao.queryWeight(waybillList);
+        String updateData = JSON.toJSONString(weightList);
+        Map<String, String> paramsUpdate = new HashMap<>();
+        paramsUpdate.put("method", config.getMethod());
+        paramsUpdate.put("sign", createNOSSign(updateData, clientConfig.getClientKey()));
+        paramsUpdate.put("data", updateData);
+        paramsUpdate.put("app_key", "kiliboss");
+        paramsUpdate.put("request_id", UUID.randomUUID().toString());
+        paramsUpdate.put("timestamp", "" + DateUtil.getSysTimeStamp());
     }
 
     @Override
     public FluxOutbound queryFlux(String orderNo) {
 
-        FluxOutbound order = fluxOutboundDao.queryByReferenceNo(orderNo);
+        Principal principal = SessionLocal.getPrincipal();
+
+        FluxOutbound order = fluxOutboundDao.queryByReferenceNo(principal.getCustomerId(), orderNo);
         if (order == null) return null;
         order.setStatusDesc(OutBoundStatusEnum.getEnum(order.getStatus()).getDesc_e());
         return order;
@@ -241,9 +268,9 @@ public class OutboundServiceImpl implements OutboundService {
 
         private String orderType;
 
-        private String customerId = "KILIMALL";
+        private String customerId;
 
-        private String warehouseId = "KE01";
+        private String warehouseId;
 
         private String reason;
 
@@ -304,6 +331,7 @@ public class OutboundServiceImpl implements OutboundService {
         insert.setCustomerId(outBound.getCustomerId());
         insert.setWarehouseId(outBound.getWarehouseId());
         insert.setStatus(OutBoundStatusEnum.create.getCode());
+        insert.setWaybillNum(outBound.getDeliveryNo());
         outboundDao.insert(insert);
 
         List<OutboundItemDO> list = new ArrayList<>();

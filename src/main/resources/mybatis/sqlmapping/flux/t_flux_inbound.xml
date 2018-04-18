@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nilo.wms.dao.flux.FluxInboundDao">
+
+    <!-- 实体bean与数据字段对应关系 -->
+    <resultMap id="inbound" type="com.nilo.wms.dto.flux.FluxInbound">
+        <result property="wmsAsnNo" column="asnno" javaType="java.lang.String"
+                jdbcType="VARCHAR" />
+        <result property="referenceNo" column="asnreference1" javaType="java.lang.String"
+                jdbcType="VARCHAR" />
+        <result property="status" column="asnstatus" javaType="java.lang.Integer"
+                jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="details" type="com.nilo.wms.dto.flux.FluxInboundDetails">
+        <result property="sku" column="sku" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="qty" column="EXPECTEDQTY" javaType="java.lang.Double"
+                jdbcType="VARCHAR"/>
+        <result property="receivedQty" column="RECEIVEDQTY" javaType="java.lang.Double"
+                jdbcType="VARCHAR"/>
+        <result property="receivedQty" column="RECEIVEDTIME" javaType="java.lang.Double"
+                jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <select id="queryByReferenceNo" resultMap="inbound">
+        select h.asnno, h.asnreference1,h.asnstatus from doc_asn_header h where h.customerid=#{customerId} and h.asnreference1=#{referenceNo}
+    </select>
+
+    <select id="queryDetailsByAsnNo" resultMap="weight">
+        select d.sku,d.expectedqty,d.receivedqty,to_char(d.receivedtime,'yyyy-MM-dd HH:mm:SS') from doc_asn_details d
+        where d.customerid=#{customerId} and d.asnno=#{asnNo}
+    </select>
+</mapper>

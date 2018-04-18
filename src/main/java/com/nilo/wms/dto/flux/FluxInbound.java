@@ -1,36 +1,38 @@
-package com.nilo.wms.dto;
+package com.nilo.wms.dto.flux;
 
 import com.alibaba.fastjson.annotation.JSONField;
+
+import java.util.List;
 
 /**
  * Created by admin on 2018/3/22.
  */
-public class FluxOutbound {
+public class FluxInbound {
     @JSONField(name = "wms_order_sn")
-    private String wmsOrderNo;
+    private String wmsAsnNo;
     @JSONField(name = "client_order_sn")
     private String referenceNo;
     @JSONField(name = "status")
     private int status;
     @JSONField(name = "status_desc")
     private String statusDesc;
-    @JSONField(name = "weight")
-    private Double weight;
+    @JSONField(name = "order_items_list")
+    private List<FluxInboundDetails> list;
 
-    public Double getWeight() {
-        return weight;
+    public List<FluxInboundDetails> getList() {
+        return list;
     }
 
-    public void setWeight(Double weight) {
-        this.weight = weight;
+    public void setList(List<FluxInboundDetails> list) {
+        this.list = list;
     }
 
-    public String getWmsOrderNo() {
-        return wmsOrderNo;
+    public String getWmsAsnNo() {
+        return wmsAsnNo;
     }
 
-    public void setWmsOrderNo(String wmsOrderNo) {
-        this.wmsOrderNo = wmsOrderNo;
+    public void setWmsAsnNo(String wmsAsnNo) {
+        this.wmsAsnNo = wmsAsnNo;
     }
 
     public String getReferenceNo() {

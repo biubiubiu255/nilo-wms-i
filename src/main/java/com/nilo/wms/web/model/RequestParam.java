@@ -1,6 +1,8 @@
 package com.nilo.wms.web.model;
 
 import com.alibaba.fastjson.JSON;
+import com.nilo.wms.common.Principal;
+import com.nilo.wms.common.SessionLocal;
 import com.nilo.wms.common.enums.MethodEnum;
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.CheckErrorCode;
@@ -26,6 +28,9 @@ public class RequestParam {
 
     private String app_key;
 
+    /**
+     * 请求唯一标识
+     */
     private String request_id;
 
     private Long timestamp;
@@ -107,6 +112,13 @@ public class RequestParam {
         boolean check = checkSign(config.getWmsKey(), data, sign);
         AssertUtil.isTrue(check, BizErrorCode.SIGN_ERROR);
 
+        //设置调用api主体信息
+        Principal principal = new Principal();
+        principal.setClientCode(app_key);
+        principal.setMethod(method);
+        principal.setCustomerId(config.getCustomerId());
+        principal.setWarehouseId(config.getWarehouseId());
+        SessionLocal.setPrincipal(principal);
     }
 
     private boolean checkSign(String key, String data, String sign) {

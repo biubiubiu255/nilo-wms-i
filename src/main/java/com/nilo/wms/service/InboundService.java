@@ -1,8 +1,7 @@
 package com.nilo.wms.service;
 
-import com.nilo.wms.dto.FluxInbound;
+import com.nilo.wms.dto.flux.FluxInbound;
 import com.nilo.wms.dto.InboundHeader;
-import com.nilo.wms.dto.OutboundHeader;
 
 import java.util.List;
 
@@ -13,9 +12,9 @@ public interface InboundService {
 
     void createInBound(InboundHeader inbound);
 
-    void cancelInBound(String asnNo);
+    void cancelInBound(String referenceNo);
 
     void confirmASN(List<InboundHeader> list);
 
-    FluxInbound queryFlux(String asnNo);
+    FluxInbound queryFlux(String referenceNo);
 }

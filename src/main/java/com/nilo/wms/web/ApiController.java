@@ -2,12 +2,10 @@ package com.nilo.wms.web;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.nilo.wms.common.Principal;
-import com.nilo.wms.common.SessionLocal;
 import com.nilo.wms.common.enums.MethodEnum;
-import com.nilo.wms.common.exception.CheckErrorCode;
-import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.dto.*;
+import com.nilo.wms.dto.flux.FluxInbound;
+import com.nilo.wms.dto.flux.FluxOutbound;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.InboundService;
 import com.nilo.wms.service.OutboundService;
@@ -19,9 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.*;
 
@@ -54,12 +49,6 @@ public class ApiController extends BaseController {
         param.checkParam();
         MethodEnum method = param.getMethod();
         String data = param.getData();
-
-        //设置调用api主体信息
-        Principal principal = new Principal();
-        principal.setClientCode(param.getApp_key());
-        principal.setMethod(method.getCode());
-        SessionLocal.setPrincipal(principal);
 
         switch (method) {
             case CREATE_OUTBOUND: {

@@ -17,7 +17,6 @@ import java.util.List;
  */
 @XmlRootElement(name = "header")
 public class InboundHeader {
-    @JSONField(name = "client_id")
     private String customerId;
     @JSONField(name = "client_order_sn")
     private String asnNo;
@@ -25,15 +24,11 @@ public class InboundHeader {
     private String asnNo2;
     @JSONField(name = "order_type")
     private String asnType;
-
-    @JSONField(name = "warehouse_id")
     private String warehouseId;
     @JSONField(name = "add_time")
     private Long orderTime;
-
     @JSONField(name = "store_id")
     private String supplierId;
-
     @JSONField(name = "store_name")
     private String supplierName;
     @JSONField(name = "carrier_id")
@@ -92,7 +87,7 @@ public class InboundHeader {
 
     @XmlElement(name = "CustomerID")
     public String getCustomerId() {
-        return "KILIMALL";
+        return customerId;
     }
 
     public void setCustomerId(String customerId) {

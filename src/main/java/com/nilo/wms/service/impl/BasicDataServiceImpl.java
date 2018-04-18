@@ -14,6 +14,8 @@ import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.XmlUtil;
 import com.nilo.wms.dao.flux.StorageDao;
 import com.nilo.wms.dto.*;
+import com.nilo.wms.dto.flux.FLuxRequest;
+import com.nilo.wms.dto.flux.FluxResponse;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.RedisUtil;
@@ -24,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Client;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;

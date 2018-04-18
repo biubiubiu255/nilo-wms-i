@@ -20,7 +20,6 @@ import java.io.Serializable;
 public class SkuInfo implements Serializable {
 
     private static final long serialVersionUID = 8155800852537298510L;
-    @JSONField(name = "client_id")
     private String customerId;
     @JSONField(name = "sku")
     private String sku;
@@ -41,7 +40,7 @@ public class SkuInfo implements Serializable {
 
     @XmlElement(name="CustomerID")
     public String getCustomerId() {
-        return "KILIMALL";
+        return customerId;
     }
 
     public void setCustomerId(String customerId) {
