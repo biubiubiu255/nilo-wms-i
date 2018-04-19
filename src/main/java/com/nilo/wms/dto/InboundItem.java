@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
  * Created by Administrator on 2017/7/6.
  */
 public class InboundItem {
-    private String customerId = "KILIMALL";
+    private String customerId;
     @JSONField(name = "line_no")
     private int lineNo;
     @JSONField(name = "sku")

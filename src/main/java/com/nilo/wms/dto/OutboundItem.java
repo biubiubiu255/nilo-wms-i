@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class OutboundItem {
 
-    private String customerId="KILIMALL";
+    private String customerId;
     @JSONField(name = "sku")
     private String sku;
     @JSONField(name = "goods_num")

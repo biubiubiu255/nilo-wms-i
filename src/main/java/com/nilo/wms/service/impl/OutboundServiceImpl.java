@@ -81,8 +81,16 @@ public class OutboundServiceImpl implements OutboundService {
         //设置仓库信息
         Principal principal = SessionLocal.getPrincipal();
         String clientCode = principal.getClientCode();
+
+
         outBound.setCustomerId(principal.getCustomerId());
         outBound.setWarehouseId(principal.getWarehouseId());
+        int lineNo = 0;
+        for (OutboundItem item : outBound.getItemList()) {
+            item.setCustomerId(principal.getCustomerId());
+            item.setLineNo(lineNo + 1);
+        }
+
 
         OutboundDO outboundDO = outboundDao.queryByReferenceNo(clientCode, outBound.getOrderNo());
         if (outboundDO != null) return;
@@ -231,11 +239,11 @@ public class OutboundServiceImpl implements OutboundService {
 
         // 修改DMS重量
         List<String> waybillList = new ArrayList<>();
-        for(OutboundDO o : outList){
+        for (OutboundDO o : outList) {
             waybillList.add(o.getWaybillNum());
         }
         InterfaceConfig config = SystemConfig.getInterfaceConfig().get(clientCode).get("update_weight");
-        List<FluxWeight> weightList  = fluxOutboundDao.queryWeight(waybillList);
+        List<FluxWeight> weightList = fluxOutboundDao.queryWeight(waybillList);
         String updateData = JSON.toJSONString(weightList);
         Map<String, String> paramsUpdate = new HashMap<>();
         paramsUpdate.put("method", config.getMethod());

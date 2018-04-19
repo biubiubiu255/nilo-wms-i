@@ -75,6 +75,11 @@ public class InboundServiceImpl implements InboundService {
         String clientCode = principal.getClientCode();
         inbound.setCustomerId(principal.getCustomerId());
         inbound.setWarehouseId(principal.getWarehouseId());
+        int lineNo = 0;
+        for (InboundItem item : inbound.getItemList()) {
+            item.setCustomerId(principal.getCustomerId());
+            item.setLineNo(lineNo + 1);
+        }
 
         InboundDO inboundDO = inboundDao.queryByReferenceNo(clientCode, inbound.getReferenceNo());
         if (inboundDO != null) return;
@@ -87,7 +92,6 @@ public class InboundServiceImpl implements InboundService {
         insert.setStatus(InboundStatusEnum.create.getCode());
         insert.setAsnType(inbound.getAsnType());
         inboundDao.insert(insert);
-
 
 
         //构建flux请求对象

@@ -9,9 +9,7 @@ import java.util.List;
  */
 public class StorageParam {
 
-    @JSONField(name = "client_id")
     private String customerId;
-    @JSONField(name = "warehouse_id")
     private String warehouseId;
     @JSONField(name = "store_list")
     private List<String> storeId;
@@ -19,7 +17,7 @@ public class StorageParam {
     private List<String> sku;
 
     public String getCustomerId() {
-        return "KILIMALL";
+        return this.customerId;
     }
 
     public void setCustomerId(String customerId) {
