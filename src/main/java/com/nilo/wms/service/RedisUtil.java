@@ -23,6 +23,8 @@ public class RedisUtil {
      */
     public static final String LOCK_STORAGE = "lockStorage";
 
+    public static final String LOCK_TIME = "lockTime";
+
     private static final String LOCK_SUCCESS = "OK";
     private static final String SET_IF_NOT_EXIST = "NX";
     private static final String SET_WITH_EXPIRE_TIME = "PX";

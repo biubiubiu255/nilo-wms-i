@@ -197,6 +197,8 @@ public class BasicDataServiceImpl implements BasicDataService {
         for (OutboundItem item : header.getItemList()) {
             RedisUtil.hset(orderNoKey, item.getSku(), "" + item.getQty());
         }
+        RedisUtil.hset(orderNoKey, RedisUtil.LOCK_TIME, DateUtil.formatCurrent(DateUtil.LONG_WEB_FORMAT));
+
     }
 
 

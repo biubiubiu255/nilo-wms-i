@@ -6,6 +6,7 @@
 package com.nilo.wms.web;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.nilo.wms.dto.OutboundHeader;
 import com.nilo.wms.dto.OutboundItem;
 import org.slf4j.Logger;
@@ -27,15 +28,6 @@ public class BaseController {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-
-    protected ServletContext getServletContext() {
-        return ContextLoader.getCurrentWebApplicationContext().getServletContext();
-    }
-
-    protected HttpServletRequest getRequest() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-    }
-
     protected String toJsonTrueMsg() {
         Map<Object, Object> map = new HashMap<>();
         map.put("status", "succ");
@@ -49,9 +41,20 @@ public class BaseController {
         return JSON.toJSONString(map);
     }
 
+    protected String toPaginationLayUIData(Integer totalCount, Integer limit, List data) {
+        JSONObject jo = new JSONObject();
+        jo.put("count", totalCount);
+        jo.put("code", 0);
+        jo.put("msg", 0);
+        jo.put("data", data);
+        jo.put("pages", totalCount / limit);
+        return jo.toJSONString();
+    }
+
     protected String removeXmlDataElement(String value, String removeEle) {
         return value.replace("<" + removeEle + ">", "").replace("</" + removeEle + ">", "");
     }
+
     protected String xmlSuccessReturn() {
         return "<xmldata><Response><return><returnCode>0000</returnCode><returnDesc>ok</returnDesc><returnFlag>1</returnFlag></return></Response></xmldata>";
     }

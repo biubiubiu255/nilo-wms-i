@@ -5,14 +5,21 @@
 package com.nilo.wms.web;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.nilo.wms.common.exception.BizErrorCode;
+import com.nilo.wms.common.exception.CheckErrorCode;
+import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
+import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dao.flux.StorageDao;
+import com.nilo.wms.dto.ClientConfig;
 import com.nilo.wms.dto.StorageInfo;
 import com.nilo.wms.dto.StorageParam;
 import com.nilo.wms.service.RedisUtil;
+import com.nilo.wms.service.config.SystemConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,52 +35,115 @@ public class SkuStorageInfoController extends BaseController {
     @Autowired
     private StorageDao storageDao;
 
-    @RequestMapping(value = "/storageInfo.html", method = {RequestMethod.GET})
+    @RequestMapping(value = "/storage.html", method = {RequestMethod.GET})
     public String doGet() {
         return "storage";
     }
 
-    @RequestMapping(value = "/storageInfo.html", method = {RequestMethod.POST})
+    @RequestMapping(value = "/storageInfo.html", method = {RequestMethod.GET})
     @ResponseBody
     public String storageInfo(String clientCode, String sku) {
 
-        Map<String, Object> map = new HashMap<>();
+        ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
+        if (config == null) {
+            throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
+        }
 
         String key = RedisUtil.getSkuKey(clientCode, sku);
         String storage = RedisUtil.hget(key, RedisUtil.STORAGE);
         String lockSto = RedisUtil.hget(key, RedisUtil.LOCK_STORAGE);
 
-        if (lockSto != null && (Integer.parseInt(lockSto)) > 0) {
-            List<String> lockList = new ArrayList<>();
-            Set<String> lockOrder = RedisUtil.keys("kilimall_ke01_lock_order_*");
-            for (String order : lockOrder) {
-                if (RedisUtil.hhasKey(order, sku)) {
-                    Map<String, String> lockMap = new HashMap<>();
-                    lockMap.put("Order", order);
-                    lockMap.put("QTY:", RedisUtil.hget(order, sku));
-                    lockList.add(JSON.toJSONString(lockMap));
-                }
-            }
-            map.put("Lock_Order_List", lockList);
-        }
+        Map<String, String> map = new HashMap<>();
 
         StorageParam param = new StorageParam();
         param.setSku(Arrays.asList(sku));
         List<StorageInfo> list = storageDao.queryBy(param);
         if (list != null && list.size() == 1) {
-            map.put("wmsStorage", list.get(0).getStorage());
+            map.put("wmsStorage", "" + list.get(0).getStorage());
         }
-        map.put("Storage", storage);
-        map.put("LockStorage", lockSto);
+        map.put("redisStorage", storage);
+        map.put("lockStorage", lockSto);
 
-        return JSON.toJSONString(map);
+        return toJsonTrueData(map);
     }
 
+    @RequestMapping(value = "/lockList.html", method = {RequestMethod.GET})
+    @ResponseBody
+    public String lockList(String clientCode, String sku) {
+
+        if (StringUtil.isEmpty(clientCode) || StringUtil.isEmpty(sku)) {
+            return toPaginationLayUIData(0, 50, null);
+        }
+
+        String lockSto = RedisUtil.hget(RedisUtil.getSkuKey(clientCode, sku), RedisUtil.LOCK_STORAGE);
+
+        List<OrderLock> lockList = new ArrayList<>();
+        if (lockSto != null && (Integer.parseInt(lockSto)) > 0) {
+
+            String lockKey = RedisUtil.getLockOrderKey(clientCode, "*");
+
+            Set<String> lockOrderList = RedisUtil.keys(lockKey);
+
+            for (String order : lockOrderList) {
+                if (RedisUtil.hhasKey(order, sku)) {
+                    OrderLock o = new OrderLock();
+                    o.setOrderNo(order);
+                    o.setQty(RedisUtil.hget(order, sku));
+                    o.setTime(RedisUtil.hget(order, RedisUtil.LOCK_TIME));
+                    lockList.add(o);
+                }
+            }
+        }
+
+        return toPaginationLayUIData(lockList.size(), 50, lockList);
+    }
 
     @RequestMapping(value = "/updateStorage.html", method = {RequestMethod.POST})
     @ResponseBody
     public String updateStorage(String clientCode, String sku, Integer storage, Integer lockStorage) {
+
+        AssertUtil.isNotBlank(clientCode, CheckErrorCode.REQUEST_ID_EMPTY);
+        AssertUtil.isNotBlank(sku, CheckErrorCode.REQUEST_ID_EMPTY);
+        AssertUtil.isNotNull(storage, CheckErrorCode.REQUEST_ID_EMPTY);
+        AssertUtil.isNotNull(lockStorage, CheckErrorCode.REQUEST_ID_EMPTY);
+        ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
+        if (config == null) {
+            throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
+        }
+        RedisUtil.hset(RedisUtil.getSkuKey(clientCode, sku), RedisUtil.LOCK_STORAGE, "" + lockStorage);
+        RedisUtil.hset(RedisUtil.getSkuKey(clientCode, sku), RedisUtil.STORAGE, "" + storage);
+
         return toJsonTrueMsg();
+    }
+
+    private static class OrderLock {
+        private String orderNo;
+        private String time;
+        private String qty;
+
+        public String getOrderNo() {
+            return orderNo;
+        }
+
+        public void setOrderNo(String orderNo) {
+            this.orderNo = orderNo;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public String getQty() {
+            return qty;
+        }
+
+        public void setQty(String qty) {
+            this.qty = qty;
+        }
     }
 
 }
