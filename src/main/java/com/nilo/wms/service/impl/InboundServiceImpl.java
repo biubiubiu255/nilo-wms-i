@@ -69,9 +69,13 @@ public class InboundServiceImpl implements InboundService {
         AssertUtil.isNotBlank(inbound.getOrderTime(), CheckErrorCode.ADD_TIME_EMPTY);
         AssertUtil.isNotNull(inbound.getItemList(), CheckErrorCode.ITEM_EMPTY);
 
+
         //保存
         Principal principal = SessionLocal.getPrincipal();
         String clientCode = principal.getClientCode();
+        inbound.setCustomerId(principal.getCustomerId());
+        inbound.setWarehouseId(principal.getWarehouseId());
+
         InboundDO inboundDO = inboundDao.queryByReferenceNo(clientCode, inbound.getReferenceNo());
         if (inboundDO != null) return;
         InboundDO insert = new InboundDO();
@@ -83,6 +87,7 @@ public class InboundServiceImpl implements InboundService {
         insert.setStatus(InboundStatusEnum.create.getCode());
         insert.setAsnType(inbound.getAsnType());
         inboundDao.insert(insert);
+
 
 
         //构建flux请求对象

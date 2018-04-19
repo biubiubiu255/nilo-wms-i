@@ -40,7 +40,7 @@
         INSERT INTO t_inbound
         ( client_code,customer_id,warehouse_id,reference_no,reference_no2,asn_type,status,created_time , updated_time ,version)
         VALUES
-        (#{client_code},#{customerId},#{warehouseId}, #{referenceNo},#{referenceNo2},#{asnType},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+        (#{clientCode},#{customerId},#{warehouseId}, #{referenceNo},#{referenceNo2},#{asnType},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
     </insert>
     <!-- 动态更新语句 -->
     <update id="update" parameterType="com.nilo.wms.dto.InboundDO" statementType="PREPARED">

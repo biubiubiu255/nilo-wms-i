@@ -226,6 +226,7 @@ public class BasicDataServiceImpl implements BasicDataService {
 
         // 查询锁定列表
         Set<String> skuList = jedis.hkeys(orderNoKey);
+        skuList.remove(RedisUtil.LOCK_TIME);
         for (String sku : skuList) {
             int qty = Integer.parseInt(jedis.hget(orderNoKey, sku));
             String key = RedisUtil.getSkuKey(clientCode, sku);
