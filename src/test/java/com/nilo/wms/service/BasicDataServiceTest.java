@@ -23,7 +23,7 @@ public class BasicDataServiceTest {
     @Autowired
     private BasicDataService basicDataService;
 
-    /*@Test*/
+    @Test
     public void lockStorage() {
 
         OutboundHeader header = new OutboundHeader();

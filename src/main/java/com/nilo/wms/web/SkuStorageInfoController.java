@@ -5,12 +5,15 @@
 package com.nilo.wms.web;
 
 import com.alibaba.fastjson.JSON;
+import com.nilo.wms.common.exception.BizErrorCode;
+import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.dao.flux.StorageDao;
 import com.nilo.wms.dto.StorageInfo;
 import com.nilo.wms.dto.StorageParam;
 import com.nilo.wms.service.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,6 +22,7 @@ import java.util.*;
 
 
 @Controller
+@RequestMapping("/security")
 public class SkuStorageInfoController extends BaseController {
 
     @Autowired
@@ -63,8 +67,13 @@ public class SkuStorageInfoController extends BaseController {
         map.put("LockStorage", lockSto);
 
         return JSON.toJSONString(map);
-
     }
 
+
+    @RequestMapping(value = "/updateStorage.html", method = {RequestMethod.POST})
+    @ResponseBody
+    public String updateStorage(String clientCode, String sku, Integer storage, Integer lockStorage) {
+        return toJsonTrueMsg();
+    }
 
 }
