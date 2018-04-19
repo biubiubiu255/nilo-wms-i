@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.CheckErrorCode;
+import com.nilo.wms.common.exception.SysErrorCode;
 import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.StringUtil;
@@ -24,6 +25,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import redis.clients.jedis.Jedis;
 
 import java.util.*;
 
@@ -100,18 +102,27 @@ public class SkuStorageInfoController extends BaseController {
 
     @RequestMapping(value = "/updateStorage.html", method = {RequestMethod.POST})
     @ResponseBody
-    public String updateStorage(String clientCode, String sku, Integer storage, Integer lockStorage) {
+    public String updateStorage(String clientCode, String sku, Integer redisStorage, Integer lockStorage) {
 
         AssertUtil.isNotBlank(clientCode, CheckErrorCode.REQUEST_ID_EMPTY);
         AssertUtil.isNotBlank(sku, CheckErrorCode.REQUEST_ID_EMPTY);
-        AssertUtil.isNotNull(storage, CheckErrorCode.REQUEST_ID_EMPTY);
+        AssertUtil.isNotNull(redisStorage, CheckErrorCode.REQUEST_ID_EMPTY);
         AssertUtil.isNotNull(lockStorage, CheckErrorCode.REQUEST_ID_EMPTY);
         ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
         if (config == null) {
             throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
         }
+
+        //获取redis锁
+        Jedis jedis = RedisUtil.getResource();
+        String requestId = UUID.randomUUID().toString();
+        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
+        if (!getLock) throw new WMSException(SysErrorCode.SYSTEM_ERROR);
+
         RedisUtil.hset(RedisUtil.getSkuKey(clientCode, sku), RedisUtil.LOCK_STORAGE, "" + lockStorage);
-        RedisUtil.hset(RedisUtil.getSkuKey(clientCode, sku), RedisUtil.STORAGE, "" + storage);
+        RedisUtil.hset(RedisUtil.getSkuKey(clientCode, sku), RedisUtil.STORAGE, "" + redisStorage);
+
+        RedisUtil.releaseDistributedLock(jedis,RedisUtil.LOCK_KEY, requestId);
 
         return toJsonTrueMsg();
     }

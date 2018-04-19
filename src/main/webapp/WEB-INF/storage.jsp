@@ -84,7 +84,7 @@
                     data: {
                         clientCode: $("#clientCode").val(),
                         sku: $("#sku").val(),
-                        storage: $("#storage").val(),
+                        redisStorage: $("#redisStorage").val(),
                         lockStorage: $("#lockStorage").val()
                     },
                     type: "POST",
@@ -112,9 +112,9 @@
             elem: '#lockTable',
             url: 'lockList.html',
             cols: [[
-                {field: 'orderNo', width: 200, title: 'Order No'},
+                {field: 'orderNo', width: 350, title: 'Order No'},
                 {field: 'time', width: 200, title: 'Lock Time'},
-                {field: 'lock', width: 200, title: 'Lock Qty'}
+                {field: 'qty', width: 200, title: 'Lock Qty'}
             ]]
         });
 

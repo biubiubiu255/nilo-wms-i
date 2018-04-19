@@ -8,6 +8,7 @@
     <http>
         <intercept-url pattern="/servlet/security/*" access="hasRole('ROLE_USER')" />
         <http-basic/>
+        <csrf disabled="true"/>
     </http>
 
     <authentication-manager>

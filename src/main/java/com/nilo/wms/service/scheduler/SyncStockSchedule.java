@@ -4,15 +4,16 @@
  */
 package com.nilo.wms.service.scheduler;
 
+import com.nilo.wms.common.Principal;
+import com.nilo.wms.common.SessionLocal;
+import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.SysErrorCode;
 import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.StringUtil;
-import com.nilo.wms.dto.SkuInfo;
-import com.nilo.wms.dto.StorageInfo;
-import com.nilo.wms.dto.StorageParam;
-import com.nilo.wms.dto.SupplierInfo;
+import com.nilo.wms.dto.*;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.RedisUtil;
+import com.nilo.wms.service.config.SystemConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,20 @@ public class SyncStockSchedule {
     public void execute() {
         try {
             logger.info("====start SyncStockSchedule ====");
-            basicDataService.syncStock("kilimall");
+
+            String clientCode = "kilimall";
+            //设置调用api主体信息
+            ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
+            if (config == null) {
+                throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
+            }
+            //设置调用api主体信息
+            Principal principal = new Principal();
+            principal.setClientCode(clientCode);
+            principal.setCustomerId(config.getCustomerId());
+            principal.setWarehouseId(config.getWarehouseId());
+            SessionLocal.setPrincipal(principal);
+            basicDataService.syncStock(clientCode);
             logger.info(" ======= end SyncStockSchedule =======");
         } catch (Exception ex) {
             logger.error("SyncStockSchedule failed. {}", ex.getMessage(), ex);
