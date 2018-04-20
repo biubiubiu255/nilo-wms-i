@@ -21,7 +21,7 @@ public interface BasicDataService {
 
     void unLockStorage(String orderNo);
 
-    void successStorage(String orderNo);
+    void successStorage(OutboundHeader header);
 
     void syncStock(String clientCode);
 

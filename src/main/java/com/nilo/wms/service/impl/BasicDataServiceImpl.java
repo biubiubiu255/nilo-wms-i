@@ -242,18 +242,9 @@ public class BasicDataServiceImpl implements BasicDataService {
     }
 
     @Override
-    public void successStorage(String orderNo) {
-        //check
-        AssertUtil.isNotBlank(orderNo, CheckErrorCode.CLIENT_ORDER_EMPTY);
+    public void successStorage(OutboundHeader header) {
 
         String clientCode = SessionLocal.getPrincipal().getClientCode();
-
-        // 判断订单号是否已锁定
-        String orderNoKey = RedisUtil.getLockOrderKey(clientCode, orderNo);
-        boolean keyExist = RedisUtil.hasKey(orderNoKey);
-        if (!keyExist) {
-            return;
-        }
 
         //获取redis锁
         Jedis jedis = RedisUtil.getResource();
@@ -261,28 +252,41 @@ public class BasicDataServiceImpl implements BasicDataService {
         boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
         if (!getLock) throw new WMSException(SysErrorCode.SYSTEM_ERROR);
 
-        // 查询锁定列表
-        Set<String> skuList = jedis.hkeys(orderNoKey);
-        for (String sku : skuList) {
-            int qty = Integer.parseInt(jedis.hget(orderNoKey, sku));
+        // 判断订单号是否锁定库存过
+        String orderNoKey = RedisUtil.getLockOrderKey(clientCode, header.getOrderNo());
+        boolean keyExist = RedisUtil.hasKey(orderNoKey);
+        //锁定库存记录存在，则扣减锁定库存及库存
+        if (keyExist) {
+            // 查询锁定列表
+            Set<String> skuList = jedis.hkeys(orderNoKey);
+            skuList.remove(RedisUtil.LOCK_TIME);
+            for (String sku : skuList) {
+                int qty = Integer.parseInt(jedis.hget(orderNoKey, sku));
+                //扣减锁定库存
+                String key = RedisUtil.getSkuKey(clientCode, sku);
+                String lockSto = jedis.hget(key, RedisUtil.LOCK_STORAGE);
+                int afterLockStorage = Integer.parseInt(lockSto) - qty;
+                jedis.hset(key, RedisUtil.LOCK_STORAGE, "" + afterLockStorage);
 
-            //扣减锁定库存
-            String key = RedisUtil.getSkuKey(clientCode, sku);
-            String lockSto = jedis.hget(key, RedisUtil.LOCK_STORAGE);
-            int afterLockStorage = Integer.parseInt(lockSto) - qty;
-            jedis.hset(key, RedisUtil.LOCK_STORAGE, "" + afterLockStorage);
+                //扣减库存
+                String sto = jedis.hget(key, RedisUtil.STORAGE);
+                int stoInt = Integer.parseInt(sto) - qty;
+                jedis.hset(key, RedisUtil.STORAGE, "" + stoInt);
 
-            //扣减库存
-            String key2 = RedisUtil.getSkuKey(clientCode, sku);
-            String sto = jedis.hget(key2, RedisUtil.STORAGE);
-            int stoInt = Integer.parseInt(sto) - qty;
-            jedis.hset(key, RedisUtil.STORAGE, "" + stoInt);
+            }
+            RedisUtil.del(orderNoKey);
+        } else {
+            //未锁定库存过，则只扣减库存,可能出现库存不足情况
+            for (OutboundItem item : header.getItemList()) {
+                //扣减库存
+                String key = RedisUtil.getSkuKey(clientCode, item.getSku());
+                String sto = jedis.hget(key, RedisUtil.STORAGE);
+                int stoInt = Integer.parseInt(sto == null ? "0" : sto) - item.getQty();
+                jedis.hset(key, RedisUtil.STORAGE, "" + stoInt);
+            }
 
         }
-
         RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
-
-        RedisUtil.del(orderNoKey);
     }
 
     @Override

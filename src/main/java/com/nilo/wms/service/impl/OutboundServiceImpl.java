@@ -136,8 +136,8 @@ public class OutboundServiceImpl implements OutboundService {
         //记录出库单信息
         recordOutbound(outBound);
 
-        //FBK扣减库存
-        basicDataService.successStorage(outBound.getOrderNo());
+        //下单成功扣减库存
+        basicDataService.successStorage(outBound);
     }
 
     @Override
