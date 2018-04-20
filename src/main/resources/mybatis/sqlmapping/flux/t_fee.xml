@@ -5,14 +5,14 @@
 
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="orderHandlerDO" type="com.nilo.wms.dto.OrderHandler">
+    <resultMap id="orderHandlerDO" type="com.nilo.wms.dto.FeeDO">
         <result property="orderNo" column="order_no" javaType="java.lang.String"
                 jdbcType="VARCHAR" />
         <result property="categories" column="categories" javaType="java.lang.String"
                 jdbcType="VARCHAR" />
-        <result property="merchantDes" column="merchantDes" javaType="java.lang.String"
+        <result property="storeDesc" column="storeDesc" javaType="java.lang.String"
                 jdbcType="VARCHAR" />
-        <result property="merchantId" column="merchantId" javaType="java.lang.String"
+        <result property="storeId" column="storeId" javaType="java.lang.String"
                 jdbcType="VARCHAR" />
         <result property="sku" column="sku" javaType="java.lang.String"
                 jdbcType="VARCHAR" />
@@ -20,13 +20,17 @@
                 jdbcType="VARCHAR" />
     </resultMap>
 
+    <select id="queryStorage" resultMap="orderHandlerDO">
+        select sku,qty,udf1 storeId,udf2 categories from idx_v_inv where customerId=#{customerId} and warehouseId=#{warehouseId}
+    </select>
+
     <select id="queryInBoundOrderHandler" resultMap="orderHandlerDO">
             select
                    t.asnno           no,
                    t.asnreference1  order_no,
                    b.freightclass    categories,
-                   b.sku_group7      merchantId,
-                   c.descr_c         merchantDes,
+                   b.sku_group7      storeId,
+                   c.descr_c         storeDesc,
                    s.sku           sku,
                    s.receivedqty_each     qty
               from doc_asn_header t
@@ -35,7 +39,8 @@
                 on s.sku = b.sku
               left join bas_customer c
                 on b.sku_group7 = c.customerid
-             where t.asntype = 'PO'
+             where t.customerId=#{customerId} and t.warehouseId=#{warehouseId}
+               and t.asntype = 'PO'
                and to_char(t.edittime,'yyyy-MM-dd') = #{date}
                and t.asnstatus = '99'
     </select>
@@ -45,8 +50,8 @@
         a.orderno no,
         d.soreference1 order_no,
         b.freightclass categories,
-        b.sku_group7  merchantId,
-        c.descr_c     merchantDes,
+        b.sku_group7  storeId,
+        c.descr_c     storeDesc,
         a.sku sku,
         a.qty qty
         from act_allocation_details a
@@ -57,7 +62,8 @@
         left join bas_customer c
         on b.sku_group7 = c.customerid
 
-        where to_char(a.checktime, 'yyyy-MM-dd') = #{date}
+        where d.customerId=#{customerId} and d.warehouseId=#{warehouseId}
+        and to_char(a.checktime, 'yyyy-MM-dd') = #{date}
         and d.ordertype = 'SELL'
         order by a.orderno
 
@@ -68,8 +74,8 @@
                    t.asnno           no,
                    t.asnreference1  order_no,
                    b.freightclass    categories,
-                   b.sku_group7      merchantId,
-                   c.descr_c         merchantDes,
+                   b.sku_group7      storeId,
+                   c.descr_c         storeDesc,
                    s.sku           sku,
                    s.receivedqty_each     qty
               from doc_asn_header t
@@ -78,7 +84,8 @@
                 on s.sku = b.sku
               left join bas_customer c
                 on b.sku_group7 = c.customerid
-             where t.asntype in ( 'TH','JS','TR')
+             where  t.customerId=#{customerId} and t.warehouseId=#{warehouseId}
+               and t.asntype in ( 'TH','JS','TR')
                and t.asnstatus = '99'
                and to_char(t.edittime, 'yyyy-MM-dd') = #{date}
              order by b.sku_group7
@@ -89,8 +96,8 @@
         a.orderno no,
         d.soreference1 order_no,
         b.freightclass categories,
-        b.sku_group7  merchantId,
-        c.descr_c     merchantDes,
+        b.sku_group7  storeId,
+        c.descr_c     storeDesc,
         a.sku sku,
         a.qty qty
         from act_allocation_details a

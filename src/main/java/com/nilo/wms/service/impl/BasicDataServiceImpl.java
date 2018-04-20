@@ -289,10 +289,17 @@ public class BasicDataServiceImpl implements BasicDataService {
     public void syncStock(String clientCode) {
 
         AssertUtil.isNotBlank(clientCode, CheckErrorCode.APP_KEY_EMPTY);
+        //设置调用api主体信息
         ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
         if (config == null) {
             throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
         }
+        //设置调用api主体信息
+        Principal principal = new Principal();
+        principal.setClientCode(clientCode);
+        principal.setCustomerId(config.getCustomerId());
+        principal.setWarehouseId(config.getWarehouseId());
+        SessionLocal.setPrincipal(principal);
 
         StorageParam param = new StorageParam();
         param.setWarehouseId(config.getWarehouseId());

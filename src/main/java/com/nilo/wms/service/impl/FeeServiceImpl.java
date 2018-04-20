@@ -3,6 +3,10 @@ package com.nilo.wms.service.impl;
 import com.alibaba.fastjson.JSON;
 
 import com.nilo.mq.model.NotifyRequest;
+import com.nilo.wms.common.Principal;
+import com.nilo.wms.common.SessionLocal;
+import com.nilo.wms.common.exception.BizErrorCode;
+import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.MailInfo;
 import com.nilo.wms.common.util.SendEmailUtil;
 import com.nilo.wms.common.util.StringUtil;
@@ -10,7 +14,6 @@ import com.nilo.wms.dao.flux.WMSFeeDao;
 import com.nilo.wms.dto.*;
 import com.nilo.mq.producer.AbstractMQProducer;
 import com.nilo.wms.service.FeeService;
-import com.nilo.wms.service.RedisUtil;
 import com.nilo.wms.service.config.SystemConfig;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -18,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -37,17 +39,45 @@ public class FeeServiceImpl implements FeeService {
     private AbstractMQProducer notifyDataBusProducer;
 
     @Override
+    public List<Fee> queryStorageFee(String clientCode, String date) {
+        List<Fee> resultList = new ArrayList<>();
+        ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
+        if (config == null) {
+            throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
+        }
+        List<FeeDO> list = feeDao.queryStorage(config.getCustomerId(), config.getWarehouseId());
+
+        for (FeeDO d : list) {
+            Fee f = new Fee();
+            f.setSeller_id(d.getStoreId());
+            f.setFactor1(d.getCategories());
+
+            f.setFactor2(getFactor2(clientCode, "storage", d));
+            f.setClass_id(d.getCategories());
+            f.setQty(d.getQty());
+            f.setSku(d.getSku());
+            f.setReceivable_money(getMoney(clientCode, "storage", d.getCategories(), d.getQty(), false));
+            resultList.add(f);
+        }
+
+        return resultList;
+    }
+
+    @Override
     public List<Fee> queryInboundOrder(String clientCode, String date) {
         List<Fee> resultList = new ArrayList<>();
-
-        List<OrderHandler> list = feeDao.queryInBoundOrderHandler(date);
-        for (OrderHandler o : list) {
+        ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
+        if (config == null) {
+            throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
+        }
+        List<FeeDO> list = feeDao.queryInBoundOrderHandler(config.getCustomerId(), config.getWarehouseId(), date);
+        for (FeeDO o : list) {
             Fee f = new Fee();
             f.setOrder_sn(o.getOrderNo());
             f.setOrder_no(o.getNo());
             f.setClass_id(o.getCategories());
-            f.setSeller_id(o.getMerchantId());
-            f.setSeller_name(o.getMerchantDes());
+            f.setSeller_id(o.getStoreId());
+            f.setSeller_name(o.getStoreDesc());
             f.setFactor1(o.getCategories());
             f.setSku(o.getSku());
             f.setQty(o.getQty());
@@ -64,16 +94,22 @@ public class FeeServiceImpl implements FeeService {
     @Override
     public List<Fee> queryOrderHandlerFee(String clientCode, String date) {
         List<Fee> resultList = new ArrayList<>();
-        List<OrderHandler> list = feeDao.queryOrderHandler(date);
+
+        ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
+        if (config == null) {
+            throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
+        }
+
+        List<FeeDO> list = feeDao.queryOrderHandler(config.getCustomerId(), config.getWarehouseId(), date);
 
         Map<String, String> categoriesMap = new HashMap<>();
 
-        for (OrderHandler o : list) {
+        for (FeeDO o : list) {
             Fee f = new Fee();
             f.setOrder_sn(o.getOrderNo());
             f.setOrder_no(o.getNo());
-            f.setSeller_id(o.getMerchantId());
-            f.setSeller_name(o.getMerchantDes());
+            f.setSeller_id(o.getStoreId());
+            f.setSeller_name(o.getStoreDesc());
             f.setFactor1(o.getCategories());
             f.setSku(o.getSku());
             f.setQty(o.getQty());
@@ -81,14 +117,14 @@ public class FeeServiceImpl implements FeeService {
             f.setFactor2(getFactor2(clientCode, "handle", o));
             f.setClass_id(o.getCategories());
 
-            if (StringUtil.isNotEmpty(categoriesMap.get(o.getOrderNo() + o.getCategories() + o.getMerchantId()))) {
+            if (StringUtil.isNotEmpty(categoriesMap.get(o.getOrderNo() + o.getCategories() + o.getStoreId()))) {
                 f.setReceivable_money(getMoney(clientCode, "handle", o.getCategories(), o.getQty(), true));
             } else {
                 f.setReceivable_money(getMoney(clientCode, "handle", o.getCategories(), o.getQty(), false));
             }
 
             //记录已计算该类别
-            categoriesMap.put(o.getOrderNo() + o.getCategories() + o.getMerchantId(), o.getCategories());
+            categoriesMap.put(o.getOrderNo() + o.getCategories() + o.getStoreId(), o.getCategories());
             resultList.add(f);
         }
         return resultList;
@@ -97,16 +133,19 @@ public class FeeServiceImpl implements FeeService {
     @Override
     public List<Fee> queryOrderReturnHandlerFee(String clientCode, String date) {
         List<Fee> resultList = new ArrayList<>();
-
-        List<OrderHandler> list = feeDao.queryOrderReturn(date);
+        ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
+        if (config == null) {
+            throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
+        }
+        List<FeeDO> list = feeDao.queryOrderReturn(config.getCustomerId(), config.getWarehouseId(), date);
 
         Map<String, String> categoriesMap = new HashMap<>();
-        for (OrderHandler o : list) {
+        for (FeeDO o : list) {
             Fee f = new Fee();
             f.setOrder_sn(o.getOrderNo());
             f.setOrder_no(o.getNo());
-            f.setSeller_id(o.getMerchantId());
-            f.setSeller_name(o.getMerchantDes());
+            f.setSeller_id(o.getStoreId());
+            f.setSeller_name(o.getStoreDesc());
             f.setFactor1(o.getCategories());
             f.setSku(o.getSku());
             f.setQty(o.getQty());
@@ -114,14 +153,14 @@ public class FeeServiceImpl implements FeeService {
             f.setFactor2(getFactor2(clientCode, "return", o));
             f.setClass_id(o.getCategories());
 
-            if (StringUtil.isNotEmpty(categoriesMap.get(o.getOrderNo() + o.getCategories() + o.getMerchantId()))) {
+            if (StringUtil.isNotEmpty(categoriesMap.get(o.getOrderNo() + o.getCategories() + o.getStoreId()))) {
                 f.setReceivable_money(getMoney(clientCode, "return", o.getCategories(), o.getQty(), true));
             } else {
                 f.setReceivable_money(getMoney(clientCode, "return", o.getCategories(), o.getQty(), false));
             }
 
             //记录已计算该类别
-            categoriesMap.put(o.getOrderNo() + o.getCategories() + o.getMerchantId(), o.getCategories());
+            categoriesMap.put(o.getOrderNo() + o.getCategories() + o.getStoreId(), o.getCategories());
             resultList.add(f);
         }
         return resultList;
@@ -130,14 +169,17 @@ public class FeeServiceImpl implements FeeService {
     @Override
     public List<Fee> queryReturnMerchantHandlerFee(String clientCode, String date) {
         List<Fee> resultList = new ArrayList<>();
-
-        List<OrderHandler> list = feeDao.queryReturnMerchant(date);
-        for (OrderHandler o : list) {
+        ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
+        if (config == null) {
+            throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
+        }
+        List<FeeDO> list = feeDao.queryReturnMerchant(config.getCustomerId(), config.getWarehouseId(), date);
+        for (FeeDO o : list) {
             Fee f = new Fee();
             f.setOrder_sn(o.getOrderNo());
             f.setOrder_no(o.getNo());
-            f.setSeller_id(o.getMerchantId());
-            f.setSeller_name(o.getMerchantDes());
+            f.setSeller_id(o.getStoreId());
+            f.setSeller_name(o.getStoreDesc());
             f.setFactor1(o.getCategories());
             f.setQty(o.getQty());
             f.setSku(o.getSku());
@@ -157,16 +199,23 @@ public class FeeServiceImpl implements FeeService {
 
         if (list == null || list.size() == 0) return;
 
-        Jedis jedis = RedisUtil.getResource();
-        ClientConfig clientConfig = JSON.parseObject(jedis.get("System_merchant_config" + "1"),
-                ClientConfig.class);
-        InterfaceConfig interfaceConfig = JSON.parseObject(
-                jedis.hget("System_interface_config" + "1", "wms_fee"), InterfaceConfig.class);
-        RedisUtil.returnResource(jedis);
+
+        //设置调用api主体信息
+        ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
+        if (config == null) {
+            throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
+        }
+        //设置调用api主体信息
+        Principal principal = new Principal();
+        principal.setClientCode(clientCode);
+        principal.setCustomerId(config.getCustomerId());
+        principal.setWarehouseId(config.getWarehouseId());
+        SessionLocal.setPrincipal(principal);
+
+        InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("wms_fee");
 
         //发送消息通知失败列表
         Map<Fee, String> failedMap = new HashMap<>();
-
         for (Fee f : list) {
             //写入 nos
             Map<String, Object> map = new HashMap<>();
@@ -180,7 +229,7 @@ public class FeeServiceImpl implements FeeService {
 
             Map<String, String> params = new HashMap<>();
             params.put("method", interfaceConfig.getMethod());
-            params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
+            params.put("sign", createNOSSign(data, config.getClientKey()));
             params.put("data", data);
             params.put("app_key", "wms");
             notify.setParam(params);
@@ -216,7 +265,7 @@ public class FeeServiceImpl implements FeeService {
      * @param isNext     是否是续件
      * @return
      */
-    private double getMoney(String clientCode, String prefix, String categories, double storage, boolean isNext) {
+    private double getMoney(String clientCode, String prefix, String categories, int storage, boolean isNext) {
         FeePrice fee = SystemConfig.getFeeConfig().get(clientCode).get(prefix + categories);
         if (fee == null) {
             fee = SystemConfig.getFeeConfig().get(clientCode).get(prefix + "other");
@@ -234,7 +283,7 @@ public class FeeServiceImpl implements FeeService {
         return price.doubleValue();
     }
 
-    private String getFactor2(String clientCode, String prefix, OrderHandler h) {
+    private String getFactor2(String clientCode, String prefix, FeeDO h) {
         FeePrice fee = SystemConfig.getFeeConfig().get(clientCode).get(prefix + h.getCategories());
         if (fee == null) {
             h.setCategories("9999");

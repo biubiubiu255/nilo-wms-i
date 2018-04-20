@@ -14,6 +14,7 @@
                 <ref bean="orderhandlerTrigger"/>
                 <ref bean="orderreturnTrigger"/>
                 <ref bean="returnmerchantTrigger"/>
+                <ref bean="storageTrigger"/>
                 <ref bean="emailTrigger"/>
             </list>
         </property>
@@ -23,7 +24,7 @@
     <!-- 通知调度配置 begin  -->
     <bean id="inboundTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="inboundTriggerDetail"/>
-        <property name="cronExpression" value="0 50 16 ? * *"/>
+        <property name="cronExpression" value="0 10 0 ? * *"/>
     </bean>
 
     <bean id="inboundTriggerDetail"
@@ -37,7 +38,7 @@
     <!-- 通知调度配置 begin  -->
     <bean id="orderhandlerTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="orderhandlerTriggerDetail"/>
-        <property name="cronExpression" value="0 50 15 ? * *"/>
+        <property name="cronExpression" value="0 20 0 ? * *"/>
     </bean>
 
     <bean id="orderhandlerTriggerDetail"
@@ -52,7 +53,7 @@
     <!-- 通知调度配置 begin  -->
     <bean id="orderreturnTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="orderreturnTriggerDetail"/>
-        <property name="cronExpression" value="0 50 17 ? * *"/>
+        <property name="cronExpression" value="0 30 0 ? * *"/>
     </bean>
 
     <bean id="orderreturnTriggerDetail"
@@ -66,7 +67,7 @@
     <!-- 通知调度配置 begin  -->
     <bean id="returnmerchantTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="returnmerchantTriggerDetail"/>
-        <property name="cronExpression" value="0 50 18 ? * *"/>
+        <property name="cronExpression" value="0 40 0 ? * *"/>
     </bean>
 
     <bean id="returnmerchantTriggerDetail"
@@ -91,6 +92,20 @@
     </bean>
     <!-- 通知调度配置 end  -->
 
+    <!-- 通知调度配置 begin  -->
+    <bean id="storageTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="storageTriggerDetail"/>
+        <property name="cronExpression" value="0 37 9 ? * *"/>
+    </bean>
+
+    <bean id="storageTriggerDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="storageFee"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <!-- 通知调度配置 end  -->
+
     <bean id="inbound"
           class="com.nilo.wms.service.scheduler.InBoundHandlerFeeScheduler"/>
     <bean id="orderhandler"
@@ -101,6 +116,8 @@
           class="com.nilo.wms.service.scheduler.ReturnMerchantHandlerFeeScheduler"/>
     <bean id="emailNotify"
           class="com.nilo.wms.service.scheduler.EmailScheduler"/>
+    <bean id="storageFee"
+          class="com.nilo.wms.service.scheduler.StorageFeeScheduler"/>
     <!-- 通知调度配置 end  -->
 
 </beans>

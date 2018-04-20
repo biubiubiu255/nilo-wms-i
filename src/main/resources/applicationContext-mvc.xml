@@ -8,11 +8,11 @@
 						http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd        
 						"
        default-autowire="byName">
-    <context:component-scan base-package="com.nilo">
-        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
-    </context:component-scan>
 
+    <context:component-scan base-package="com.nilo.wms.web">
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
     <bean id="exceptionHandler" class="com.nilo.wms.web.DefaultExceptionHandler"/>
 
     <!-- 定义视图解析器 -->

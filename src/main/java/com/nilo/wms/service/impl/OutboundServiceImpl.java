@@ -82,9 +82,10 @@ public class OutboundServiceImpl implements OutboundService {
         Principal principal = SessionLocal.getPrincipal();
         String clientCode = principal.getClientCode();
 
-
         outBound.setCustomerId(principal.getCustomerId());
         outBound.setWarehouseId(principal.getWarehouseId());
+
+
         int lineNo = 0;
         for (OutboundItem item : outBound.getItemList()) {
             item.setCustomerId(principal.getCustomerId());
@@ -94,6 +95,7 @@ public class OutboundServiceImpl implements OutboundService {
 
         OutboundDO outboundDO = outboundDao.queryByReferenceNo(clientCode, outBound.getOrderNo());
         if (outboundDO != null) return;
+
 
         //构建flux请求对象
         FLuxRequest request = new FLuxRequest();
@@ -131,15 +133,14 @@ public class OutboundServiceImpl implements OutboundService {
         if (!response.isSuccess()) {
             throw new RuntimeException(response.getReturnDesc());
         }
-
         //记录出库单信息
         recordOutbound(outBound);
+
         //FBK扣减库存
         basicDataService.successStorage(outBound.getOrderNo());
     }
 
     @Override
-    @Transactional
     public void cancelOutBound(String orderNo) {
 
         AssertUtil.isNotBlank(orderNo, CheckErrorCode.CLIENT_ORDER_EMPTY);
@@ -149,12 +150,6 @@ public class OutboundServiceImpl implements OutboundService {
         OutboundDO outboundDO = outboundDao.queryByReferenceNo(clientCode, orderNo);
         if (outboundDO == null) throw new WMSException(BizErrorCode.NOT_EXIST, orderNo);
         if (outboundDO.getStatus() == OutBoundStatusEnum.cancelled.getCode()) return;
-
-        OutboundDO update = new OutboundDO();
-        update.setClientCode(clientCode);
-        update.setReferenceNo(orderNo);
-        update.setStatus(OutBoundStatusEnum.cancelled.getCode());
-        outboundDao.update(update);
 
         OutBoundSimpleBean cancelOrder = new OutBoundSimpleBean();
         cancelOrder.setOrderNo(orderNo);
@@ -176,6 +171,12 @@ public class OutboundServiceImpl implements OutboundService {
         if (!response.isSuccess()) {
             throw new RuntimeException(response.getReturnDesc());
         }
+
+        OutboundDO update = new OutboundDO();
+        update.setClientCode(clientCode);
+        update.setReferenceNo(orderNo);
+        update.setStatus(OutBoundStatusEnum.cancelled.getCode());
+        outboundDao.update(update);
 
         // 增加库存
         List<OutboundItemDO> itemList = outboundItemDao.queryByReferenceNo(orderNo);

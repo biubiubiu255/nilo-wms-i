@@ -1,6 +1,7 @@
 package com.nilo.wms.dao.flux;
 
-import com.nilo.wms.dto.OrderHandler;
+import com.nilo.wms.dto.FeeDO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,11 +12,13 @@ import java.util.List;
 @Repository
 public interface WMSFeeDao {
 
-    List<OrderHandler> queryInBoundOrderHandler(String date);
+    List<FeeDO> queryStorage(@Param(value = "customerId") String customerId, @Param(value = "warehouseId")String warehouseId);
 
-    List<OrderHandler> queryOrderHandler(String date);
+    List<FeeDO> queryInBoundOrderHandler(@Param(value = "customerId") String customerId, @Param(value = "warehouseId")String warehouseId, @Param(value = "date")String date);
 
-    List<OrderHandler> queryOrderReturn(String date);
+    List<FeeDO> queryOrderHandler(@Param(value = "customerId") String customerId, @Param(value = "warehouseId")String warehouseId, @Param(value = "date")String date);
 
-    List<OrderHandler> queryReturnMerchant(String date);
+    List<FeeDO> queryOrderReturn(@Param(value = "customerId") String customerId, @Param(value = "warehouseId")String warehouseId, @Param(value = "date")String date);
+
+    List<FeeDO> queryReturnMerchant(@Param(value = "customerId") String customerId, @Param(value = "warehouseId")String warehouseId, @Param(value = "date")String date);
 }

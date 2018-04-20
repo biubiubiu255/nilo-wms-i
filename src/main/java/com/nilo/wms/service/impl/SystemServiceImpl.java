@@ -75,5 +75,7 @@ public class SystemServiceImpl implements SystemService {
 
             feeConfig.put(entry.getKey(), feeConf);
         }
+        SystemConfig.setFeeConfig(feeConfig);
+
     }
 }

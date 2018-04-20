@@ -8,8 +8,9 @@
 
     <bean id="springContext" class="com.nilo.wms.service.SpringContext"/>
 
-    <context:component-scan base-package="com.nilo">
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    <context:component-scan base-package="com.nilo" >
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
 
@@ -49,9 +50,9 @@
 
     <!-- 配置redis共享连接池，业务层主要通过该bean访问redis服务器 -->
     <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
-        <constructor-arg name="poolConfig" ref="jedisPoolConfig" />
-        <constructor-arg name="host" value="${redis.host}" />
-        <constructor-arg name="port" value="${redis.port}" type="int" />
+        <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
+        <constructor-arg name="host" value="${redis.host}"/>
+        <constructor-arg name="port" value="${redis.port}" type="int"/>
     </bean>
 
     <bean class="com.nilo.mq.producer.ProducerStartup" init-method="initial"

@@ -36,17 +36,6 @@ public class SyncStockSchedule {
             logger.info("====start SyncStockSchedule ====");
 
             String clientCode = "kilimall";
-            //设置调用api主体信息
-            ClientConfig config = SystemConfig.getClientConfig().get(clientCode);
-            if (config == null) {
-                throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
-            }
-            //设置调用api主体信息
-            Principal principal = new Principal();
-            principal.setClientCode(clientCode);
-            principal.setCustomerId(config.getCustomerId());
-            principal.setWarehouseId(config.getWarehouseId());
-            SessionLocal.setPrincipal(principal);
             basicDataService.syncStock(clientCode);
             logger.info(" ======= end SyncStockSchedule =======");
         } catch (Exception ex) {

@@ -60,7 +60,6 @@ public class InboundServiceImpl implements InboundService {
     private FluxInboundDao fluxInboundDao;
 
     @Override
-    @Transactional
     public void createInBound(InboundHeader inbound) {
 
         AssertUtil.isNotNull(inbound, SysErrorCode.REQUEST_IS_NULL);
@@ -83,16 +82,6 @@ public class InboundServiceImpl implements InboundService {
 
         InboundDO inboundDO = inboundDao.queryByReferenceNo(clientCode, inbound.getReferenceNo());
         if (inboundDO != null) return;
-        InboundDO insert = new InboundDO();
-        insert.setClientCode(clientCode);
-        insert.setReferenceNo(inbound.getReferenceNo());
-        insert.setReferenceNo2(inbound.getReferenceNo2());
-        insert.setCustomerId(inbound.getCustomerId());
-        insert.setWarehouseId(inbound.getWarehouseId());
-        insert.setStatus(InboundStatusEnum.create.getCode());
-        insert.setAsnType(inbound.getAsnType());
-        inboundDao.insert(insert);
-
 
         //构建flux请求对象
         FLuxRequest request = new FLuxRequest();
@@ -125,6 +114,16 @@ public class InboundServiceImpl implements InboundService {
         if (!response.isSuccess()) {
             throw new RuntimeException(response.getReturnDesc());
         }
+        //保存记录
+        InboundDO insert = new InboundDO();
+        insert.setClientCode(clientCode);
+        insert.setReferenceNo(inbound.getReferenceNo());
+        insert.setReferenceNo2(inbound.getReferenceNo2());
+        insert.setCustomerId(inbound.getCustomerId());
+        insert.setWarehouseId(inbound.getWarehouseId());
+        insert.setStatus(InboundStatusEnum.create.getCode());
+        insert.setAsnType(inbound.getAsnType());
+        inboundDao.insert(insert);
     }
 
     @Override

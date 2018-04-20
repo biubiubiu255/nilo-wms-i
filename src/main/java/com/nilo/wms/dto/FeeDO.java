@@ -3,7 +3,7 @@ package com.nilo.wms.dto;
 /**
  * Created by Administrator on 2017/6/9.
  */
-public class OrderHandler {
+public class FeeDO {
 
     private String no;
 
@@ -13,9 +13,9 @@ public class OrderHandler {
 
     private String categories;
 
-    private String merchantId;
+    private String storeId;
 
-    private String merchantDes;
+    private String storeDesc;
 
     private String sku;
 
@@ -70,20 +70,20 @@ public class OrderHandler {
         this.categories = categories;
     }
 
-    public String getMerchantId() {
-        return merchantId;
+    public String getStoreId() {
+        return storeId;
     }
 
-    public void setMerchantId(String merchantId) {
-        this.merchantId = merchantId;
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
     }
 
-    public String getMerchantDes() {
-        return merchantDes;
+    public String getStoreDesc() {
+        return storeDesc;
     }
 
-    public void setMerchantDes(String merchantDes) {
-        this.merchantDes = merchantDes;
+    public void setStoreDesc(String storeDesc) {
+        this.storeDesc = storeDesc;
     }
 
 
