@@ -37,6 +37,18 @@ public class SupplierInfo implements Serializable {
     private String email;
     @JSONField(name = "notes")
     private String notes;
+    //1:China ; 2:Local
+    @JSONField(name = "type")
+    private String type;
+
+    @XmlElement(name = "UDF1")
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     @XmlElement(name = "CustomerID")
     public String getCustomerId() {

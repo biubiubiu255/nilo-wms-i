@@ -5,7 +5,7 @@
           http://www.springframework.org/schema/security
           http://www.springframework.org/schema/security/spring-security-4.2.xsd">
 
-    <http>
+<!--    <http>
         <intercept-url pattern="/servlet/security/*" access="hasRole('ROLE_USER')" />
         <http-basic/>
         <csrf disabled="true"/>
@@ -17,6 +17,6 @@
                 <user name="${security_name}" password="${security_password}" authorities="ROLE_USER" />
             </user-service>
         </authentication-provider>
-    </authentication-manager>
+    </authentication-manager>-->
 
 </beans:beans>

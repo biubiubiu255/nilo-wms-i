@@ -40,7 +40,11 @@ public enum CheckErrorCode implements ErrorCode {
     RECEIVER_PHONE_EMPTY("receiver contact_number empty.", "100030"),
     CLIENT_ID_EMPTY("client_id empty.", "100031"),
     STORE_ADDRESS_EMPTY("address empty.", "100032"),
-
+    STORE_TYPE_EMPTY("type empty.", "100033"),
+    STORE_TYPE_NOT_EXIST("type not exist.", "100034"),
+    USER_NAME_EMPTY("user name empty.", "100035"),
+    PASSWORD_EMPTY("password empty.", "100036"),
+    RANDOM_CODE_EMPTY("random code emtpy.", "100037"),
     ;
 
     private final String description;

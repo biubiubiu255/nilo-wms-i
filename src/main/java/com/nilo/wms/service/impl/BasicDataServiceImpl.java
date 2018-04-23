@@ -81,7 +81,10 @@ public class BasicDataServiceImpl implements BasicDataService {
         for (SupplierInfo supplierInfo : list) {
             AssertUtil.isNotBlank(supplierInfo.getCustomerId(), CheckErrorCode.STORE_EMPTY);
             AssertUtil.isNotBlank(supplierInfo.getDescE(), CheckErrorCode.STORE_DESC_EMPTY);
+            AssertUtil.isNotBlank(supplierInfo.getType(), CheckErrorCode.STORE_TYPE_EMPTY);
             AssertUtil.isNotBlank(supplierInfo.getAddress(), CheckErrorCode.STORE_ADDRESS_EMPTY);
+            AssertUtil.isTrue(StringUtil.equals(supplierInfo.getType(), "1") || StringUtil.equals(supplierInfo.getType(), "2"), CheckErrorCode.STORE_TYPE_NOT_EXIST);
+
         }
 
         for (SupplierInfo supplierInfo : list) {
