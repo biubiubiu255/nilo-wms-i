@@ -29,11 +29,11 @@ public class StorageFeeScheduler {
             String dateString = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
             //查询入库
             String clientCode = "kilimall";
-            List<Fee> list = feeService.queryStorageFee(clientCode,dateString);
-            feeService.syncToNOS(list, clientCode,dateString, MoneyType.In_Bound.getCode());
+            List<Fee> list = feeService.queryStorageFee(clientCode, dateString);
+            feeService.syncToNOS(list, clientCode, dateString, MoneyType.In_Bound.getCode());
             logger.info("====end  inbound fee====");
         } catch (Exception ex) {
-            logger.error("get delivery fee faild." ,ex.getMessage(),ex);
+            logger.error("get delivery fee faild.", ex.getMessage(), ex);
         }
     }
 }

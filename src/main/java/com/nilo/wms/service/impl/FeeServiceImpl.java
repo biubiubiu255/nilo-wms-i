@@ -7,6 +7,7 @@ import com.nilo.wms.common.Principal;
 import com.nilo.wms.common.SessionLocal;
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.WMSException;
+import com.nilo.wms.common.util.DateUtil;
 import com.nilo.wms.common.util.MailInfo;
 import com.nilo.wms.common.util.SendEmailUtil;
 import com.nilo.wms.common.util.StringUtil;
@@ -214,42 +215,38 @@ public class FeeServiceImpl implements FeeService {
 
         InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("wms_fee");
 
-        //发送消息通知失败列表
-        Map<Fee, String> failedMap = new HashMap<>();
-        for (Fee f : list) {
-            //写入 nos
-            Map<String, Object> map = new HashMap<>();
-            map.put("list", Arrays.asList(f));
-            map.put("date", date);
-            map.put("type_id", "1");
-            map.put("charge_type", "1");
-            map.put("money_type", moneyType);
-            String data = JSON.toJSONString(map);
-            NotifyRequest notify = new NotifyRequest();
 
-            Map<String, String> params = new HashMap<>();
-            params.put("method", interfaceConfig.getMethod());
-            params.put("sign", createNOSSign(data, config.getClientKey()));
-            params.put("data", data);
-            params.put("app_key", "wms");
-            notify.setParam(params);
-            notify.setUrl(interfaceConfig.getUrl());
-            try {
-                notifyDataBusProducer.sendMessage(notify);
-            } catch (Exception e) {
-                failedMap.put(f, e.getMessage());
-                logger.error("WMS Fee send message failed.", e);
-            }
-        }
-        //出现通知失败，发送邮件
-        if (failedMap.size() > 0) {
+        //写入 nos
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", list);
+        map.put("date", date);
+        map.put("type_id", "1");
+        map.put("charge_type", "1");
+        map.put("money_type", moneyType);
+        String data = JSON.toJSONString(map);
+        NotifyRequest notify = new NotifyRequest();
+
+        Map<String, String> params = new HashMap<>();
+        params.put("method", interfaceConfig.getMethod());
+        params.put("sign", createNOSSign(data, config.getClientKey()));
+        params.put("data", data);
+        params.put("app_key", "wms");
+        params.put("timestamp", ""+DateUtil.getSysTimeStamp());
+        String request_id = UUID.randomUUID().toString();
+        params.put("request_id", request_id);
+        notify.setParam(params);
+        notify.setUrl(interfaceConfig.getUrl());
+        try {
+            notifyDataBusProducer.sendMessage(notify);
+        } catch (Exception e) {
             MailInfo mailInfo = new MailInfo();
             mailInfo.setSubject("WMS Fee Type: " + moneyType + " Date: " + date + " Notify Failed");
             List to = new ArrayList<>();
             to.add("ronny.zeng@kilimall.com");
             mailInfo.setToAddress(to);
-            mailInfo.setContent(builTemplate(failedMap));
+            mailInfo.setContent(request_id);
             SendEmailUtil.sendEmail(mailInfo);
+            logger.error("WMS Fee send message failed.", e);
         }
     }
 
@@ -291,16 +288,6 @@ public class FeeServiceImpl implements FeeService {
         }
 
         return fee.getNextPrice() == null ? "" + fee.getFirstPrice().doubleValue() : "" + fee.getFirstPrice().doubleValue() + "/" + fee.getNextPrice();
-    }
-
-
-    private String builTemplate(Map<Fee, String> map) {
-
-        StringBuffer template = new StringBuffer("<table border=\"0\" cellpadding=\"3\" cellspacing=\"1\" bgcolor=\"#c1c1c1\"><tr bgcolor=\"#FFFFFF\"> <td>Order No</td> <td>SKU</td> <td>Fee</td><td>Error Msg</td> </tr>  ");
-        for (Map.Entry<Fee, String> entry : map.entrySet()) {
-            template.append("<tr bgcolor=\"#FFFFFF\"> <td>").append(entry.getKey().getOrder_no()).append("</td> <td>").append(entry.getKey().getSku()).append("</td> <td>").append(entry.getKey().getReceivable_money()).append("</td> <td>").append(entry.getValue()).append("</td></tr> ");
-        }
-        return template.append(" </table> ").toString();
     }
 
 }

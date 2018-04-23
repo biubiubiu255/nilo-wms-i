@@ -4,8 +4,6 @@
  */
 package com.nilo.wms.web;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.CheckErrorCode;
 import com.nilo.wms.common.exception.SysErrorCode;
@@ -20,8 +18,6 @@ import com.nilo.wms.service.RedisUtil;
 import com.nilo.wms.service.config.SystemConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -122,7 +118,7 @@ public class SkuStorageInfoController extends BaseController {
         RedisUtil.hset(RedisUtil.getSkuKey(clientCode, sku), RedisUtil.LOCK_STORAGE, "" + lockStorage);
         RedisUtil.hset(RedisUtil.getSkuKey(clientCode, sku), RedisUtil.STORAGE, "" + redisStorage);
 
-        RedisUtil.releaseDistributedLock(jedis,RedisUtil.LOCK_KEY, requestId);
+        RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
 
         return toJsonTrueMsg();
     }

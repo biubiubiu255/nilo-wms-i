@@ -1,21 +1,14 @@
 package com.nilo.wms.service.scheduler;
 
-import com.nilo.mq.model.NotifyRequest;
-import com.nilo.wms.common.enums.MoneyType;
 import com.nilo.wms.common.util.MailInfo;
 import com.nilo.wms.common.util.SendEmailUtil;
 import com.nilo.wms.dao.platform.NotifyDao;
-import com.nilo.wms.dto.Fee;
 import com.nilo.wms.dto.NotifyDO;
-import com.nilo.wms.service.FeeService;
-import com.sun.tools.corba.se.idl.constExpr.Not;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 

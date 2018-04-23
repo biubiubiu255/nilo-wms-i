@@ -4,17 +4,12 @@
  */
 package com.nilo.wms.web;
 
-import com.alibaba.fastjson.JSON;
 import com.nilo.wms.common.Principal;
 import com.nilo.wms.common.SessionLocal;
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.WMSException;
-import com.nilo.wms.dao.flux.StorageDao;
 import com.nilo.wms.dto.ClientConfig;
-import com.nilo.wms.dto.StorageInfo;
-import com.nilo.wms.dto.StorageParam;
 import com.nilo.wms.service.BasicDataService;
-import com.nilo.wms.service.RedisUtil;
 import com.nilo.wms.service.config.SystemConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
 
 
 @Controller

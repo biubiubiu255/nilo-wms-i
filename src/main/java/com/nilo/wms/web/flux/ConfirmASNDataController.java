@@ -39,7 +39,7 @@ public class ConfirmASNDataController extends BaseController {
         if (logger.isDebugEnabled()) {
             logger.debug("Request confirmASNData.html -data:{}", data);
         }
-        data = removeXmlDataElement(data,"xmldata");
+        data = removeXmlDataElement(data, "xmldata");
         inboundService.confirmASN(buildASNInfo(data));
         return xmlSuccessReturn();
 
@@ -53,11 +53,12 @@ public class ConfirmASNDataController extends BaseController {
         if (logger.isDebugEnabled()) {
             logger.debug("Request confirmTRASNData.html -data:{}", data);
         }
-        data = removeXmlDataElement(data,"xmldata");
+        data = removeXmlDataElement(data, "xmldata");
         inboundService.confirmASN(buildASNInfo(data));
         return xmlSuccessReturn();
 
     }
+
     private List<InboundHeader> buildASNInfo(String data) {
 
         WMSOrderNotify notify = XmlUtil.XMLToBean(data, WMSOrderNotify.class);
