@@ -1,6 +1,6 @@
 package com.nilo.wms.service;
 
-import com.nilo.wms.service.RedisUtil;
+import com.nilo.wms.service.system.RedisUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

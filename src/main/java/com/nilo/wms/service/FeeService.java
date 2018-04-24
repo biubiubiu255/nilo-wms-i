@@ -1,6 +1,6 @@
 package com.nilo.wms.service;
 
-import com.nilo.wms.dto.Fee;
+import com.nilo.wms.dto.fee.Fee;
 
 import java.util.List;
 

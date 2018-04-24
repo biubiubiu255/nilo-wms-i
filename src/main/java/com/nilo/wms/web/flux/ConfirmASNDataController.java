@@ -5,8 +5,8 @@
 package com.nilo.wms.web.flux;
 
 import com.nilo.wms.common.util.XmlUtil;
-import com.nilo.wms.dto.InboundHeader;
-import com.nilo.wms.dto.InboundItem;
+import com.nilo.wms.dto.inbound.InboundHeader;
+import com.nilo.wms.dto.inbound.InboundItem;
 import com.nilo.wms.service.InboundService;
 import com.nilo.wms.web.BaseController;
 import com.nilo.wms.web.model.NotifyOrder;

@@ -14,7 +14,10 @@ public enum BizErrorCode implements ErrorCode {
     STORAGE_NOT_ENOUGH("sku {0} storage not enough.", "200006"),
     OUTBOUND_NOT_EXIST("referenceNo not exist.", "200007"),
     ORDER_TYPE_NOT_EXIST("order_type not exist.", "100031"),
-    RANDOM_CODE_ERROR("random code error.", "100032"),;
+    RANDOM_CODE_ERROR("random code error.", "100032"),
+    USERNAME_PASSWORD_ERROR("username or password error.", "100038"),
+
+    ;
 
     private final String description;
     private final String code;

@@ -4,7 +4,7 @@
 <mapper namespace="com.nilo.wms.dao.platform.OutboundItemDao">
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="OutboundItemDO" type="com.nilo.wms.dto.OutboundItemDO">
+    <resultMap id="OutboundItemDO" type="com.nilo.wms.dto.outbound.OutboundItemDO">
         <result property="id" column="id" javaType="java.lang.Long"
                 jdbcType="INTEGER"/>
         <result property="customerId" column="customer_id" javaType="java.lang.String"
@@ -34,7 +34,7 @@
     </insert>
 
     <!-- 插入语句 -->
-    <insert id="insert" parameterType="com.nilo.wms.dto.OutboundItemDO" statementType="PREPARED"
+    <insert id="insert" parameterType="com.nilo.wms.dto.outbound.OutboundItemDO" statementType="PREPARED"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_outbound_item

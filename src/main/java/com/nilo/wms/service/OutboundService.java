@@ -1,7 +1,7 @@
 package com.nilo.wms.service;
 
 import com.nilo.wms.dto.flux.FluxOutbound;
-import com.nilo.wms.dto.OutboundHeader;
+import com.nilo.wms.dto.outbound.OutboundHeader;
 
 import java.util.List;
 

@@ -17,9 +17,11 @@ import com.nilo.wms.dao.flux.StorageDao;
 import com.nilo.wms.dto.*;
 import com.nilo.wms.dto.flux.FLuxRequest;
 import com.nilo.wms.dto.flux.FluxResponse;
+import com.nilo.wms.dto.outbound.OutboundHeader;
+import com.nilo.wms.dto.outbound.OutboundItem;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
-import com.nilo.wms.service.RedisUtil;
+import com.nilo.wms.service.system.RedisUtil;
 import com.nilo.wms.service.config.SystemConfig;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -105,11 +107,10 @@ public class BasicDataServiceImpl implements BasicDataService {
 
     @Override
     public List<StorageInfo> queryStorage(StorageParam param) {
-
         AssertUtil.isNotNull(param, SysErrorCode.REQUEST_IS_NULL);
-        AssertUtil.isNotBlank(param.getCustomerId(), CheckErrorCode.CUSTOMER_EMPTY);
-        AssertUtil.isNotBlank(param.getWarehouseId(), CheckErrorCode.WAREHOUSE_EMPTY);
-
+        Principal clientCode = SessionLocal.getPrincipal();
+        param.setCustomerId(clientCode.getCustomerId());
+        param.setWarehouseId(clientCode.getWarehouseId());
         return storageDao.queryBy(param);
     }
 
@@ -117,14 +118,13 @@ public class BasicDataServiceImpl implements BasicDataService {
     public List<StorageInfo> queryStorageDetail(StorageParam param) {
 
         AssertUtil.isNotNull(param, SysErrorCode.REQUEST_IS_NULL);
-        AssertUtil.isNotBlank(param.getCustomerId(), CheckErrorCode.CUSTOMER_EMPTY);
-        AssertUtil.isNotBlank(param.getWarehouseId(), CheckErrorCode.WAREHOUSE_EMPTY);
         AssertUtil.isNotNull(param.getSku(), CheckErrorCode.SKU_EMPTY);
-
-        String clientCode = SessionLocal.getPrincipal().getClientCode();
+        Principal principal = SessionLocal.getPrincipal();
+        param.setCustomerId(principal.getCustomerId());
+        param.setWarehouseId(principal.getWarehouseId());
         List<StorageInfo> list = storageDao.queryBy(param);
         for (StorageInfo s : list) {
-            String key = RedisUtil.getSkuKey(clientCode, s.getSku());
+            String key = RedisUtil.getSkuKey(principal.getClientCode(), s.getSku());
             String lockSto = RedisUtil.hget(key, RedisUtil.LOCK_STORAGE);
             int lockStoInt = ((lockSto == null ? 0 : Integer.parseInt(lockSto)));
             s.setLockStorage(lockStoInt);

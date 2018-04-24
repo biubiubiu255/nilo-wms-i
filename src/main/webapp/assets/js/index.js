@@ -19,11 +19,12 @@ $(function() {
 			switchNav(true);
 		}
 	});
+
 	//修改密码表单提交事件
 	layui.form.on('submit(pswSubmit)', function(data){
 		data.field.token = getToken();
 		data.field._method = $("#pswForm").attr("method");
-		layer.load(1);
+		layer.load(2);
 		$.post("api/user/psw", data.field, function(data){
 			if(data.code==200){
 				layer.msg(data.msg,{icon: 1});
@@ -57,7 +58,7 @@ function load(path) {
 		activeNav(path);
 	}
 	refreshNav = true;
-	$("#main-content").load("views/" + path +".html",function(){
+	$("#main-content").load("views/" + path +".jsp",function(){
 		layui.element.render('breadcrumb');
 		layui.form.render('select');
 	});
@@ -68,20 +69,17 @@ function initNav(){
 	var indexNavStr = sessionStorage.getItem("index-nav");
 	var indexNav = JSON.parse(indexNavStr);
 	if(indexNav==null){
-		$.get("api/menu", {
+		$.get("/servlet/menu", {
 			token : getToken()
 		}, function (data) {
-			if(200==data.code){
+			if(data.status=='succ'){
 				sessionStorage.setItem("index-nav",JSON.stringify(data.menus));
 				initNav();
-			}else if(401==data.code){
-				console.log(data.message);
-				layer.msg(data.message,{icon: 2});
+			}else if(data.status=='failed'){
+				layer.msg(data.error,{icon: 2});
 				setTimeout(function() {
 					loginOut();
 				}, 1500);
-			}else{
-				layer.msg("获取导航失败，请刷新页面",{icon: 2});
 			}
 		},"json");
 	}else{
@@ -96,8 +94,7 @@ function initNav(){
 function initUserInfo(){
 	try {
 		var user = getCurrentUser();
-		//$("#userHead").attr("src", user.);
-		$("#userNickName").text(user.userNickname);
+		$("#userNickName").text(user.nickName);
 	} catch (e) {
 		console.log(e.message);
 	}
@@ -108,13 +105,13 @@ function loginOut(){
 	localStorage.removeItem("token");
 	localStorage.removeItem("user");
 	sessionStorage.removeItem("index-nav");
-	layer.load(1);
+	layer.load(2);
 	$.ajax({
-		url: "api/login?token="+getToken(), 
-		type: "DELETE", 
+		url: "/servlet/logout?token="+getToken(), 
+		type: "POST", 
 		dataType: "JSON", 
 		success: function(data){
-			location.replace("login.html");
+			location.href="/login.html";
 		}
 	});
 }

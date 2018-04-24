@@ -1,6 +1,6 @@
 package com.nilo.wms.service.config;
 
-import com.nilo.wms.service.SystemService;
+import com.nilo.wms.service.system.SystemService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

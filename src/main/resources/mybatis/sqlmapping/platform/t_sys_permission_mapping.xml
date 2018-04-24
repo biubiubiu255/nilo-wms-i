@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nilo.wms.dao.platform.PermissionDao">
+
+    <!-- 实体bean与数据字段对应关系 -->
+    <resultMap id="permission" type="com.nilo.wms.dto.system.Permission">
+
+        <result property="permissionId" column="permission_Id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="parentId" column="parent_Id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="nameC" column="name_C" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="nameE" column="name_E" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+
+        <result property="permissionValue" column="permission_Value" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="permissionIcon" column="permission_Icon" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="permissionType" column="permission_Type" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <!-- 根据用户id查询权限 -->
+    <select id="queryByUserId" resultMap="permission" parameterType="string">
+        SELECT a.* FROM t_sys_permission a,t_sys_role_permission b,t_sys_user c WHERE a.permission_id=b.permission_id AND b.role_id=c.role_id AND c.user_id=#{userId} AND a.status=1 ORDER BY order_number
+    </select>
+
+</mapper>

@@ -1,8 +1,8 @@
-$(function() {
+	$(function() {
 	//渲染表格
 	layui.table.render({
 		elem : '#table',
-		url : 'api/role',
+		url : '/servlet/role',
  		where: {
 	  		token : getToken()
 		},
@@ -11,7 +11,7 @@ $(function() {
 			{type:'numbers'},
 			{field:'roleId', sort: true, title: 'ID'},
 			{field:'roleName', sort: true, title: '角色名'},
-			{field:'comments', sort: true, title: '备注'},
+			{field:'comments', sort: true, title: '<spring:message code="remark"/>'},
 			{field:'createTime', sort: true, templet:function(d){ return layui.util.toDateString(d.createTime); }, title: '创建时间'},
 			{field:'isDelete', sort: true, templet: '#statusTpl',width: 80, title: '状态'},
 			{align:'center', toolbar: '#barTpl', minWidth: 180, title: '操作'}
@@ -27,8 +27,8 @@ $(function() {
 	layui.form.on('submit(btnSubmit)', function(data){
 		data.field.token = getToken();
 		data.field._method = $("#editForm").attr("method");
-		layer.load(1);
-		$.post("api/role", data.field, function(data){
+		layer.load(2);
+		$.post("/servlet/role", data.field, function(data){
 			layer.closeAll('loading');
 			if(data.code==200){
 				layer.msg(data.msg,{icon: 1});
@@ -92,9 +92,9 @@ function showEditModel(data){
 function doDelete(obj){
 	layer.confirm('确定要删除吗？', function(index){
 		layer.close(index);
-		layer.load(1);
+		layer.load(2);
 		$.ajax({
-			url: "api/role/"+obj.data.roleId+"?token="+getToken(), 
+			url: "/servlet/role/"+obj.data.roleId+"?token="+getToken(),
 			type: "DELETE", 
 			dataType: "JSON", 
 			success: function(data){
@@ -112,9 +112,9 @@ function doDelete(obj){
 
 //更改状态
 function updateStatus(obj){
-	layer.load(1);
+	layer.load(2);
 	var newStatus = obj.elem.checked?0:1;
-	$.post("api/role/status", {
+	$.post("/servlet/role/status", {
 		roleId: obj.elem.value,
 		status: newStatus,
 		_method: "PUT",
@@ -154,7 +154,7 @@ function showPermDialog(roleId){
 			saveRolePerm(roleId,index);
 		}
 	});
-	layer.load(1);
+	layer.load(2);
 	var setting = {
 		check: {enable: true},
 	    data: {
@@ -171,7 +171,7 @@ function showPermDialog(roleId){
 
 //保存权限
 function saveRolePerm(roleId,index){
-	layer.load(1);
+	layer.load(2);
 	var treeObj = $.fn.zTree.getZTreeObj("treeAuth");
 	var nodes = treeObj.getCheckedNodes(true);
 	var ids = new Array();

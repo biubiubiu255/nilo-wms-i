@@ -1,6 +1,8 @@
 package com.nilo.wms.web;
 
 import com.alibaba.fastjson.support.spring.FastJsonJsonView;
+import com.nilo.wms.common.exception.IllegalTokenException;
+import com.nilo.wms.common.exception.NoPermissionException;
 import com.nilo.wms.common.exception.WMSException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,8 @@ public class DefaultExceptionHandler implements HandlerExceptionResolver {
 
         ModelAndView mv = new ModelAndView();
 
+        logger.error("Request: Failed.", request.getRequestURI(), ex);
+
         FastJsonJsonView view = new FastJsonJsonView();
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("status", "fail");
@@ -31,12 +35,14 @@ public class DefaultExceptionHandler implements HandlerExceptionResolver {
             WMSException e = (WMSException) ex;
             result.put("error", e.getMessage());
             result.put("msgid", e.getCode());
+        } else if (ex instanceof IllegalTokenException || ex instanceof NoPermissionException) {
+            ModelAndView login = new ModelAndView("redirect:/login.html");
+            return login;
         } else if (ex instanceof Exception) {
             result.put("error", ex.getMessage());
             result.put("msgid", "99999");
         }
 
-        logger.error("Request: Failed.", request.getRequestURI(), ex);
 
         view.setAttributesMap(result);
         mv.setView(view);

@@ -30,7 +30,7 @@ $(function() {
 	layui.form.on('submit(btnSubmit)', function(data) {
 		data.field.token = getToken();
 		data.field._method = $("#editForm").attr("method");
-		layer.load(1);
+		layer.load(2);
 		$.post("api/permission", data.field, function(data){
 			layer.closeAll('loading');
 			if(data.code==200){
@@ -123,7 +123,7 @@ function getParents(selectItem,type){
 			layer.closeAll('loading');
 		});
 	}else{
-		layer.load(1);
+		layer.load(2);
 		$.get("api/permission/parent/"+type,{
 			token: getToken()
 		}, function(data){
@@ -141,7 +141,7 @@ function getParents(selectItem,type){
 function doDelete(obj){
 	layer.confirm('确定要删除吗？', function(index){
 		layer.close(index);
-		layer.load(1);
+		layer.load(2);
 		$.ajax({
 			url: "api/permission/"+obj.data.permissionId+"?token="+getToken(), 
 			type: "DELETE", 
@@ -163,7 +163,7 @@ function doDelete(obj){
 
 //更改状态
 function updateStatus(obj){
-	layer.load(1);
+	layer.load(2);
 	var newStatus = obj.elem.checked?0:1;
 	$.post("api/permission/status", {
 		permissionId: obj.elem.value,

@@ -14,7 +14,7 @@ import com.nilo.wms.dao.flux.StorageDao;
 import com.nilo.wms.dto.ClientConfig;
 import com.nilo.wms.dto.StorageInfo;
 import com.nilo.wms.dto.StorageParam;
-import com.nilo.wms.service.RedisUtil;
+import com.nilo.wms.service.system.RedisUtil;
 import com.nilo.wms.service.config.SystemConfig;
 import com.nilo.wms.web.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;

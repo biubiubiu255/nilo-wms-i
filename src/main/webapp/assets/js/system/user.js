@@ -30,7 +30,7 @@ $(function() {
 	layui.form.on('submit(btnSubmit)', function(data) {
 		data.field.token = getToken();
 		data.field._method = $("#editForm").attr("method");
-		layer.load(1);
+		layer.load(2);
 		$.post("api/user", data.field, function(data){
 			layer.closeAll('loading');
 			if(data.code==200){
@@ -115,7 +115,7 @@ function getRoles(selectItem){
 			layer.closeAll('loading');
 		});
 	}else{
-		layer.load(1);
+		layer.load(2);
 		$.get("api/role",{
 			token: getToken(),
 			isDelete: 0
@@ -132,7 +132,7 @@ function getRoles(selectItem){
 function doDelete(obj){
 	layer.confirm('确定要删除吗？', function(index){
 		layer.close(index);
-		layer.load(1);
+		layer.load(2);
 		$.ajax({
 			url: "api/user/"+obj.data.userId+"?token="+getToken(), 
 			type: "DELETE", 
@@ -152,7 +152,7 @@ function doDelete(obj){
 
 //更改状态
 function updateStatus(obj){
-	layer.load(1);
+	layer.load(2);
 	var newStatus = obj.elem.checked?0:1;
 	$.post("api/user/status", {
 		userId: obj.elem.value,
@@ -184,7 +184,7 @@ function doSearch(table){
 function doReSet(userId){
 	layer.confirm('确定要重置密码吗？', function(index){
 		layer.close(index);
-		layer.load(1);
+		layer.load(2);
 		$.post("api/user/psw/"+userId, {
 			token: getToken(), 
 			_method: "PUT"

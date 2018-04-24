@@ -4,10 +4,10 @@ layui.use(['form'], function() {
 	checkLogin();
 	//提交
 	form.on('submit(LAY-user-login-submit)', function(obj) {
-		layer.load(1);
-		$.post("/servlet/api/login", obj.field, function(data) {
-			if (data.code == 200) {
-				layer.msg(data.msg,{icon: 1});
+		layer.load(2);
+		$.post("/servlet/login", obj.field, function(data) {
+			if (data.status == 'succ') {
+				layer.msg("SUCCESS",{icon: 1});
 				localStorage.setItem("token", data.token);
 				localStorage.setItem("user", JSON.stringify(data.user));
 				setTimeout(function() {
@@ -15,7 +15,7 @@ layui.use(['form'], function() {
 				}, 2000);
 			} else {
 				layer.closeAll('loading');
-				layer.msg(data.msg,{icon: 2});
+				layer.msg(data.error);
 			}
 		}, "json");
 	});

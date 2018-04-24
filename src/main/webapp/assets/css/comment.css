@@ -1,10 +1,8 @@
-/**取消导航栏下面的线条*/
 .layui-header .layui-nav .layui-this:after,.layui-header .layui-nav-bar
 	{
 	display: none;
 }
 
-/**重写侧边栏的宽度*/
 .layui-layout-admin .layui-side {
 	width: 220px;
 	transition: all .3s;
@@ -38,7 +36,6 @@
 	transition: all .3s;
 }
 
-/**重写header的背景色和字体颜色*/
 .layui-layout-admin .layui-header {
 	background-color: #ffffff;
 	box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
@@ -65,13 +62,11 @@
 	background-color: transparent;
 }
 
-/**重写侧边栏的字体位置*/
 .layui-layout-admin .layui-side .layui-nav .layui-nav-item .layui-nav-child a
 	{
 	padding-left: 50px;
 }
 
-/**重写header的logo部分颜色*/
 .layui-layout-admin .layui-logo {
 	width: 220px;
 	background-color: #4E5465;
@@ -88,12 +83,10 @@
 	margin-right: 10px;
 }
 
-/*dialog超出显示*/
 .layui-layer-page .layui-layer-content {
 	overflow: visible !important;
 }
 
-/*侧导航折叠样式*/
 .nav-mini .layui-side .layui-nav-item>a {
     overflow: visible;
 }
@@ -162,7 +155,6 @@
 	.layui-header .layui-layout-left {
 		left: 0;
 	}
-	/*展开样式*/
 	.nav-mini .layui-side .layui-nav-itemed .layui-nav-child {
 	    display: block;
 	}
@@ -212,7 +204,7 @@
 	}
 }
 
-/**内容标题样式*/
+/**锟斤拷锟捷憋拷锟斤拷锟斤拷式*/
 .content-title {
 	font-size: 20px;
 	font-weight: 500;
@@ -229,7 +221,6 @@
 	margin-bottom: 20px;
 }
 
-/**表格搜索框样式*/
 .search-input {
 	width: 150px;
 	display: inline-block;
@@ -262,7 +253,6 @@
 	display: inline-block;
 }
 
-/*表单弹窗样式*/
 .model-form {
 	padding-top: 30px;
 	padding-right: 45px;
@@ -272,7 +262,6 @@
 	text-align: right;
 }
 
-/*列表样式*/
 .site-dir li {
 	line-height: 26px;
 	margin-left: 20px;

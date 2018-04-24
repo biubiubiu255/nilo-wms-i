@@ -15,7 +15,7 @@
                 jdbcType="VARCHAR" />
     </resultMap>
 
-    <resultMap id="weight" type="com.nilo.wms.dto.FluxWeight">
+    <resultMap id="weight" type="com.nilo.wms.dto.flux.FluxWeight">
         <result property="waybillNum" column="traceId" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="weight" column="grossweight" javaType="java.lang.Double"

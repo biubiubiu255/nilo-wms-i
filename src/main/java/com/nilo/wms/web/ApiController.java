@@ -6,6 +6,8 @@ import com.nilo.wms.common.enums.MethodEnum;
 import com.nilo.wms.dto.*;
 import com.nilo.wms.dto.flux.FluxInbound;
 import com.nilo.wms.dto.flux.FluxOutbound;
+import com.nilo.wms.dto.inbound.InboundHeader;
+import com.nilo.wms.dto.outbound.OutboundHeader;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.InboundService;
 import com.nilo.wms.service.OutboundService;

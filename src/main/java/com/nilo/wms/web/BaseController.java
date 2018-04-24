@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +18,15 @@ import java.util.Map;
 
 public class BaseController {
 
-
     protected final Logger logger = LoggerFactory.getLogger(getClass());
+
+    public String getToken(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        if (token == null) {
+            token = request.getParameter("token");
+        }
+        return token;
+    }
 
     protected String toJsonTrueMsg() {
         Map<Object, Object> map = new HashMap<>();

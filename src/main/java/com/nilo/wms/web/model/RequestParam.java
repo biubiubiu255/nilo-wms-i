@@ -1,6 +1,5 @@
 package com.nilo.wms.web.model;
 
-import com.alibaba.fastjson.JSON;
 import com.nilo.wms.common.Principal;
 import com.nilo.wms.common.SessionLocal;
 import com.nilo.wms.common.enums.MethodEnum;
@@ -10,7 +9,6 @@ import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dto.ClientConfig;
-import com.nilo.wms.service.RedisUtil;
 import com.nilo.wms.service.config.SystemConfig;
 import org.apache.commons.codec.digest.DigestUtils;
 

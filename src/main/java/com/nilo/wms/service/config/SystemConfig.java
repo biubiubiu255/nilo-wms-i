@@ -1,7 +1,7 @@
 package com.nilo.wms.service.config;
 
 import com.nilo.wms.dto.ClientConfig;
-import com.nilo.wms.dto.FeePrice;
+import com.nilo.wms.dto.fee.FeePrice;
 import com.nilo.wms.dto.InterfaceConfig;
 
 import java.util.HashMap;

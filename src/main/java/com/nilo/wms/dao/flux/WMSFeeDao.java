@@ -1,6 +1,6 @@
 package com.nilo.wms.dao.flux;
 
-import com.nilo.wms.dto.FeeDO;
+import com.nilo.wms.dto.fee.FeeDO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

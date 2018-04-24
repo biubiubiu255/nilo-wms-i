@@ -1,8 +1,7 @@
 package com.nilo.wms.dao.platform;
 
 import com.nilo.wms.common.BaseDao;
-import com.nilo.wms.dto.FeeConfig;
-import com.nilo.wms.dto.OutboundDO;
+import com.nilo.wms.dto.fee.FeeConfig;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

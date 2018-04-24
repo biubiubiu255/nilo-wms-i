@@ -1,7 +1,7 @@
 package com.nilo.wms.service.scheduler;
 
 import com.nilo.wms.common.enums.MoneyType;
-import com.nilo.wms.dto.Fee;
+import com.nilo.wms.dto.fee.Fee;
 import com.nilo.wms.service.FeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

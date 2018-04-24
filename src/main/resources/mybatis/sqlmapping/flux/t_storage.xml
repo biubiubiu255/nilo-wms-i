@@ -50,6 +50,7 @@
             </foreach>
         </if>
         group by B.SKU_GROUP7,a.sku,b.ReservedField03
+        order by SUM(A.QTY - A.QTYALLOCATED - A.QTYONHOLD - A.QTYMVIN - A.QTYMVOUT) desc
     </select>
 
 </mapper>

@@ -45,6 +45,7 @@ public enum CheckErrorCode implements ErrorCode {
     USER_NAME_EMPTY("user name empty.", "100035"),
     PASSWORD_EMPTY("password empty.", "100036"),
     RANDOM_CODE_EMPTY("random code emtpy.", "100037"),
+
     ;
 
     private final String description;

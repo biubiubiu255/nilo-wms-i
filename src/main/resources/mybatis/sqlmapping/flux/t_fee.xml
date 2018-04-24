@@ -5,7 +5,7 @@
 
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="orderHandlerDO" type="com.nilo.wms.dto.FeeDO">
+    <resultMap id="orderHandlerDO" type="com.nilo.wms.dto.fee.FeeDO">
         <result property="orderNo" column="order_no" javaType="java.lang.String"
                 jdbcType="VARCHAR" />
         <result property="categories" column="categories" javaType="java.lang.String"

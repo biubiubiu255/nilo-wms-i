@@ -1,9 +1,7 @@
 package com.nilo.wms.dao.flux;
 
-import com.nilo.wms.dto.FluxWeight;
 import com.nilo.wms.dto.flux.FluxInbound;
 import com.nilo.wms.dto.flux.FluxInboundDetails;
-import com.nilo.wms.dto.flux.FluxOutbound;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

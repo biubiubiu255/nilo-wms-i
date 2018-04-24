@@ -4,7 +4,7 @@
 <mapper namespace="com.nilo.wms.dao.platform.FeeConfigDao">
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="feeConfig" type="com.nilo.wms.dto.FeeConfig">
+    <resultMap id="feeConfig" type="com.nilo.wms.dto.fee.FeeConfig">
         <result property="clientCode" column="client_code" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="feeType" column="fee_type" javaType="java.lang.String"

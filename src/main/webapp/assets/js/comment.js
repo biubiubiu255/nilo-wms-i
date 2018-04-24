@@ -1,7 +1,7 @@
 //var sideNavExpand = true;  //导航栏是否展开
 $(function() {
 	if(getCurrentUser()==null){
-		location.replace("login.html");
+		location.replace("/login.html");
 	}
 	//切换导航栏按钮点击事件
 	$("#switchNav").click(function(){

@@ -62,6 +62,20 @@ public class DateUtil {
         return format(System.currentTimeMillis(), pattern, timezoneId);
     }
 
+    /**
+     * 得到给定时间的给定天数后的日期
+     * @return
+     */
+    public static Date getAppointDate(Date date, int day){
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_YEAR, day);
+        return calendar.getTime();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(DateUtil.getAppointDate(new Date(),30));
+    }
 
     public static long[] getPeriodTime(char type, int delta, String timezoneId) {
         DateTimeZone timeZone = DateTimeZone.forID(timezoneId);

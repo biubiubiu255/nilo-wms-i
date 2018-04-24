@@ -1,8 +1,7 @@
 package com.nilo.wms.dao.platform;
 
 import com.nilo.wms.common.BaseDao;
-import com.nilo.wms.dto.NotifyDO;
-import com.nilo.wms.dto.OutboundDO;
+import com.nilo.wms.dto.outbound.OutboundDO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

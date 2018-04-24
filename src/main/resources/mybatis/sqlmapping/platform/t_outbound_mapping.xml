@@ -4,7 +4,7 @@
 <mapper namespace="com.nilo.wms.dao.platform.OutboundDao">
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="OutboundDO" type="com.nilo.wms.dto.OutboundDO">
+    <resultMap id="OutboundDO" type="com.nilo.wms.dto.outbound.OutboundDO">
         <result property="id" column="id" javaType="java.lang.Long"
                 jdbcType="INTEGER"/>
         <result property="clientCode" column="client_code" javaType="java.lang.String"
@@ -32,7 +32,7 @@
     </sql>
 
     <!-- 插入语句 -->
-    <insert id="insert" parameterType="com.nilo.wms.dto.OutboundDO" statementType="PREPARED"
+    <insert id="insert" parameterType="com.nilo.wms.dto.outbound.OutboundDO" statementType="PREPARED"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_outbound
@@ -41,7 +41,7 @@
         (#{clientCode},#{customerId},#{warehouseId}, #{referenceNo},#{orderType},#{waybillNum},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
     </insert>
     <!-- 动态更新语句 -->
-    <update id="update" parameterType="com.nilo.wms.dto.OutboundDO" statementType="PREPARED">
+    <update id="update" parameterType="com.nilo.wms.dto.outbound.OutboundDO" statementType="PREPARED">
         update t_outbound
         <trim prefix="set" suffixOverrides=","
               suffix="where client_code = #{clientCode} and  reference_no=#{referenceNo}">
