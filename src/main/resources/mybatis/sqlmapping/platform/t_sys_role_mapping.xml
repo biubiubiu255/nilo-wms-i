@@ -29,4 +29,17 @@
         SELECT * FROM t_sys_role
     </select>
 
+    <!-- 动态更新语句 -->
+    <update id="update" parameterType="com.nilo.wms.dto.system.Role" statementType="PREPARED">
+        update t_sys_role
+        <trim prefix="set" suffixOverrides="," suffix="where role_id=#{roleId}">
+            <if test="roleName != null and roleName != ''">
+                role_name = #{roleName},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            updated_time=UNIX_TIMESTAMP(NOW()),version=UUID()
+        </trim>
+    </update>
 </mapper>

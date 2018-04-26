@@ -125,6 +125,7 @@ public class InboundServiceImpl implements InboundService {
         insert.setWarehouseId(inbound.getWarehouseId());
         insert.setStatus(InboundStatusEnum.create.getCode());
         insert.setAsnType(inbound.getAsnType());
+        insert.setStoreId(inbound.getSupplierId());
         inboundDao.insert(insert);
     }
 
@@ -176,6 +177,7 @@ public class InboundServiceImpl implements InboundService {
             } else if (inboundDO.getStatus() == InboundStatusEnum.closed.getCode()) {
                 iterator.remove();
             }
+            in.setSupplierId(inboundDO.getStoreId());
         }
         ClientConfig clientConfig = SystemConfig.getClientConfig().get(clientCode);
         InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("wms_inbound_notify");

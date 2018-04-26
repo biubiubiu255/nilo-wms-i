@@ -1,6 +1,8 @@
 package com.nilo.wms.dto.system;
 
-public class Role {
+import com.nilo.wms.common.BaseDo;
+
+public class Role extends BaseDo{
 
     private String roleId;
 

@@ -13,7 +13,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class UserController extends BaseController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private PermissionService permissionService;
-
 }

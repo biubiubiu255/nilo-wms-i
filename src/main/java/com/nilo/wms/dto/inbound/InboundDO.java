@@ -13,8 +13,17 @@ public class InboundDO extends BaseDo<Long> {
     private String warehouseId;
     private String referenceNo;
     private String referenceNo2;
+    private String storeId;
     private String asnType;
     private int status;
+
+    public String getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
+    }
 
     public String getClientCode() {
         return clientCode;

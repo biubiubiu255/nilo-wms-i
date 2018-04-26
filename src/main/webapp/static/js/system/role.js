@@ -9,15 +9,14 @@
 		page: true,
 		cols: [[
 			{type:'numbers'},
-			{field:'roleId', sort: true, title: 'ID'},
-			{field:'roleName', sort: true, title: '角色名'},
-			{field:'comments', sort: true, title: '<spring:message code="remark"/>'},
-			{field:'createTime', sort: true, templet:function(d){ return layui.util.toDateString(d.createTime); }, title: '创建时间'},
-			{field:'isDelete', sort: true, templet: '#statusTpl',width: 80, title: '状态'},
-			{align:'center', toolbar: '#barTpl', minWidth: 180, title: '操作'}
+			{field:'roleName', sort: true, title: i18n['roleName']},
+			{field:'comments', sort: true, title: i18n['remark']},
+			{field:'createTime', sort: true, templet:function(d){ return layui.util.toDateString(d.createTime); }, title: i18n['createTime']},
+			{field:'isDelete', sort: true, templet: '#statusTpl',width: 80, title: i18n['status']},
+			{align:'center', toolbar: '#barTpl', minWidth: 180, title: i18n['opt']}
     	]]
 	});
-	
+
 	//添加按钮点击事件
 	$("#addBtn").click(function(){
 		showEditModel(null);
@@ -98,12 +97,12 @@ function doDelete(obj){
 			type: "DELETE", 
 			dataType: "JSON", 
 			success: function(data){
-				layer.closeAll('loading');
-				if(data.code==200){
-					layer.msg(data.msg,{icon: 1});
-					obj.del();
+				layer.close(load);
+				if(data.status=='succ'){
+					layui.table.reload('table', {});
 				}else{
-					layer.msg(data.msg,{icon: 2});
+					layer.msg(data.error,{icon: 2});
+					layui.table.reload('table', {});
 				}
 			}
 		});
@@ -112,22 +111,23 @@ function doDelete(obj){
 
 //更改状态
 function updateStatus(obj){
-	layer.load(2);
-	var newStatus = obj.elem.checked?0:1;
+	var load = layer.load(2);
+	var newStatus = obj.elem.checked?1:0;
 	$.post("/servlet/role/status", {
 		roleId: obj.elem.value,
 		status: newStatus,
 		_method: "PUT",
 		token: getToken()
 	}, function(data){
-		layer.closeAll('loading');
-		if(data.code==200){
+		layer.close(load);
+		console.log(data);
+		if(data.status=='succ'){
 			layui.table.reload('table', {});
 		}else{
-			layer.msg(data.msg,{icon: 2});
+			layer.msg(data.error,{icon: 2});
 			layui.table.reload('table', {});
 		}
-	});
+	}, "json");
 }
 
 //搜索

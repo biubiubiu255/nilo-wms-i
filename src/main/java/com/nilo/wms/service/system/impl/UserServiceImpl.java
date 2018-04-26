@@ -1,6 +1,7 @@
 package com.nilo.wms.service.system.impl;
 
 import com.nilo.wms.dao.platform.UserDao;
+import com.nilo.wms.dto.PageResult;
 import com.nilo.wms.dto.system.User;
 import com.nilo.wms.service.system.UserService;
 import javafx.scene.control.Pagination;
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findUserPageBy(String merchantId, String userName, Pagination pagination) {
+    public PageResult<User> findUserPageBy(String merchantId, String userName, Pagination pagination) {
         return null;
     }
 }

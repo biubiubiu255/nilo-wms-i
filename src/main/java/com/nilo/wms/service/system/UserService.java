@@ -1,7 +1,7 @@
 package com.nilo.wms.service.system;
 
 
-
+import com.nilo.wms.dto.PageResult;
 import com.nilo.wms.dto.system.User;
 import javafx.scene.control.Pagination;
 
@@ -17,6 +17,6 @@ public interface UserService {
 
     User queryByUserName(String username);
 
-    List<User> findUserPageBy(String merchantId, String userName, Pagination pagination);
+    PageResult<User> findUserPageBy(String merchantId, String userName, Pagination pagination);
 
 }

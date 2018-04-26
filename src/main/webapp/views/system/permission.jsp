@@ -82,4 +82,4 @@
 <option value="{{ item.permissionId }}">{{ item.permissionName }}</option>
 {{#  }); }}
 </script>
-<script type="text/javascript" src="/assets/js/system/permission.js"></script>
+<script type="text/javascript" src="/static/js/system/permission.js"></script>

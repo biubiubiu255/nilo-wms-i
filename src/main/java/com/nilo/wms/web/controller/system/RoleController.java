@@ -17,7 +17,7 @@ public class RoleController extends BaseController {
 
     @GetMapping("/role")
     public String list() {
-        return new PageResult<>().toJson();
+        return roleService.queryRoles().toJson();
     }
 
     @PostMapping("/role")
@@ -32,6 +32,12 @@ public class RoleController extends BaseController {
 
     @PutMapping("/role/status")
     public String updateStatus(String roleId, int status) {
+
+        Role role = new Role();
+        role.setRoleId(roleId);
+        role.setStatus(status);
+        roleService.update(role);
+
         return ResultMap.success().toJson();
 
     }
