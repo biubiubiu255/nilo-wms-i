@@ -44,7 +44,9 @@ public enum CheckErrorCode implements ErrorCode {
     STORE_TYPE_NOT_EXIST("type not exist.", "100034"),
     USER_NAME_EMPTY("user name empty.", "100035"),
     PASSWORD_EMPTY("password empty.", "100036"),
-    RANDOM_CODE_EMPTY("random code emtpy.", "100037"),
+    RANDOM_CODE_EMPTY("random code empty.", "100037"),
+    PAGE_EMPTY("page empty.", "100038"),
+    LIMIT_EMPTY("limit empty.", "100039"),
 
     ;
 

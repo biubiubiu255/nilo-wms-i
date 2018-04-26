@@ -8,7 +8,6 @@ import java.util.Map;
  */
 public enum MethodEnum {
     STORAGE("nos.storage.info", "Storage Info "),
-    STORAGE_DETAIL("nos.storage.detail", "Storage Detail "),
     SKU("nos.sku.info", "SKU Info"),
     CUSTOMER("nos.customer.info", "Customer Info "),
     OUTBOUND_INFO("nos.outbound.query", "Outbound query "),

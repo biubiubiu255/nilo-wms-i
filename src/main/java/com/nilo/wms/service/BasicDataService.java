@@ -14,9 +14,7 @@ public interface BasicDataService {
 
     void updateSupplier(List<SupplierInfo> list);
 
-    List<StorageInfo> queryStorage(StorageParam param);
-
-    List<StorageInfo> queryStorageDetail(StorageParam param);
+    PageResult<StorageInfo> queryStorageDetail(StorageParam param);
 
     void lockStorage(OutboundHeader header);
 

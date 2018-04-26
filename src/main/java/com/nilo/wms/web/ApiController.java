@@ -3,10 +3,7 @@ package com.nilo.wms.web;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.nilo.wms.common.enums.MethodEnum;
-import com.nilo.wms.dto.SkuInfo;
-import com.nilo.wms.dto.StorageInfo;
-import com.nilo.wms.dto.StorageParam;
-import com.nilo.wms.dto.SupplierInfo;
+import com.nilo.wms.dto.*;
 import com.nilo.wms.dto.flux.FluxInbound;
 import com.nilo.wms.dto.flux.FluxOutbound;
 import com.nilo.wms.dto.inbound.InboundHeader;
@@ -103,12 +100,7 @@ public class ApiController extends BaseController {
             }
             case STORAGE: {
                 StorageParam storageParam = JSON.parseObject(data, StorageParam.class);
-                List<StorageInfo> list = basicDataService.queryStorage(storageParam);
-                return ResultMap.success().put("response", list).toJson();
-            }
-            case STORAGE_DETAIL: {
-                StorageParam storageParam = JSON.parseObject(data, StorageParam.class);
-                List<StorageInfo> list = basicDataService.queryStorageDetail(storageParam);
+                PageResult<StorageInfo> list = basicDataService.queryStorageDetail(storageParam);
                 return ResultMap.success().put("response", list).toJson();
             }
             case OUTBOUND_INFO: {

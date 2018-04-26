@@ -15,5 +15,7 @@ public interface SkuDao {
 
     List<StorageInfo> queryBy(@Param("param") StorageParam param);
 
+    Integer queryCountBy(@Param("param") StorageParam param);
+
     void updateSafeQty(@Param("customerId") String customerId,@Param("sku") String sku,@Param("safeQty") String safeQty);
 }

@@ -11,13 +11,13 @@ public class StorageInfo implements Serializable{
 
     @JSONField(name = "sku")
     private String sku;
-    private int storage;
+    private Integer storage;
     @JSONField(name = "lock_storage")
-    private int lockStorage;
+    private Integer lockStorage;
     @JSONField(name = "store_id")
     private String storeId;
     @JSONField(name = "safe_storage")
-    private int safeStorage;
+    private Integer safeStorage;
 
     public String getSku() {
         return sku;
@@ -27,19 +27,19 @@ public class StorageInfo implements Serializable{
         this.sku = sku;
     }
 
-    public int getStorage() {
+    public Integer getStorage() {
         return storage;
     }
 
-    public void setStorage(int storage) {
+    public void setStorage(Integer storage) {
         this.storage = storage;
     }
 
-    public int getLockStorage() {
+    public Integer getLockStorage() {
         return lockStorage;
     }
 
-    public void setLockStorage(int lockStorage) {
+    public void setLockStorage(Integer lockStorage) {
         this.lockStorage = lockStorage;
     }
 
@@ -51,11 +51,11 @@ public class StorageInfo implements Serializable{
         this.storeId = storeId;
     }
 
-    public int getSafeStorage() {
+    public Integer getSafeStorage() {
         return safeStorage;
     }
 
-    public void setSafeStorage(int safeStorage) {
+    public void setSafeStorage(Integer safeStorage) {
         this.safeStorage = safeStorage;
     }
 }

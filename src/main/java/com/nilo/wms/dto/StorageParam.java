@@ -16,9 +16,29 @@ public class StorageParam {
     @JSONField(name = "sku_list")
     private List<String> sku;
 
-    private int page;
+    private Integer page;
 
-    private int offset;
+    private Integer offset;
+
+    private Integer end;
+
+    public Integer getEnd() {
+        return limit * page;
+    }
+
+    public void setEnd(Integer end) {
+        this.end = end;
+    }
+
+    private Integer limit;
+
+    public Integer getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Integer limit) {
+        this.limit = limit;
+    }
 
     public String getCustomerId() {
         return this.customerId;
@@ -52,19 +72,19 @@ public class StorageParam {
         this.sku = sku;
     }
 
-    public int getPage() {
+    public Integer getPage() {
         return page;
     }
 
-    public void setPage(int page) {
+    public void setPage(Integer page) {
         this.page = page;
     }
 
-    public int getOffset() {
-        return offset;
+    public Integer getOffset() {
+        return limit * (page - 1) + 1;
     }
 
-    public void setOffset(int offset) {
+    public void setOffset(Integer offset) {
         this.offset = offset;
     }
 }

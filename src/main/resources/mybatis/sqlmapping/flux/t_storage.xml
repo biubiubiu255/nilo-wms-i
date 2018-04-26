@@ -17,9 +17,13 @@
     </resultMap>
 
     <select id="queryBy" resultMap="storageInfo">
-        SELECT B.SKU_GROUP7 as store_id,
+
+
+        SELECT *
+        FROM (SELECT tt.*, ROWNUM AS rowno
+        FROM ( SELECT B.SKU_GROUP7 as store_id,
         a.sku as sku,
-        b.ReservedField03 as safe_storage,
+        nvl(b.ReservedField03,0) as safe_storage,
         SUM(A.QTY - A.QTYALLOCATED - A.QTYONHOLD - A.QTYMVIN - A.QTYMVOUT) as storage
         from inv_lot_loc_id a
         LEFT JOIN BAS_SKU B
@@ -50,7 +54,41 @@
             </foreach>
         </if>
         group by B.SKU_GROUP7,a.sku,b.ReservedField03
-        order by SUM(A.QTY - A.QTYALLOCATED - A.QTYONHOLD - A.QTYMVIN - A.QTYMVOUT) desc
+        order by SUM(A.QTY - A.QTYALLOCATED - A.QTYONHOLD - A.QTYMVIN - A.QTYMVOUT) desc ) tt
+        WHERE <![CDATA[ROWNUM <= #{param.end} ]]>  ) table_alias
+        WHERE table_alias.rowno >= #{param.offset}
+    </select>
+
+    <select id="queryCountBy" resultType="java.lang.Integer">
+        SELECT count( distinct a.sku)
+        from inv_lot_loc_id a
+        LEFT JOIN BAS_SKU B
+        ON A.SKU = B.SKU and b.customerid=a.customerid
+        LEFT JOIN INV_LOT_ATT D
+        ON d.lotnum=a.lotnum
+        LEFT JOIN VIEW_MULTIWAREHOUSE C
+        ON A.LOCATIONID = C.LOCATIONID
+        WHERE D.LOTATT08 = 'N'
+        <if test="param.customerId !=null and param.customerId !='' ">
+            and a.customerid = #{param.customerId}
+        </if>
+        <if test="param.warehouseId !=null and param.warehouseId !='' ">
+            and c.warehouseid = #{param.warehouseId}
+        </if>
+        <if test="param.sku !=null and param.sku.size() > 0">
+            and a.sku in
+            <foreach collection="param.sku" item="s" index="index"
+                     open="(" close=")" separator=",">
+                #{s}
+            </foreach>
+        </if>
+        <if test="param.storeId !=null and param.storeId.size() > 0">
+            and B.SKU_GROUP7 in
+            <foreach collection="param.storeId" item="t" index="index"
+                     open="(" close=")" separator=",">
+                #{t}
+            </foreach>
+        </if>
     </select>
 
 

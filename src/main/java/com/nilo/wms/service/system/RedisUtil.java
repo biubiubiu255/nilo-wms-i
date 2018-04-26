@@ -11,13 +11,13 @@ import java.util.Set;
  */
 public class RedisUtil {
 
-    /**
-     * redis中sku库存key
-     */
+
     public static final String STORAGE = "storage";
-    /**
-     * redis中sku锁定库存key
-     */
+
+    public static final String SAFE_STORAGE = "safeStorage";
+
+    public static final String STORE = "store";
+
     public static final String LOCK_STORAGE = "lockStorage";
 
     public static final String LOCK_TIME = "lockTime";

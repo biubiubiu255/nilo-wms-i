@@ -106,30 +106,31 @@ public class BasicDataServiceImpl implements BasicDataService {
     }
 
     @Override
-    public List<StorageInfo> queryStorage(StorageParam param) {
-        AssertUtil.isNotNull(param, SysErrorCode.REQUEST_IS_NULL);
-        Principal clientCode = SessionLocal.getPrincipal();
-        param.setCustomerId(clientCode.getCustomerId());
-        param.setWarehouseId(clientCode.getWarehouseId());
-        return skuDao.queryBy(param);
-    }
-
-    @Override
-    public List<StorageInfo> queryStorageDetail(StorageParam param) {
+    public PageResult<StorageInfo> queryStorageDetail(StorageParam param) {
 
         AssertUtil.isNotNull(param, SysErrorCode.REQUEST_IS_NULL);
-        AssertUtil.isNotNull(param.getSku(), CheckErrorCode.SKU_EMPTY);
+        AssertUtil.isNotNull(param.getLimit(), CheckErrorCode.LIMIT_EMPTY);
+        AssertUtil.isNotNull(param.getPage(), CheckErrorCode.PAGE_EMPTY);
+
         Principal principal = SessionLocal.getPrincipal();
         param.setCustomerId(principal.getCustomerId());
         param.setWarehouseId(principal.getWarehouseId());
-        List<StorageInfo> list = skuDao.queryBy(param);
-        for (StorageInfo s : list) {
-            String key = RedisUtil.getSkuKey(principal.getClientCode(), s.getSku());
-            String lockSto = RedisUtil.hget(key, RedisUtil.LOCK_STORAGE);
-            int lockStoInt = ((lockSto == null ? 0 : Integer.parseInt(lockSto)));
-            s.setLockStorage(lockStoInt);
+
+        PageResult<StorageInfo> pageResult = new PageResult<>();
+
+        Integer count = skuDao.queryCountBy(param);
+        pageResult.setCount(count);
+        if (count > 0) {
+            List<StorageInfo> list = skuDao.queryBy(param);
+            for (StorageInfo s : list) {
+                String key = RedisUtil.getSkuKey(principal.getClientCode(), s.getSku());
+                String lockSto = RedisUtil.hget(key, RedisUtil.LOCK_STORAGE);
+                int lockStoInt = ((lockSto == null ? 0 : Integer.parseInt(lockSto)));
+                s.setLockStorage(lockStoInt);
+            }
+            pageResult.setData(list);
         }
-        return list;
+        return pageResult;
     }
 
     @Override
@@ -249,6 +250,9 @@ public class BasicDataServiceImpl implements BasicDataService {
 
         String clientCode = SessionLocal.getPrincipal().getClientCode();
 
+        //低于安全库存
+        List<StorageInfo> lessThanSafe = new ArrayList<>();
+
         //获取redis锁
         Jedis jedis = RedisUtil.getResource();
         String requestId = UUID.randomUUID().toString();
@@ -276,6 +280,18 @@ public class BasicDataServiceImpl implements BasicDataService {
                 int stoInt = Integer.parseInt(sto) - qty;
                 jedis.hset(key, RedisUtil.STORAGE, "" + stoInt);
 
+                //库存少于安全库存 发送通知
+                String safeSto = jedis.hget(key, RedisUtil.SAFE_STORAGE);
+                int safeInt = Integer.parseInt(safeSto == null ? "0" : safeSto);
+                if (stoInt < safeInt) {
+                    String storeId = jedis.hget(key, RedisUtil.STORE);
+                    StorageInfo info = new StorageInfo();
+                    info.setSku(sku);
+                    info.setStoreId(storeId);
+                    info.setSafeStorage(safeInt);
+                    info.setStorage(stoInt);
+                    lessThanSafe.add(info);
+                }
             }
             RedisUtil.del(orderNoKey);
         } else {
@@ -286,10 +302,47 @@ public class BasicDataServiceImpl implements BasicDataService {
                 String sto = jedis.hget(key, RedisUtil.STORAGE);
                 int stoInt = Integer.parseInt(sto == null ? "0" : sto) - item.getQty();
                 jedis.hset(key, RedisUtil.STORAGE, "" + stoInt);
-            }
 
+                //库存少于安全库存 发送通知
+                String safeSto = jedis.hget(key, RedisUtil.SAFE_STORAGE);
+                int safeInt = Integer.parseInt(safeSto == null ? "0" : safeSto);
+                if (stoInt < safeInt) {
+                    String storeId = jedis.hget(key, RedisUtil.STORE);
+                    StorageInfo info = new StorageInfo();
+                    info.setSku(item.getSku());
+                    info.setStoreId(storeId);
+                    info.setSafeStorage(safeInt);
+                    info.setStorage(stoInt);
+                    lessThanSafe.add(info);
+                }
+            }
         }
         RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
+
+        if (lessThanSafe.size() == 0) {
+            return;
+        }
+        ClientConfig clientConfig = SystemConfig.getClientConfig().get(clientCode);
+        InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("storage_not_enough");
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", lessThanSafe);
+        String data = JSON.toJSONString(map);
+        Map<String, String> params = new HashMap<>();
+        params.put("method", interfaceConfig.getMethod());
+        params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
+        params.put("data", data);
+        params.put("app_key", "wms");
+        params.put("request_id", UUID.randomUUID().toString());
+        params.put("timestamp", "" + DateUtil.getSysTimeStamp());
+        NotifyRequest notify = new NotifyRequest();
+        notify.setParam(params);
+        notify.setUrl(interfaceConfig.getUrl());
+        try {
+            notifyDataBusProducer.sendMessage(notify);
+        } catch (Exception e) {
+            logger.error("confirmSO send message failed.", e);
+        }
     }
 
     @Override
@@ -311,7 +364,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         StorageParam param = new StorageParam();
         param.setWarehouseId(config.getWarehouseId());
         param.setCustomerId(config.getCustomerId());
-        List<StorageInfo> list = queryStorage(param);
+        List<StorageInfo> list = skuDao.queryBy(param);
         if (list == null || list.size() == 0) return;
         Set<String> cacheSkuList = RedisUtil.keys(RedisUtil.getSkuKey(clientCode, "*"));
 
@@ -351,6 +404,8 @@ public class BasicDataServiceImpl implements BasicDataService {
             String key = RedisUtil.getSkuKey(clientCode, s.getSku());
             RedisUtil.hset(key, RedisUtil.STORAGE, "" + s.getStorage());
             RedisUtil.hset(key, RedisUtil.LOCK_STORAGE, "" + s.getLockStorage());
+            RedisUtil.hset(key, RedisUtil.STORE, s.getStoreId());
+            RedisUtil.hset(key, RedisUtil.SAFE_STORAGE, "" + s.getSafeStorage());
         }
 
         RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
