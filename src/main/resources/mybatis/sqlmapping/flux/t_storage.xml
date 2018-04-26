@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.nilo.wms.dao.flux.StorageDao">
+<mapper namespace="com.nilo.wms.dao.flux.SkuDao">
 
 
     <!-- 实体bean与数据字段对应关系 -->
@@ -53,4 +53,8 @@
         order by SUM(A.QTY - A.QTYALLOCATED - A.QTYONHOLD - A.QTYMVIN - A.QTYMVOUT) desc
     </select>
 
+
+    <update id="updateSafeQty">
+        update bas_sku set ReservedField03 =#{safeQty} where customerId = #{customerId} and sku=#{sku}
+    </update>
 </mapper>

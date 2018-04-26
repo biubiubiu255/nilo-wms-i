@@ -36,7 +36,7 @@ public class LoginController extends BaseController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMap index(String username, String password, String randomCode, HttpServletRequest request) {
+    public String index(String username, String password, String randomCode, HttpServletRequest request) {
 
         AssertUtil.isNotBlank(username, CheckErrorCode.USER_NAME_EMPTY);
         AssertUtil.isNotBlank(password, CheckErrorCode.PASSWORD_EMPTY);
@@ -55,23 +55,23 @@ public class LoginController extends BaseController {
         String token = TokenUtil.createToken(user.getUserId(), DateUtil.getAppointDate(new Date(), 30));
         user.setPassword(null);
         user.setToken(token);
-        return ResultMap.success().put("token", token).put("user", user);
+        return ResultMap.success().put("token", token).put("user", user).toJson();
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     @ResponseBody
-    public ResultMap logout() {
+    public String logout() {
         // 登出操作
-        return ResultMap.success();
+        return ResultMap.success().toJson();
     }
 
     @RequestMapping(value = "/menu", method = RequestMethod.GET)
     @ResponseBody
-    public ResultMap menu(HttpServletRequest request) {
+    public String menu(HttpServletRequest request) {
         Claims c = TokenUtil.parseToken(getToken(request));
         String userId = c.getSubject();
         List<Permission> list = permissionService.getMenusByUser(userId);
-        return ResultMap.success().put("menus", list);
+        return ResultMap.success().put("menus", list).toJson();
     }
 
 }

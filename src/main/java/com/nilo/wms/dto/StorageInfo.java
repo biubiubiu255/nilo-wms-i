@@ -2,28 +2,22 @@ package com.nilo.wms.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
+import java.io.Serializable;
+
 /**
  * Created by admin on 2018/3/21.
  */
-public class StorageInfo {
+public class StorageInfo implements Serializable{
 
     @JSONField(name = "sku")
     private String sku;
-    private Integer storage;
+    private int storage;
     @JSONField(name = "lock_storage")
-    private Integer lockStorage;
+    private int lockStorage;
     @JSONField(name = "store_id")
     private String storeId;
     @JSONField(name = "safe_storage")
-    private Integer safeStorage;
-
-    public Integer getSafeStorage() {
-        return safeStorage;
-    }
-
-    public void setSafeStorage(Integer safeStorage) {
-        this.safeStorage = safeStorage;
-    }
+    private int safeStorage;
 
     public String getSku() {
         return sku;
@@ -33,12 +27,20 @@ public class StorageInfo {
         this.sku = sku;
     }
 
-    public Integer getStorage() {
+    public int getStorage() {
         return storage;
     }
 
-    public void setStorage(Integer storage) {
+    public void setStorage(int storage) {
         this.storage = storage;
+    }
+
+    public int getLockStorage() {
+        return lockStorage;
+    }
+
+    public void setLockStorage(int lockStorage) {
+        this.lockStorage = lockStorage;
     }
 
     public String getStoreId() {
@@ -49,12 +51,11 @@ public class StorageInfo {
         this.storeId = storeId;
     }
 
-
-    public Integer getLockStorage() {
-        return lockStorage;
+    public int getSafeStorage() {
+        return safeStorage;
     }
 
-    public void setLockStorage(Integer lockStorage) {
-        this.lockStorage = lockStorage;
+    public void setSafeStorage(int safeStorage) {
+        this.safeStorage = safeStorage;
     }
 }

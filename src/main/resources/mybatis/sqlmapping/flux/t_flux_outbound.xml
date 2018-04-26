@@ -6,13 +6,13 @@
     <!-- 实体bean与数据字段对应关系 -->
     <resultMap id="orderHeader" type="com.nilo.wms.dto.flux.FluxOutbound">
         <result property="wmsOrderNo" column="orderno" javaType="java.lang.String"
-                jdbcType="VARCHAR" />
+                jdbcType="VARCHAR"/>
         <result property="referenceNo" column="soreference1" javaType="java.lang.String"
-                jdbcType="VARCHAR" />
+                jdbcType="VARCHAR"/>
         <result property="status" column="sostatus" javaType="java.lang.Integer"
-                jdbcType="VARCHAR" />
+                jdbcType="VARCHAR"/>
         <result property="weight" column="grossweight" javaType="java.lang.Double"
-                jdbcType="VARCHAR" />
+                jdbcType="VARCHAR"/>
     </resultMap>
 
     <resultMap id="weight" type="com.nilo.wms.dto.flux.FluxWeight">
@@ -22,6 +22,12 @@
                 jdbcType="VARCHAR"/>
     </resultMap>
 
+    <resultMap id="sale" type="com.nilo.wms.dto.flux.FluxOutboundDetails">
+        <result property="sku" column="sku" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="qty" column="qty" javaType="java.lang.Integer"
+                jdbcType="VARCHAR"/>
+    </resultMap>
 
     <select id="queryByReferenceNo" resultMap="orderHeader">
             select h.orderno,h.soreference1,h.sostatus,s.grossweight
@@ -38,4 +44,10 @@
             #{t}
         </foreach>
     </select>
+
+    <select id="querySales" resultMap="sale">
+        select d.sku, sum(d.qtyordered) qty from doc_order_details d where d.customerid=#{customerId} and d.linestatus !=90 and to_char(d.addtime,'YYYY-MM-DD') between #{startDate} and #{endDate}
+        group by d.sku
+    </select>
+
 </mapper>

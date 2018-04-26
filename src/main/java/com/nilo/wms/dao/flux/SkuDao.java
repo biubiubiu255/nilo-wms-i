@@ -11,8 +11,9 @@ import java.util.List;
  * Created by Administrator on 2017/4/24.
  */
 @Repository
-public interface StorageDao {
+public interface SkuDao {
 
     List<StorageInfo> queryBy(@Param("param") StorageParam param);
 
+    void updateSafeQty(@Param("customerId") String customerId,@Param("sku") String sku,@Param("safeQty") String safeQty);
 }

@@ -1,5 +1,7 @@
 package com.nilo.wms.dto;
 
+import com.alibaba.fastjson.JSON;
+
 import java.util.List;
 
 
@@ -53,6 +55,10 @@ public class PageResult<T> {
 
     public void setData(List<T> data) {
         this.data = data;
+    }
+
+    public String toJson() {
+        return JSON.toJSONString(this);
     }
 
 }

@@ -6,6 +6,7 @@ import com.nilo.wms.common.exception.NoPermissionException;
 import com.nilo.wms.common.exception.WMSException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 /**
  * Created by ronny on 2017/8/22.
  */
+@Component
 public class DefaultExceptionHandler implements HandlerExceptionResolver {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());

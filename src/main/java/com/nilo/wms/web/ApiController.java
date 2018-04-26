@@ -3,7 +3,10 @@ package com.nilo.wms.web;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.nilo.wms.common.enums.MethodEnum;
-import com.nilo.wms.dto.*;
+import com.nilo.wms.dto.SkuInfo;
+import com.nilo.wms.dto.StorageInfo;
+import com.nilo.wms.dto.StorageParam;
+import com.nilo.wms.dto.SupplierInfo;
 import com.nilo.wms.dto.flux.FluxInbound;
 import com.nilo.wms.dto.flux.FluxOutbound;
 import com.nilo.wms.dto.inbound.InboundHeader;
@@ -12,13 +15,15 @@ import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.InboundService;
 import com.nilo.wms.service.OutboundService;
 import com.nilo.wms.web.model.RequestParam;
+import com.nilo.wms.web.model.ResultMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +43,12 @@ public class ApiController extends BaseController {
     @Autowired
     private BasicDataService basicDataService;
 
-    @RequestMapping(value = "/api.html", method = RequestMethod.GET)
+    @GetMapping("/api.html")
     public String doGet() {
         return "api";
     }
 
-    @RequestMapping(value = "/api.html", method = RequestMethod.POST)
+    @PostMapping("/api.html")
     @ResponseBody
     public String doPost(RequestParam param) {
 
@@ -99,22 +104,22 @@ public class ApiController extends BaseController {
             case STORAGE: {
                 StorageParam storageParam = JSON.parseObject(data, StorageParam.class);
                 List<StorageInfo> list = basicDataService.queryStorage(storageParam);
-                return toJsonTrueData(list);
+                return ResultMap.success().put("response", list).toJson();
             }
             case STORAGE_DETAIL: {
                 StorageParam storageParam = JSON.parseObject(data, StorageParam.class);
                 List<StorageInfo> list = basicDataService.queryStorageDetail(storageParam);
-                return toJsonTrueData(list);
+                return ResultMap.success().put("response", list).toJson();
             }
             case OUTBOUND_INFO: {
                 String orderNo = JSON.parseObject(data).getString("client_order_sn");
                 FluxOutbound order = outBoundService.queryFlux(orderNo);
-                return toJsonTrueData(order);
+                return ResultMap.success().put("response", order).toJson();
             }
             case INBOUND_INFO: {
                 String orderNo = JSON.parseObject(data).getString("client_order_sn");
                 FluxInbound inbound = inboundService.queryFlux(orderNo);
-                return toJsonTrueData(inbound);
+                return ResultMap.success().put("response", inbound).toJson();
             }
             case LOCK_STORAGE: {
                 OutboundHeader outBound = JSON.parseObject(data, OutboundHeader.class);
@@ -129,7 +134,7 @@ public class ApiController extends BaseController {
             default:
                 break;
         }
-        return toJsonTrueMsg();
+        return ResultMap.success().toJson();
     }
 
 }

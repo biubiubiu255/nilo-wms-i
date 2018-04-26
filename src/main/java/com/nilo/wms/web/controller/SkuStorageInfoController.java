@@ -10,7 +10,7 @@ import com.nilo.wms.common.exception.SysErrorCode;
 import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.StringUtil;
-import com.nilo.wms.dao.flux.StorageDao;
+import com.nilo.wms.dao.flux.SkuDao;
 import com.nilo.wms.dto.ClientConfig;
 import com.nilo.wms.dto.StorageInfo;
 import com.nilo.wms.dto.StorageParam;
@@ -31,7 +31,7 @@ import java.util.*;
 public class SkuStorageInfoController extends BaseController {
 
     @Autowired
-    private StorageDao storageDao;
+    private SkuDao skuDao;
 
     @RequestMapping(value = "/storage.html", method = {RequestMethod.GET})
     public String doGet() {
@@ -55,7 +55,7 @@ public class SkuStorageInfoController extends BaseController {
 
         StorageParam param = new StorageParam();
         param.setSku(Arrays.asList(sku));
-        List<StorageInfo> list = storageDao.queryBy(param);
+        List<StorageInfo> list = skuDao.queryBy(param);
         if (list != null && list.size() == 1) {
             map.put("wmsStorage", "" + list.get(0).getStorage());
         }

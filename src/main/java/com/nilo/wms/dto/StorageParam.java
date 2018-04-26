@@ -16,6 +16,10 @@ public class StorageParam {
     @JSONField(name = "sku_list")
     private List<String> sku;
 
+    private int page;
+
+    private int offset;
+
     public String getCustomerId() {
         return this.customerId;
     }
@@ -46,5 +50,21 @@ public class StorageParam {
 
     public void setSku(List<String> sku) {
         this.sku = sku;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
     }
 }

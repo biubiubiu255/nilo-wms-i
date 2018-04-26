@@ -1,49 +1,55 @@
 package com.nilo.wms.web.model;
 
+import com.alibaba.fastjson.JSON;
+
 import java.util.HashMap;
 
-public class ResultMap extends HashMap<String, Object>{
-	private static final long serialVersionUID = 1L;
-	
-	private ResultMap() { }
+public class ResultMap extends HashMap<String, Object> {
 
-	public static ResultMap success() {
-		ResultMap resultMap = new ResultMap();
-		resultMap.put("status", "succ");
-		return resultMap;
-	}
+    private ResultMap() {
+    }
 
-	/**
-	 * 返回失败
-	 */
-	public static ResultMap error() {
-		return error("failed");
-	}
-	
-	/**
-	 * 返回失败
-	 */
-	public static ResultMap error(String message) {
-		return error(9999, message);
-	}
+    public static ResultMap success() {
+        ResultMap resultMap = new ResultMap();
+        resultMap.put("status", "succ");
+        return resultMap;
+    }
 
-	/**
-	 * 返回失败
-	 */
-	public static ResultMap error(int code, String message) {
-		ResultMap resultMap = new ResultMap();
-		resultMap.put("msgid", code);
-		resultMap.put("error", message);
-		resultMap.put("status", "failed");
-		return resultMap;
-	}
+    /**
+     * 返回失败
+     */
+    public static ResultMap error() {
+        return error("failed");
+    }
 
-	/**
-	 * 放入object
-	 */
-	@Override
-	public ResultMap put(String key, Object object){
-		super.put(key, object);
-		return this;
-	}
+    /**
+     * 返回失败
+     */
+    public static ResultMap error(String message) {
+        return error(9999, message);
+    }
+
+    /**
+     * 返回失败
+     */
+    public static ResultMap error(int code, String message) {
+        ResultMap resultMap = new ResultMap();
+        resultMap.put("msgid", code);
+        resultMap.put("error", message);
+        resultMap.put("status", "failed");
+        return resultMap;
+    }
+
+    /**
+     * 放入object
+     */
+    @Override
+    public ResultMap put(String key, Object object) {
+        super.put(key, object);
+        return this;
+    }
+
+    public String toJson() {
+        return JSON.toJSONString(this);
+    }
 }

@@ -14,7 +14,7 @@ import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.DateUtil;
 import com.nilo.wms.common.util.XmlUtil;
 import com.nilo.wms.dao.flux.FluxInboundDao;
-import com.nilo.wms.dao.flux.StorageDao;
+import com.nilo.wms.dao.flux.SkuDao;
 import com.nilo.wms.dao.platform.InboundDao;
 import com.nilo.wms.dto.*;
 import com.nilo.wms.dto.flux.FLuxRequest;
@@ -55,7 +55,7 @@ public class InboundServiceImpl implements InboundService {
     @Autowired
     private InboundDao inboundDao;
     @Autowired
-    private StorageDao storageDao;
+    private SkuDao skuDao;
     @Autowired
     private BasicDataService basicDataService;
     @Autowired
@@ -217,7 +217,7 @@ public class InboundServiceImpl implements InboundService {
         // 查询sku 仓库实际库存
         StorageParam param = new StorageParam();
         param.setSku(skuList);
-        List<StorageInfo> storageList = storageDao.queryBy(param);
+        List<StorageInfo> storageList = skuDao.queryBy(param);
 
         //获取redis锁
         Jedis jedis = RedisUtil.getResource();

@@ -1,5 +1,8 @@
 var refreshNav = true;
 $(function() {
+
+	alert(navigator.language);
+
 	initUserInfo();  //获取用户信息
 	initNav();  //获取导航栏
 	

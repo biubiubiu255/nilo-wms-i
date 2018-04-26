@@ -13,7 +13,7 @@ import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.DateUtil;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.XmlUtil;
-import com.nilo.wms.dao.flux.StorageDao;
+import com.nilo.wms.dao.flux.SkuDao;
 import com.nilo.wms.dto.*;
 import com.nilo.wms.dto.flux.FLuxRequest;
 import com.nilo.wms.dto.flux.FluxResponse;
@@ -44,7 +44,7 @@ public class BasicDataServiceImpl implements BasicDataService {
     @Resource(name = "fluxHttpRequest")
     private HttpRequest<FLuxRequest, FluxResponse> fluxHttpRequest;
     @Autowired
-    private StorageDao storageDao;
+    private SkuDao skuDao;
     @Autowired
     @Qualifier("notifyDataBusProducer")
     private AbstractMQProducer notifyDataBusProducer;
@@ -111,7 +111,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         Principal clientCode = SessionLocal.getPrincipal();
         param.setCustomerId(clientCode.getCustomerId());
         param.setWarehouseId(clientCode.getWarehouseId());
-        return storageDao.queryBy(param);
+        return skuDao.queryBy(param);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         Principal principal = SessionLocal.getPrincipal();
         param.setCustomerId(principal.getCustomerId());
         param.setWarehouseId(principal.getWarehouseId());
-        List<StorageInfo> list = storageDao.queryBy(param);
+        List<StorageInfo> list = skuDao.queryBy(param);
         for (StorageInfo s : list) {
             String key = RedisUtil.getSkuKey(principal.getClientCode(), s.getSku());
             String lockSto = RedisUtil.hget(key, RedisUtil.LOCK_STORAGE);
@@ -350,9 +350,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         for (StorageInfo s : diffList) {
             String key = RedisUtil.getSkuKey(clientCode, s.getSku());
             RedisUtil.hset(key, RedisUtil.STORAGE, "" + s.getStorage());
-            if (s.getLockStorage() != null) {
-                RedisUtil.hset(key, RedisUtil.LOCK_STORAGE, "" + s.getLockStorage());
-            }
+            RedisUtil.hset(key, RedisUtil.LOCK_STORAGE, "" + s.getLockStorage());
         }
 
         RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);

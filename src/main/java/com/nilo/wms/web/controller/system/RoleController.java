@@ -5,7 +5,6 @@ import com.nilo.wms.dto.system.Role;
 import com.nilo.wms.service.system.RoleService;
 import com.nilo.wms.web.BaseController;
 import com.nilo.wms.web.model.ResultMap;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,32 +15,30 @@ public class RoleController extends BaseController {
     @Autowired
     private RoleService roleService;
 
-    @GetMapping()
-    public PageResult<Role> list() {
-        return new PageResult<>();
+    @GetMapping("/role")
+    public String list() {
+        return new PageResult<>().toJson();
     }
 
-    @RequiresPermissions("/role")
-    @PostMapping()
-    public ResultMap add(Role role) {
-        return ResultMap.success();
+    @PostMapping("/role")
+    public String add(Role role) {
+        return ResultMap.success().toJson();
     }
 
-    @RequiresPermissions("/role")
-    @PutMapping()
-    public ResultMap update(Role role) {
-        return ResultMap.success();
+    @PutMapping("/role")
+    public String update(Role role) {
+        return ResultMap.success().toJson();
     }
 
     @PutMapping("/role/status")
-    public ResultMap updateStatus(String roleId, int status) {
-        return ResultMap.success();
+    public String updateStatus(String roleId, int status) {
+        return ResultMap.success().toJson();
 
     }
 
     @DeleteMapping("/role/{id}")
-    public ResultMap delete(String roleId) {
-        return ResultMap.success();
+    public String delete(String roleId) {
+        return ResultMap.success().toJson();
     }
 
 }

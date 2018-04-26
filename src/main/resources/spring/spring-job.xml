@@ -16,6 +16,7 @@
                 <ref bean="returnmerchantTrigger"/>
                 <ref bean="storageTrigger"/>
                 <ref bean="emailTrigger"/>
+                <ref bean="safeStorageTrigger"/>
             </list>
         </property>
         <property name="autoStartup" value="true"/>
@@ -105,6 +106,20 @@
         <property name="concurrent" value="false"/>
     </bean>
     <!-- 通知调度配置 end  -->
+    <!-- 通知调度配置 begin  -->
+    <bean id="safeStorageTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="safeStorageTriggerDetail"/>
+        <property name="cronExpression" value="0 36 15 ? * *"/>
+    </bean>
+
+    <bean id="safeStorageTriggerDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="safeStorage"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+    <!-- 通知调度配置 end  -->
+
 
     <bean id="inbound"
           class="com.nilo.wms.service.scheduler.InBoundHandlerFeeScheduler"/>
@@ -118,6 +133,8 @@
           class="com.nilo.wms.service.scheduler.EmailScheduler"/>
     <bean id="storageFee"
           class="com.nilo.wms.service.scheduler.StorageFeeScheduler"/>
+    <bean id="safeStorage"
+          class="com.nilo.wms.service.scheduler.SafeStockSchedule"/>
     <!-- 通知调度配置 end  -->
 
 </beans>
