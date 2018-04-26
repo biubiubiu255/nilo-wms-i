@@ -69,7 +69,7 @@
 function showEditModel(data){
 	layer.open({
 		type: 1,
-		title: data==null?"添加角色":"修改角色",
+		title: data==null?i18n['add']:i18n['edit'],
 		area: '450px',
 		offset: '120px',
 		content: $("#addModel").html()

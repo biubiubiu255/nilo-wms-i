@@ -8,6 +8,7 @@ $(function() {
 	Q.reg('home',function(){
 		load('home');
 	}).reg('system',function(path){
+		alert(path);
 		load('system/'+path);
 	}).init({
 		index: 'home'
@@ -106,12 +107,13 @@ function loginOut(){
 	localStorage.removeItem("token");
 	localStorage.removeItem("user");
 	sessionStorage.removeItem("index-nav");
-	layer.load(2);
+	var load = layer.load(2);
 	$.ajax({
 		url: "/servlet/logout?token="+getToken(), 
 		type: "POST", 
 		dataType: "JSON", 
 		success: function(data){
+			layer.close(load);
 			location.href="/login.html";
 		}
 	});

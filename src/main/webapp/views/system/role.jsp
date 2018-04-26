@@ -12,7 +12,7 @@
         <spring:message code="search"/>:
         <select id="searchKey">
             <option value="">-<spring:message code="please.select"/>-</option>
-            <option value="role_name"><spring:message code="system.role.name"/></option>
+            <option value="roleName"><spring:message code="system.role.name"/></option>
         </select>&emsp;
         <input id="searchValue" class="layui-input search-input" type="text"/>&emsp;
         <button id="searchBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe615;</i><spring:message
@@ -69,4 +69,7 @@
     i18n['status'] = '<spring:message code="status"/>';
     i18n['createTime'] = '<spring:message code="create.time"/>';
     i18n['opt'] = '<spring:message code="opt"/>';
+    i18n['add'] = '<spring:message code="add"/>';
+    i18n['edit'] = '<spring:message code="edit"/>';
+
 </script>

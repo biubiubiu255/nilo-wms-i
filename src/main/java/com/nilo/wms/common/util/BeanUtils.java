@@ -4,6 +4,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by admin on 2017/11/18.
@@ -20,8 +21,6 @@ public class BeanUtils {
             return (T) anno;
         }
     }
-
-
 
 
     public static <T> T readField(Object owner, String name, Class<T> type) {
@@ -53,4 +52,16 @@ public class BeanUtils {
             }
         }
     }
+
+    public static void setProperty(Object obj, String key, String value) {
+        try {
+            org.apache.commons.beanutils.BeanUtils.setProperty(obj, key, value);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

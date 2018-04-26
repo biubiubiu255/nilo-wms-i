@@ -26,7 +26,10 @@
 
     <!-- 根据用户id查询权限 -->
     <select id="queryBy" resultMap="role" parameterType="string">
-        SELECT * FROM t_sys_role
+        SELECT * FROM t_sys_role where 1 = 1
+        <if test="roleName != null and roleName != ''">
+            and role_name LIKE CONCAT( CONCAT('%',#{roleName}),'%')
+        </if>
     </select>
 
     <!-- 动态更新语句 -->

@@ -1,6 +1,8 @@
 package com.nilo.wms.web.controller.system;
 
-import com.nilo.wms.dto.PageResult;
+import com.nilo.wms.common.util.BeanUtils;
+import com.nilo.wms.common.util.StringUtil;
+import com.nilo.wms.dto.parameter.RoleParameter;
 import com.nilo.wms.dto.system.Role;
 import com.nilo.wms.service.system.RoleService;
 import com.nilo.wms.web.BaseController;
@@ -16,8 +18,13 @@ public class RoleController extends BaseController {
     private RoleService roleService;
 
     @GetMapping("/role")
-    public String list() {
-        return roleService.queryRoles().toJson();
+    public String list(String searchValue, String searchKey) {
+
+        RoleParameter parameter = new RoleParameter();
+        if(StringUtil.isNotBlank(searchKey)) {
+            BeanUtils.setProperty(parameter, searchKey, searchValue);
+        }
+        return roleService.queryRoles(parameter).toJson();
     }
 
     @PostMapping("/role")

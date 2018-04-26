@@ -1,44 +1,4 @@
-/* @font-face {
-	font-family: layui-icon;
-	src: url(../font/iconfont.woff?v=226_rc2) format('woff');
-}
 
-.layui-icon-login-qq:before {
-	content: "\e676";
-}
-
-.layui-icon-login-qq {
-	color: #3492ED;
-}
-
-.layui-icon-login-wechat:before {
-	content: "\e677";
-}
-
-.layui-icon-login-wechat {
-	color: #4DAF29;
-}
-
-.layui-icon-login-weibo:before {
-	content: "\e675";
-}
-
-.layui-icon-login-weibo {
-	color: #CF1900;
-}
-
-.layui-icon-username:before {
-	content: "\e66f";
-}
-
-.layui-icon-password:before {
-	content: "\e673";
-}
-
-.layui-icon-vercode:before {
-	content: "\e679";
-}
- */
 .layadmin-link {
 	color: #029789 !important;
 }
