@@ -59,6 +59,13 @@ public class BasicDataServiceImpl implements BasicDataService {
             AssertUtil.isNotBlank(s.getSku(), CheckErrorCode.SKU_EMPTY);
             AssertUtil.isNotBlank(s.getDescE(), CheckErrorCode.SKU_DESC_EMPTY);
             AssertUtil.isNotBlank(s.getStoreId(), CheckErrorCode.STORE_EMPTY);
+            AssertUtil.isNotBlank(s.getFreightClass(), CheckErrorCode.CLASS_EMPTY);
+
+            if (StringUtil.isNotBlank(s.getLogisticsType())) {
+                if (!(StringUtil.equals("1", s.getLogisticsType()) || StringUtil.equals("3", s.getLogisticsType()) || StringUtil.equals("2", s.getLogisticsType()))) {
+                    throw new WMSException(CheckErrorCode.LOGISTICS_TYPE_ERROR);
+                }
+            }
             s.setCustomerId(customerId);
         }
 

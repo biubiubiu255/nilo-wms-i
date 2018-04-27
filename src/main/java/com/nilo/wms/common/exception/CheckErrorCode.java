@@ -48,7 +48,8 @@ public enum CheckErrorCode implements ErrorCode {
     PAGE_EMPTY("page empty.", "100038"),
     LIMIT_EMPTY("limit empty.", "100039"),
     ROLE_ID_EMPTY("roleId empty.", "100040"),
-
+    CLASS_EMPTY("class empty.", "100041"),
+    LOGISTICS_TYPE_ERROR("logistics_type not exist.", "100042"),
     ;
 
     private final String description;

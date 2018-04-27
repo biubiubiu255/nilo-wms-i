@@ -23,7 +23,6 @@ public class SkuInfo implements Serializable {
     private String customerId;
     @JSONField(name = "sku")
     private String sku;
-    @JSONField(name = "goods_name")
     private String descC;
     @JSONField(name = "goods_name")
     private String descE;
@@ -69,6 +68,7 @@ public class SkuInfo implements Serializable {
 
     public void setDescE(String descE) {
         this.descE = descE;
+        this.descC = descE;
     }
     @XmlElement(name="SKU_Group7")
     public String getStoreId() {
