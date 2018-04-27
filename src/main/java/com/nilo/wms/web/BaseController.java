@@ -7,8 +7,12 @@ package com.nilo.wms.web;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import javafx.scene.control.Pagination;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -59,4 +63,26 @@ public class BaseController {
         return "<xmldata><Response><return><returnCode>0000</returnCode><returnDesc>ok</returnDesc><returnFlag>1</returnFlag></return></Response></xmldata>";
     }
 
+    protected Pagination getPage() {
+        String _offset, _limit, _page;
+        int offset = 0, limit = 10;
+        HttpServletRequest req = getRequest();
+        if ((_limit = req.getParameter("_size")) != null || (_limit = req.getParameter("length")) != null
+                || (_limit = req.getParameter("limit")) != null) {
+            limit = NumberUtils.toInt(_limit, 10);
+        }
+        if ((_offset = req.getParameter("_index")) != null || (_offset = req.getParameter("start")) != null
+                || (_offset = req.getParameter("offset")) != null) {
+            offset = NumberUtils.toInt(_offset);
+        }
+        if ((_page = req.getParameter("page")) != null) {
+            int page = NumberUtils.toInt(_page);
+            offset = limit * (page - 1);
+        }
+        return new Pagination(offset, limit);
+    }
+
+    protected HttpServletRequest getRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    }
 }

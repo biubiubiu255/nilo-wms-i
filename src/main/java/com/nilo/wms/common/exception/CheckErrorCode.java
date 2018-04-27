@@ -29,7 +29,7 @@ public enum CheckErrorCode implements ErrorCode {
     SKU_EMPTY(" sku empty.", "100019"),
     SKU_DESC_EMPTY("goods_name empty.", "100020"),
     ADD_TIME_EMPTY("add_time empty.", "100021"),
-    ITEM_EMPTY("item_list empty.", "100022"),
+    ITEM_EMPTY("order_item_list empty.", "100022"),
     QTY_EMPTY("qty empty.", "100023"),
     ORDER_TYPE_EMPTY("order_type empty.", "100024"),
     DELIVERY_TYPE_EMPTY("delivery_type empty.", "100025"),
