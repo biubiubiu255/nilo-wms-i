@@ -8,7 +8,6 @@ $(function() {
 	Q.reg('home',function(){
 		load('home');
 	}).reg('system',function(path){
-		alert(path);
 		load('system/'+path);
 	}).init({
 		index: 'home'

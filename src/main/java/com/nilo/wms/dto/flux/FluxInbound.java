@@ -1,6 +1,7 @@
 package com.nilo.wms.dto.flux;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.nilo.wms.common.enums.InboundStatusEnum;
 
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class FluxInbound {
     }
 
     public String getStatusDesc() {
-        return statusDesc;
+        return InboundStatusEnum.getEnum(status).getDesc_e();
     }
 
     public void setStatusDesc(String statusDesc) {

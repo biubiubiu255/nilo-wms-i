@@ -1,6 +1,7 @@
 package com.nilo.wms.dto.flux;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.nilo.wms.common.enums.InboundStatusEnum;
 import com.nilo.wms.common.util.DateUtil;
 
 import java.util.List;
@@ -15,15 +16,25 @@ public class FluxInboundDetails {
     private Integer qty;
     @JSONField(name = "received_num")
     private Integer receivedQty;
-    @JSONField(name = "received_time")
-    private String receivedTime;
+    @JSONField(name = "status")
+    private int status;
+    @JSONField(name = "status_desc")
+    private String statusDesc;
 
-    public String getReceivedTime() {
-        return "" + DateUtil.parse(this.receivedTime, DateUtil.LONG_WEB_FORMAT);
+    public int getStatus() {
+        return status;
     }
 
-    public void setReceivedTime(String receivedTime) {
-        this.receivedTime = receivedTime;
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getStatusDesc() {
+        return InboundStatusEnum.getEnum(status).getDesc_e();
+    }
+
+    public void setStatusDesc(String statusDesc) {
+        this.statusDesc = statusDesc;
     }
 
     public String getSku() {

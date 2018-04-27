@@ -9,6 +9,8 @@ import java.util.Map;
 public enum InboundStatusEnum {
 
     create(0, "创建订单","Create"),
+    received_part(30,"部分收货","Partially Received"),
+    received_complete(40,"完全收货","Completely Received"),
     cancelled(90, "订单取消","Cancelled"),
     closed(99, "订单完成","Closed"),
     ;
@@ -58,7 +60,7 @@ public enum InboundStatusEnum {
         this.desc_e = desc_e;
     }
 
-    public static InboundStatusEnum getEnum(String code) {
+    public static InboundStatusEnum getEnum(Integer code) {
         return map.get(code);
     }
 

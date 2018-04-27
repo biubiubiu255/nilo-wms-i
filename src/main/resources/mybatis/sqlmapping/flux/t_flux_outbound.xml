@@ -18,7 +18,7 @@
     <resultMap id="weight" type="com.nilo.wms.dto.flux.FluxWeight">
         <result property="waybillNum" column="traceId" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="weight" column="grossweight" javaType="java.lang.Double"
+        <result property="weight" column="weight" javaType="java.lang.Double"
                 jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -30,7 +30,7 @@
     </resultMap>
 
     <select id="queryByReferenceNo" resultMap="orderHeader">
-            select h.orderno,h.soreference1,h.sostatus,s.grossweight
+            select h.orderno,h.soreference1,h.sostatus,nvl(s.grossweight,0) weight
               from doc_order_header h left join DOC_Order_Packing_Summary s
                on h.orderno = s.orderno
                where h.customerId = #{customerId} and h.soreference1 = #{referenceNo}

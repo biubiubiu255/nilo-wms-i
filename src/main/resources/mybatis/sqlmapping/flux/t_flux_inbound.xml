@@ -16,11 +16,11 @@
     <resultMap id="details" type="com.nilo.wms.dto.flux.FluxInboundDetails">
         <result property="sku" column="sku" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="qty" column="EXPECTEDQTY" javaType="java.lang.Integer"
+        <result property="qty" column="expected_qty" javaType="java.lang.Integer"
                 jdbcType="VARCHAR"/>
-        <result property="receivedQty" column="RECEIVEDQTY" javaType="java.lang.Integer"
+        <result property="receivedQty" column="received_qty" javaType="java.lang.Integer"
                 jdbcType="VARCHAR"/>
-        <result property="receivedTime" column="RECEIVEDTIME" javaType="java.lang.String"
+        <result property="status" column="status" javaType="java.lang.Integer"
                 jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -30,7 +30,7 @@
     </select>
 
     <select id="queryDetailsByAsnNo" resultMap="details">
-        select d.sku,d.expectedqty,d.receivedqty,to_char(d.receivedtime,'yyyy-MM-dd HH:mm:SS') from doc_asn_details d
+        select d.sku,d.expectedqty expected_qty,nvl(d.receivedqty,0) received_qty ,d.linestatus status from doc_asn_details d
         where d.customerid=#{customerId} and d.asnno=#{asnNo}
     </select>
 </mapper>
