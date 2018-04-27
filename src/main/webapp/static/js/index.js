@@ -136,9 +136,17 @@ function myInfo(){
 
 //显示表单弹窗
 function updatePsw(){
+
+	var lan = navigator.language;
+	var title;
+	if(lan=='zh-CN'){
+		title="修改密码";
+	}else{
+		title="Change Password";
+	}
 	layer.open({
 		type: 1,
-		title: "修改密码",
+		title: title,
 		area: '400px',
 		offset: '120px',
 		content: $("#pswModel").html()

@@ -17,7 +17,7 @@ public class InboundHeader {
     private String referenceNo;
     @JSONField(name = "client_order_sn2")
     private String referenceNo2;
-    @JSONField(name = "order_type")
+    @JSONField(name = "inbound_type")
     private String asnType;
     private String warehouseId;
     @JSONField(name = "add_time")

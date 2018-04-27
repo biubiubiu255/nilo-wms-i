@@ -24,7 +24,7 @@ public class OutboundHeader {
     private String wmsNo;
     @JSONField(name = "add_time")
     private Long orderTime;
-    @JSONField(name = "order_type")
+    @JSONField(name = "outbound_type")
     private String orderType;
     @JSONField(name = "waybill_number")
     private String deliveryNo;

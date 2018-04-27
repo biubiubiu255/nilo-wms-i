@@ -26,13 +26,16 @@
                 </a>
                 <dl class="layui-nav-child">
                     <dd>
-                        <a href="javascript:myInfo();"><i class="layui-icon">&#xe612;</i>&emsp;个人信息</a>
+                        <a href="javascript:myInfo();"><i class="layui-icon">&#xe612;</i>&emsp;<span
+                                id="personal_info_span"></span></a>
                     </dd>
                     <dd>
-                        <a href="javascript:updatePsw();"><i class="layui-icon">&#xe631;</i>&emsp;修改密码</a>
+                        <a href="javascript:updatePsw();"><i class="layui-icon">&#xe631;</i>&emsp;<span
+                                id="change_password_span"></span></a>
                     </dd>
                     <dd>
-                        <a href="javascript:loginOut();"><i class="layui-icon">&#xe66d;</i>&emsp;退出登录</a>
+                        <a href="javascript:loginOut();"><i class="layui-icon">&#xe66d;</i>&emsp;<span
+                                id="logout_span"></span></a>
                     </dd>
                 </dl>
             </li>
@@ -51,7 +54,7 @@
     </div>
     <!-- 底部 -->
     <div class="layui-footer">
-        Copyright © 2018 EasyWeb All rights reserved.
+        Copyright © 2018 KiliExpress All rights reserved.
     </div>
     <!-- 手机屏幕遮罩层 -->
     <div class="site-mobile-shade"></div>
@@ -85,41 +88,59 @@
             <dd>
                 <a href="#!{{ subItem.permissionValue }}">{{ subItem.nameE }}</a>
             </dd>
-            {{# } }}
+            {{# } }][
             {{# }); }}
         </dl>
     </li>
     {{#  }); }}
 </script>
 <!-- 修改密码弹窗 -->
-<script type="text/html" id="pswModel">
+<div id="pswModel" style="display: none">
     <form id="pswForm" class="layui-form model-form" action="" method="put">
         <div class="layui-form-item">
-            <label class="layui-form-label">旧密码</label>
+            <label class="layui-form-label"><span id="old_password_span"></span></label>
             <div class="layui-input-block">
-                <input name="oldPsw" placeholder="请输入旧密码" type="password" class="layui-input" maxlength="12"
+                <input name="oldPsw" placeholder="" type="password" class="layui-input" maxlength="12"
                        lay-verify="required|pass" required/>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">新密码</label>
+            <label class="layui-form-label"><span id="new_password_span"></span></label>
             <div class="layui-input-block">
-                <input name="newPsw" placeholder="请输入新密码" type="password" class="layui-input" maxlength="12"
+                <input name="newPsw" placeholder="" type="password" class="layui-input" maxlength="12"
                        lay-verify="required|pass" required/>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">确认密码</label>
-            <div class="layui-input-block">
-                <input name="newPsw2" placeholder="请再次输入新密码" type="password" class="layui-input" maxlength="12"
-                       lay-verify="required|psw2" required/>
             </div>
         </div>
         <div class="layui-form-item model-form-footer">
-            <button class="layui-btn layui-btn-primary" type="button" id="pswCancel">取消</button>
-            <button class="layui-btn" lay-filter="pswSubmit" lay-submit>修改</button>
+            <button class="layui-btn layui-btn-primary" type="button" id="pswCancel"><span id="cancel_span"></span></button>
+            <button class="layui-btn" lay-filter="pswSubmit" lay-submit><span id="ok_span"></span></button>
         </div>
     </form>
+</div>
+
+<script>
+
+    var lan = navigator.language;
+    if(lan=='zh-CN'){
+        $("#personal_info_span").html("个人信息");
+        $("#change_password_span").html("修改密码");
+        $("#logout_span").html("退出登录");
+        $("#old_password_span").html("旧密码");
+        $("#new_password_span").html("新密码");
+        $("#ok_span").html("确认");
+        $("#cancel_span").html("取消");
+
+    }else{
+        $("#personal_info_span").html("Personal Info");
+        $("#change_password_span").html("Change Password");
+        $("#logout_span").html("Logout");
+        $("#old_password_span").html("Old Password");
+        $("#new_password_span").html("New Password");
+        $("#ok_span").html("OK");
+        $("#cancel_span").html("Cancel");
+
+    }
+
 </script>
 </body>
 

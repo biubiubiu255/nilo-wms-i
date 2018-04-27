@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User queryByUserName(String username) {
-        return null;
+        return userDao.queryByUserName(username);
     }
 
     @Override
