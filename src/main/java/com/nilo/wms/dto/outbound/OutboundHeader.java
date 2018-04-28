@@ -19,12 +19,12 @@ import java.util.List;
 public class OutboundHeader {
     private String customerId;
     private String warehouseId;
-    @JSONField(name = "client_order_sn")
+    @JSONField(name = "client_ordersn")
     private String orderNo;
     private String wmsNo;
     @JSONField(name = "add_time")
     private Long orderTime;
-    @JSONField(name = "outbound_type")
+    @JSONField(name = "order_type")
     private String orderType;
     @JSONField(name = "waybill_number")
     private String deliveryNo;
@@ -34,11 +34,9 @@ public class OutboundHeader {
     private double orderAmount;
     @JSONField(name = "is_pod")
     private String isCod;
-    @JSONField(name = "need_pay_amount")
+    @JSONField(name = "pod_amount")
     private double codAmount;
-    @JSONField(name = "carrier_id")
     private String carrierId = "STANDARD";
-    @JSONField(name = "carrier_name")
     private String carrierName = "STANDARD";
     private String notes;
     private String voucher;

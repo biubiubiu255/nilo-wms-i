@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class CaptchaController extends BaseController {
 
     @ResponseBody
-    @RequestMapping("/image.html")
+    @RequestMapping("/image")
     public CaptchaView image() {
         return new CaptchaView(160, 70, CaptchaEngineImpl.class);
     }

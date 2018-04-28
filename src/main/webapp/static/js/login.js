@@ -28,7 +28,7 @@ layui.use(['form'], function() {
 
 //获取验证码
 function getCode(){
-	$("#LAY-user-get-vercode").attr("src","/servlet/captcha/image.html?n="+Math.random());
+	$("#LAY-user-get-vercode").attr("src","/servlet/captcha/image?n="+Math.random());
 }
 
 //检查是否登录

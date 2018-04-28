@@ -55,6 +55,11 @@ $(function() {
 
 //异步加载子页面
 function load(path) {
+
+	if(getCurrentUser()==null){
+		location.replace("/login.html");
+	}
+	
 	if(refreshNav){
 		activeNav(path);
 	}

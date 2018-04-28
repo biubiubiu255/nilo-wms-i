@@ -53,15 +53,7 @@ public class LoginController extends BaseController {
         if (user == null || !StringUtil.equalsIgnoreCase(DigestUtils.md5Hex(password), user.getPassword())) {
             throw new WMSException(BizErrorCode.USERNAME_PASSWORD_ERROR);
         }
-
-
-        Date date = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MINUTE, 2);
-        date = calendar.getTime();
-
-        String token = TokenUtil.createToken(user.getUserId(),date);
+        String token = TokenUtil.createToken(user.getUserId(), DateUtil.getAppointDate(new Date(), 30));
         user.setPassword(null);
         user.setToken(token);
         return ResultMap.success().put("token", token).put("user", user).toJson();

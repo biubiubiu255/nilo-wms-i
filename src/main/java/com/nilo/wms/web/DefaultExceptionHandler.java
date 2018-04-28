@@ -38,8 +38,8 @@ public class DefaultExceptionHandler implements HandlerExceptionResolver {
             result.put("error", e.getMessage());
             result.put("msgid", e.getCode());
         } else if (ex instanceof IllegalTokenException || ex instanceof NoPermissionException) {
-            ModelAndView login = new ModelAndView("redirect:/login.html");
-            return login;
+            result.put("error", ex.getMessage());
+            result.put("msgid", "99998");
         } else if (ex instanceof Exception) {
             result.put("error", ex.getMessage());
             result.put("msgid", "99999");

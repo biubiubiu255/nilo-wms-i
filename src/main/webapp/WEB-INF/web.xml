@@ -93,6 +93,7 @@
         <url-pattern>/servlet/security/*</url-pattern>
     </filter-mapping>
     -->
+
     <session-config>
         <session-timeout>120</session-timeout>
     </session-config>

@@ -28,6 +28,13 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
+    <mvc:interceptors>
+        <!-- 日志拦截器 -->
+        <mvc:interceptor>
+            <mvc:mapping path="/servlet/**"/>
+            <bean class="com.nilo.wms.web.controller.interceptor.SessionInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
     <!-- SpringMVC上传文件时，需要配置MultipartResolver处理器 -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="maxUploadSize" value="100000000"/>

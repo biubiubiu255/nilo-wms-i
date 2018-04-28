@@ -112,7 +112,8 @@
             </div>
         </div>
         <div class="layui-form-item model-form-footer">
-            <button class="layui-btn layui-btn-primary" type="button" id="pswCancel"><span id="cancel_span"></span></button>
+            <button class="layui-btn layui-btn-primary" type="button" id="pswCancel"><span id="cancel_span"></span>
+            </button>
             <button class="layui-btn" lay-filter="pswSubmit" lay-submit><span id="ok_span"></span></button>
         </div>
     </form>
@@ -121,7 +122,7 @@
 <script>
 
     var lan = navigator.language;
-    if(lan=='zh-CN'){
+    if (lan == 'zh-CN') {
         $("#personal_info_span").html("个人信息");
         $("#change_password_span").html("修改密码");
         $("#logout_span").html("退出登录");
@@ -130,7 +131,7 @@
         $("#ok_span").html("确认");
         $("#cancel_span").html("取消");
 
-    }else{
+    } else {
         $("#personal_info_span").html("Personal Info");
         $("#change_password_span").html("Change Password");
         $("#logout_span").html("Logout");
@@ -140,7 +141,27 @@
         $("#cancel_span").html("Cancel");
 
     }
+    $(function () {
+        //全局判断ajax操作session是否过期
+        $(document).ajaxComplete(function (event, xhr, settings) {
+            if (xhr.status && xhr.status == 403) {
+                //返回登录页
+                layer.open({
+                    title: false,
+                    content: "Your token is inactive, please login again.",
+                    closeBtn: 0,
+                    btn: 'Login',
+                    yes: function () {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user");
+                        sessionStorage.removeItem("index-nav");
+                        location.href = "/login.html";
+                    }
+                });
+            }
+        });
 
+    });
 </script>
 </body>
 
