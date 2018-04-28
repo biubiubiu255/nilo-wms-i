@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -52,7 +53,15 @@ public class LoginController extends BaseController {
         if (user == null || !StringUtil.equalsIgnoreCase(DigestUtils.md5Hex(password), user.getPassword())) {
             throw new WMSException(BizErrorCode.USERNAME_PASSWORD_ERROR);
         }
-        String token = TokenUtil.createToken(user.getUserId(), DateUtil.getAppointDate(new Date(), 30));
+
+
+        Date date = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MINUTE, 2);
+        date = calendar.getTime();
+
+        String token = TokenUtil.createToken(user.getUserId(),date);
         user.setPassword(null);
         user.setToken(token);
         return ResultMap.success().put("token", token).put("user", user).toJson();

@@ -185,26 +185,21 @@ public class BasicDataServiceImpl implements BasicDataService {
                 break;
             }
             //记录锁定
-            lockRecord.put(key, qty);
-            jedis.hset(key, RedisUtil.LOCK_STORAGE, "" + lockStoInt);
+            lockRecord.put(key, lockStoInt);
         }
 
 
         if (!lockSuccess) {
-            //锁定库存失败回滚
-            for (Map.Entry<String, Integer> entry : lockRecord.entrySet()) {
-                String key = entry.getKey();
-                int qty = entry.getValue();
-                String lObj = jedis.hget(key, RedisUtil.LOCK_STORAGE);
-                int lInt = Integer.parseInt(lObj) - qty;
-                jedis.hset(key, RedisUtil.LOCK_STORAGE, "" + lInt);
-            }
-
-        }
-        RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
-        if (!lockSuccess) {
+            RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
             throw new WMSException(BizErrorCode.STORAGE_NOT_ENOUGH, notEnoughSku);
         }
+
+        for (Map.Entry<String, Integer> entry : lockRecord.entrySet()) {
+            jedis.hset(entry.getKey(), RedisUtil.LOCK_STORAGE, "" + entry.getValue());
+        }
+
+        RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
+
         //锁定成功，添加订单到锁定列表
         for (OutboundItem item : header.getItemList()) {
             RedisUtil.hset(orderNoKey, item.getSku(), "" + item.getQty());

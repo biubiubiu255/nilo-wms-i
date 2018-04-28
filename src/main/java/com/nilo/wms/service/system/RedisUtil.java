@@ -209,4 +209,7 @@ public class RedisUtil {
     public static String getLockOrderKey(String clientCode, String orderNo) {
         return "wms_" + clientCode + "_lock_order_" + orderNo;
     }
+    public static String getPermissionKey(String userId) {
+        return "wms_permission_" + userId;
+    }
 }

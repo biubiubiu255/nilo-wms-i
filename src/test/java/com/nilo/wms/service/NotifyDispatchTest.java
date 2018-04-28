@@ -14,7 +14,7 @@ public class NotifyDispatchTest {
 
     public static void main(String[] args) {
 
-        String orderNo = "10000000556968";
+        String orderNo = "10000000557252";
         String url = "https://mobile.kilimall.co.ke/index.php?act=wms_api";
         String method = "confirmSOData";
         String data = "{\"data\":{\"orderinfo\":[{\"CustomerID\":\"KILIMALL\",\"DeliveryNo\":\"KE10102410\",\"OrderNo\":" + orderNo + ",\"OrderType\":\"SELL\",\"Udf03\":\"Timothy Ngari\",\"Udf04\":\"0792001361\",\"Udf05\":\"Exdous\",\"Udf06\":\"0\",\"Udf08\":\"\",\"Udf09\":\"\",\"WarehouseID\":\"KE01\"}]}}";
