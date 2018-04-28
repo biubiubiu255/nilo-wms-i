@@ -15,6 +15,7 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(SessionInterceptor.class);
     private static final String ALLOW_URL = "/servlet/logout,/servlet/captcha/image,/servlet/login";
+    private static final String AJAX_HEADER_KEY = "X-Requested-With";
 
     /**
      * preHandle方法是进行处理器拦截用的，顾名思义，该方法将在Controller处理之前进行调用，
@@ -26,10 +27,8 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String host = request.getRemoteHost();
-        logger.debug("IP为---->>> " + host + " <<<-----访问了系统");
-
         String uri = request.getRequestURI();
+        System.out.println(uri);
         //排除登录请求
         if (uri.indexOf("api") != -1 || ALLOW_URL.indexOf(uri) != -1) {
             return true;
@@ -38,12 +37,21 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
         if (token == null) {
             token = request.getParameter("token");
         }
+        boolean isAjax = request.getHeader(AJAX_HEADER_KEY) != null;
         if (StringUtil.isEmpty(token)) {
+            if (isAjax) {
+                response.setStatus(403);
+                return false;
+            }
             throw new IllegalTokenException();
         }
         try {
             TokenUtil.parseToken(token);
         } catch (Exception e) {
+            if (isAjax) {
+                response.setStatus(403);
+                return false;
+            }
             throw new IllegalTokenException();
         }
         return true;
@@ -69,8 +77,6 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
      */
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        String host = request.getRemoteHost();
-        logger.debug("IP为---->>> " + host + " <<<-----访问成功");
     }
 
 }

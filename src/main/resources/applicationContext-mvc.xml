@@ -31,7 +31,8 @@
     <mvc:interceptors>
         <!-- 日志拦截器 -->
         <mvc:interceptor>
-            <mvc:mapping path="/servlet/**"/>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/api.html" />
             <bean class="com.nilo.wms.web.controller.interceptor.SessionInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
