@@ -9,6 +9,16 @@ $(function() {
 		load('home');
 	}).reg('system',function(path){
 		load('system/'+path);
+	}).reg('basic',function(path){
+		load('basic/'+path);
+	}).reg('inbound',function(path){
+		load('inbound/'+path);
+	}).reg('outbound',function(path){
+		load('outbound/'+path);
+	}).reg('storage',function(path){
+		load('storage/'+path);
+	}).reg('config',function(path){
+		load('config/'+path);
 	}).init({
 		index: 'home'
 	});
@@ -38,18 +48,6 @@ $(function() {
 			}
 		}, "JSON");
 		return false;
-	});
-	layui.form.verify({
-		  psw2: function(value, item){
-			var newPsw1 = $("#pswForm input[name=newPsw]").val();
-		    if(value!=newPsw1){
-		      return '两次输入密码不一致';
-		    }
-		  },
-		  pass: [
-		    /^[\S]{6,12}$/
-		    ,'密码必须6到12位，且不能出现空格'
-		  ]
 	});
 });
 

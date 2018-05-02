@@ -69,24 +69,24 @@
 <script id="sideNav" type="text/html">
     {{#  layui.each(d, function(index, item){ }}
     <li class="layui-nav-item">
-        <a class="" href="javascript:openNavItem();"><i class="layui-icon">{{ item.permissionIcon }}</i>&emsp;<span>
+        <a class="" href="javascript:openNavItem();"><i class="layui-icon">{{ item.icon }}</i>&emsp;<span>
         {{# if(navigator.language=='zh-CN'){ }}
-            {{ item.nameC }}
+            {{ item.desc_c }}
         {{# } }}
         {{# if(navigator.language!='zh-CN'){ }}
-            {{ item.nameE }}
+            {{ item.desc_e }}
         {{# } }}
         </span></a>
         <dl class="layui-nav-child">
             {{# layui.each(item.subMenus, function(index, subItem){ }}
             {{# if(navigator.language=='zh-CN'){ }}
             <dd>
-                <a href="#!{{ subItem.permissionValue }}">{{ subItem.nameC }}</a>
+                <a href="#!{{ subItem.value }}">{{ subItem.desc_c }}</a>
             </dd>
             {{# } }}
             {{# if(navigator.language!='zh-CN'){ }}
             <dd>
-                <a href="#!{{ subItem.permissionValue }}">{{ subItem.nameE }}</a>
+                <a href="#!{{ subItem.value }}">{{ subItem.desc_e }}</a>
             </dd>
             {{# } }}
             {{# }); }}

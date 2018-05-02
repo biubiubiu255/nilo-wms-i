@@ -7,45 +7,35 @@ import java.util.List;
 
 public class PageResult<T> {
 
-    private int code;
+    private int code=0;
 
-    private String msg;
+    private String msg="";
 
-    private long count;
+    private int count;
 
     private List<T> data;
 
     public PageResult() {
     }
 
-    public PageResult(long total, List<T> rows) {
-        this.count = total;
-        this.data = rows;
-        this.code = 0;
-        this.msg = "";
-    }
-
     public int getCode() {
         return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
     }
 
     public String getMsg() {
         return msg;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public PageResult(int total, List<T> rows) {
+        this.count = total;
+        this.data = rows;
     }
 
-    public long getCount() {
+    public int getCount() {
         return count;
     }
 
-    public void setCount(long count) {
+    public void setCount(int count) {
         this.count = count;
     }
 

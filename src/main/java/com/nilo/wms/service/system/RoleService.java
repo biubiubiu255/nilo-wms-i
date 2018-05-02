@@ -5,8 +5,6 @@ import com.nilo.wms.dto.PageResult;
 import com.nilo.wms.dto.parameter.RoleParameter;
 import com.nilo.wms.dto.system.Role;
 
-import java.util.List;
-
 
 public interface RoleService {
 
@@ -15,5 +13,7 @@ public interface RoleService {
     void add(Role role);
 
     void update(Role role);
+
+
 
 }

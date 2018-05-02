@@ -10,11 +10,10 @@ $(function () {
         page: true,
         cols: [[
             {type: 'numbers'},
-            {field: 'userAccount', sort: true, title: i18n['username']},
-            {field: 'userNickname', sort: true, title: i18n['nickname']},
-            {field: 'mobilePhone', sort: true, title: i18n['phone']},
+            {field: 'username', sort: true, title: i18n['username']},
+            {field: 'nickname', sort: true, title: i18n['nickname']},
+            {field: 'phone', sort: true, title: i18n['phone']},
             {field: 'sex', sort: true, title: i18n['sex']},
-            {field: 'roleName', sort: true, title: i18n['roleName']},
             {
                 field: 'createTime', sort: true, templet: function (d) {
                 return layui.util.toDateString(d.createTime);

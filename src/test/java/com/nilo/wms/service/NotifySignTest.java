@@ -14,7 +14,7 @@ public class NotifySignTest {
 
     public static void main(String[] args) {
 
-        String orderNo = "10000000556968";
+        String orderNo = "10000000557179";
         String url = "https://mobile.kilimall.co.ke/index.php?act=dms_api";
         String method = "confirmorder";
         String data = "{\"carrier\":\"Nilo\",\"consignee\":\"loise mghoi\",\"operateTime\":\"2018-04-11 12:29:15\",\"orderInfo\":[{\"orderNo\":"+orderNo+",\"status\":\"10\"}],\"orderNo\":"+orderNo+",\"orderPrice\":\"0\",\"remark\":\"loise mghoi\",\"rider\":\"40001\",\"transId\":\"\"}";

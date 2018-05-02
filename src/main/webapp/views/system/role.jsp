@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<link rel="stylesheet" href="/static/plugins/zTree/css/zTreeStyle/zTreeStyle.css">
+
 <div class="content-header">
     <h2 class="content-title"><spring:message code="system.role.mgn"/></h2>
 	<span class="layui-breadcrumb">
@@ -59,9 +61,10 @@
     <input type="checkbox" value="{{d.roleId}}" lay-filter="statusCB" lay-skin="switch"
            lay-text="<spring:message code='on'/>|<spring:message code='off'/>" {{ d.status== 1?'checked' : '' }}>
 </script>
-<link rel="stylesheet" href="/static/plugins/zTree/css/zTreeStyle/zTreeStyle.css"/>
-<script type="text/javascript" src="/static/plugins/zTree/js/jquery.ztree.all-3.5.min.js"></script>
+
 <script type="text/javascript" src="/static/js/system/role.js"></script>
+<script type="text/javascript" src="/static/plugins/zTree/js/jquery.ztree.core-3.5.min.js" />
+<script type="text/javascript" src="/static/plugins/zTree/js/jquery.ztree.excheck-3.5.min.js"></script>
 <script>
     var i18n = new Object();
     i18n['roleName'] = '<spring:message code="system.role.name"/>';

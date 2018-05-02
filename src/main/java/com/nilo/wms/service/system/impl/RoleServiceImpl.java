@@ -33,7 +33,6 @@ public class RoleServiceImpl implements RoleService {
     public void add(Role role) {
 
     }
-
     @Override
     public void update(Role role) {
 
@@ -42,6 +41,5 @@ public class RoleServiceImpl implements RoleService {
 
         roleDao.update(role);
     }
-
 
 }

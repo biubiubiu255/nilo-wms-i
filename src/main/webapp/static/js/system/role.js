@@ -49,7 +49,7 @@
 			showEditModel(data);
 		} else if(layEvent === 'del'){ //删除
 			doDelete(obj);
-		} else if(layEvent == 'detail'){
+		} else if(layEvent == 'detail'){ //权限树
 			showPermDialog(data.roleId);
 		}
 	});
@@ -144,7 +144,7 @@ function doSearch(){
 function showPermDialog(roleId){
 	layer.open({
 		type: 1,
-		title: '管理权限',
+		title: 'Permission',
 		area: '450px',
 		offset: '120px',
 		content: '<ul id="treeAuth" class="ztree" style="padding: 25px 80px;"></ul>',
@@ -154,42 +154,41 @@ function showPermDialog(roleId){
 			saveRolePerm(roleId,index);
 		}
 	});
-	layer.load(2);
+	var load = layer.load(2);
 	var setting = {
 		check: {enable: true},
 	    data: {
 	    	simpleData:{enable: true}
 	    }
 	};
-	$.get("api/permission/tree/"+roleId,{
+	$.get("/servlet/role/tree/"+roleId,{
 		token: getToken()
 	},function(data) {
-    	$.fn.zTree.init($("#treeAuth"), setting, data);  
-		layer.closeAll('loading');
+		layer.close(load);
+		$.fn.zTree.init($("#treeAuth"), setting, data.zTree);
 	},"json");
 }
 
 //保存权限
 function saveRolePerm(roleId,index){
-	layer.load(2);
+	var load = layer.load(2);
 	var treeObj = $.fn.zTree.getZTreeObj("treeAuth");
 	var nodes = treeObj.getCheckedNodes(true);
 	var ids = new Array();
 	for(var i=0;i<nodes.length;i++){
 		ids[i] = nodes[i].id;
 	}
-	$.post("api/permission/tree",{
+	$.post("/servlet/role/tree",{
 		roleId: roleId,
 		permIds: JSON.stringify(ids),
 		token: getToken(),
 		_method: "PUT"
 	},function(data){
-		layer.closeAll('loading');
-		if(200==data.code){
-			layer.msg(data.msg, {icon: 1});
-			layer.close(index);
+		layer.close(load);
+		if(data.status='succ'){
+			layer.msg("SUCCESS", {icon: 1});
 		}else{
-			layer.msg(data.msg, {icon: 2});
+			layer.msg(data.error, {icon: 2});
 		}
 	},"json");
 }

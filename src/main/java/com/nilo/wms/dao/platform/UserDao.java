@@ -13,4 +13,7 @@ public interface UserDao extends BaseDao<Long, User> {
     User queryByUserName(String userName);
 
     List<User> queryUsers(UserParameter parameter);
+
+    int queryUsersCount(UserParameter parameter);
+
 }

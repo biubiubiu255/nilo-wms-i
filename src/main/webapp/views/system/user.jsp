@@ -13,10 +13,8 @@
 		<spring:message code="search"/>：
 		<select id="searchKey">
 			<option value="">-<spring:message code="please.select"/>-</option>
-			<option value="user_id">ID</option>
 			<option value="user_account"><spring:message code="system.user.username"/></option>
 			<option value="user_nickname"><spring:message code="system.user.nickname"/></option>
-			<option value="mobile_phone"><spring:message code="system.user.phone"/></option>
 		</select>&emsp;
 		<input id="searchValue" class="layui-input search-input" type="text" placeholder="<spring:message code="input.search.content"/>" />&emsp;
 		<button id="searchBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe615;</i><spring:message code="search"/></button>&emsp;
@@ -76,7 +74,8 @@
 </script>
 <!-- 表格状态列 -->
 <script type="text/html" id="statusTpl">
-	<input type="checkbox" name="sex" lay-filter="statusCB" value="{{d.userId}}" lay-skin="switch" lay-text="正常|锁定" {{ d.userStatus == 0 ? 'checked' : '' }}>
+	<input type="checkbox" value="{{d.roleId}}" lay-filter="statusCB" lay-skin="switch"
+		   lay-text="<spring:message code='on'/>|<spring:message code='off'/>" {{ d.status== 1?'checked' : '' }}>
 </script>
 <!-- 角色select模板 -->
 <script id="rolesSelect" type="text/html">

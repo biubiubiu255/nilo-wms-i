@@ -1,74 +1,54 @@
 package com.nilo.wms.dto.system;
 
-import java.io.Serializable;
+public class ZTree {
 
-/**
- * Created by ronny on 2017/8/24.
- */
-public class ZTree implements Serializable {
-    private static final long serialVersionUID = 1693162056494295869L;
+	private String id;
 
-    private String id;
-    private String pId;
-    private String name;
-    private String value;
-    private boolean open;
-    private boolean checked;
-    private boolean isParent;
+	private String pId;
 
-    public boolean getIsParent() {
-        return isParent;
-    }
+	private String name;
 
-    public void setIsParent(boolean isParent) {
-        this.isParent = isParent;
-    }
+	private boolean open;
 
-    public String getId() {
-        return id;
-    }
+	private boolean checked;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public String getpId() {
-        return pId;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public void setpId(String pId) {
-        this.pId = pId;
-    }
+	public String getpId() {
+		return pId;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setpId(String pId) {
+		this.pId = pId;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getValue() {
-        return value;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+	public boolean isOpen() {
+		return open;
+	}
 
-    public boolean isOpen() {
-        return open;
-    }
+	public void setOpen(boolean open) {
+		this.open = open;
+	}
 
-    public void setOpen(boolean open) {
-        this.open = open;
-    }
+	public boolean isChecked() {
+		return checked;
+	}
 
-    public boolean isChecked() {
-        return checked;
-    }
-
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
 }

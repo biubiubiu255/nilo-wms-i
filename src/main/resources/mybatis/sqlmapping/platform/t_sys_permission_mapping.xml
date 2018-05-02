@@ -10,16 +10,16 @@
                 jdbcType="VARCHAR"/>
         <result property="parentId" column="parent_Id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="nameC" column="name_C" javaType="java.lang.String"
+        <result property="desc_c" column="desc_c" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="nameE" column="name_E" javaType="java.lang.String"
+        <result property="desc_e" column="desc_e" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
 
-        <result property="permissionValue" column="permission_Value" javaType="java.lang.String"
+        <result property="value" column="value" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="permissionIcon" column="permission_Icon" javaType="java.lang.String"
+        <result property="icon" column="icon" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="permissionType" column="permission_Type" javaType="java.lang.Integer"
+        <result property="type" column="type" javaType="java.lang.Integer"
                 jdbcType="INTEGER"/>
     </resultMap>
 
@@ -29,4 +29,22 @@
         SELECT a.* FROM t_sys_permission a,t_sys_role_permission b,t_sys_user c WHERE a.permission_id=b.permission_id AND b.role_id=c.role_id AND c.user_id=#{userId} AND a.status=1 ORDER BY order_number
     </select>
 
+    <select id="queryAll" resultMap="permission" parameterType="string">
+        SELECT * FROM t_sys_permission  WHERE status=1
+    </select>
+    <select id="queryByRoleId" resultMap="permission" parameterType="string">
+        SELECT a.* FROM t_sys_role_permission b left join t_sys_permission a on b.permission_id = a.permission_id where a.status = 1 and b.role_id =#{roleId}
+    </select>
+
+    <delete id="deletePermissionByRoleId">
+        delete from t_sys_role_permission where role_id = #{roleId}
+    </delete>
+
+    <insert id="insertRolePermission" statementType="PREPARED">
+        INSERT INTO t_sys_role_permission(role_id, permission_id)
+        VALUES
+        <foreach collection="permissionList" item="item" index="index" separator=",">
+            (#{roleId},  #{item})
+        </foreach>
+    </insert>
 </mapper>

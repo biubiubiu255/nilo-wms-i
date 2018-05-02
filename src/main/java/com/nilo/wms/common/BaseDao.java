@@ -5,7 +5,6 @@ package com.nilo.wms.common;
  */
 public interface BaseDao<K, T> {
     long deleteById(K var1);
-    
 
     long insert(T var1);
 

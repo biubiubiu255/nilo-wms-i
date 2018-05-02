@@ -10,27 +10,18 @@ public class Permission implements Serializable {
 
     private String parentId;
 
-    private String nameC;
+    private String desc_c;
 
-    private String nameE;
+    private String desc_e;
 
-    private String permissionName;
+    private String value;
 
-    private String permissionValue;
+    private String icon;
 
-    private String permissionIcon;
-
-    private Integer permissionType;
+    private Integer type;
 
     private List<Permission> subMenus;
 
-    public String getPermissionName() {
-        return permissionName;
-    }
-
-    public void setPermissionName(String permissionName) {
-        this.permissionName = permissionName;
-    }
 
     public List<Permission> getSubMenus() {
         return subMenus;
@@ -56,43 +47,43 @@ public class Permission implements Serializable {
         this.parentId = parentId;
     }
 
-    public String getNameC() {
-        return nameC;
+    public String getDesc_c() {
+        return desc_c;
     }
 
-    public void setNameC(String nameC) {
-        this.nameC = nameC;
+    public void setDesc_c(String desc_c) {
+        this.desc_c = desc_c;
     }
 
-    public String getNameE() {
-        return nameE;
+    public String getDesc_e() {
+        return desc_e;
     }
 
-    public void setNameE(String nameE) {
-        this.nameE = nameE;
+    public void setDesc_e(String desc_e) {
+        this.desc_e = desc_e;
     }
 
-    public String getPermissionValue() {
-        return permissionValue;
+    public String getValue() {
+        return value;
     }
 
-    public void setPermissionValue(String permissionValue) {
-        this.permissionValue = permissionValue;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public String getPermissionIcon() {
-        return permissionIcon;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setPermissionIcon(String permissionIcon) {
-        this.permissionIcon = permissionIcon;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
-    public Integer getPermissionType() {
-        return permissionType;
+    public Integer getType() {
+        return type;
     }
 
-    public void setPermissionType(Integer permissionType) {
-        this.permissionType = permissionType;
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

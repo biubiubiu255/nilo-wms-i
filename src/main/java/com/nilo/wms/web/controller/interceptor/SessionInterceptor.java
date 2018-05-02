@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class SessionInterceptor extends HandlerInterceptorAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(SessionInterceptor.class);
     private static final String ALLOW_URL = "/servlet/logout,/servlet/captcha/image,/servlet/login";
     private static final String AJAX_HEADER_KEY = "X-Requested-With";
 

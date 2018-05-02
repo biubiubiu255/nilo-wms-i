@@ -5,10 +5,7 @@
 package com.nilo.wms.common.util;
 
 
-import okhttp3.Call;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
+import okhttp3.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -28,11 +25,11 @@ public class HttpUtil {
                 .build();
     }
 
-    public static String get(String url)throws Exception {
+    public static String get(String url) throws Exception {
         return get(url, null);
     }
 
-    public static String get(String url, Map<String, String> params)throws Exception {
+    public static String get(String url, Map<String, String> params) throws Exception {
         StringBuilder sb = new StringBuilder();
         if (params != null && params.size() > 0) {
             Set<Map.Entry<String, String>> entrySet = params.entrySet();
@@ -40,11 +37,7 @@ public class HttpUtil {
             for (Map.Entry<String, String> entry : entrySet) {
                 sb.append(entry.getKey());
                 sb.append("=");
-                try {
-                    sb.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                sb.append(entry.getValue());
                 sb.append("&");
             }
             sb.deleteCharAt(sb.length() - 1);
@@ -60,14 +53,17 @@ public class HttpUtil {
 
 
     public static String post(String url, Map<String, String> params) throws Exception {
-        FormBody.Builder formBodyBuilder = new FormBody.Builder();
-        if (params != null && params.size() > 0) {
-            Set<Map.Entry<String, String>> entrySet = params.entrySet();
-            for (Map.Entry<String, String> entry : entrySet) {
-                formBodyBuilder.add(entry.getKey(), entry.getValue());
-            }
+        StringBuffer sb = new StringBuffer();
+        //设置表单参数
+        for (String key : params.keySet()) {
+            sb.append(key + "=" + params.get(key) + "&");
         }
-        Request request = new Request.Builder().url(url).post(formBodyBuilder.build()).build();
+        RequestBody body = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded; charset=utf-8"), sb.toString());
+        //创建请求
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
         Call call = okHttpClient.newCall(request);
         try {
             return call.execute().body().string();

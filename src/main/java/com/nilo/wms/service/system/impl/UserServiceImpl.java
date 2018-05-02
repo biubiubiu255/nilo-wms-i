@@ -34,6 +34,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PageResult<User> queryUsers(UserParameter parameter) {
-        return null;
+
+        PageResult<User> list = new PageResult<>();
+        int count = userDao.queryUsersCount(parameter);
+        if(count > 0){
+            list.setCount(count);
+            list.setData(userDao.queryUsers(parameter));
+        }
+        return list;
     }
 }

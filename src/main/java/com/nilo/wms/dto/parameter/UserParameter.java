@@ -1,5 +1,7 @@
 package com.nilo.wms.dto.parameter;
 
+import com.nilo.wms.dto.Page;
+
 /**
  * Created by admin on 2018/4/26.
  */
@@ -9,9 +11,7 @@ public class UserParameter {
 
     private String nickname;
 
-    private int offset;
-
-    private int limit;
+    private Page page;
 
     public String getUsername() {
         return username;
@@ -30,18 +30,18 @@ public class UserParameter {
     }
 
     public int getOffset() {
-        return offset;
-    }
-
-    public void setOffset(int offset) {
-        this.offset = offset;
+        return this.page.getOffset();
     }
 
     public int getLimit() {
-        return limit;
+        return this.page.getLimit();
     }
 
-    public void setLimit(int limit) {
-        this.limit = limit;
+    public Page getPage() {
+        return page;
+    }
+
+    public void setPage(Page page) {
+        this.page = page;
     }
 }

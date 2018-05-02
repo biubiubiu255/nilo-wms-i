@@ -4,20 +4,22 @@
 <mapper namespace="com.nilo.wms.dao.platform.UserDao">
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="userDO" type="com.nilo.wms.dto.system.User">
+    <resultMap id="user" type="com.nilo.wms.dto.system.User">
         <result property="userId" column="user_id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="userName" column="user_name" javaType="java.lang.String"
+        <result property="username" column="user_name" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="password" column="password" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="nickName" column="nickname" javaType="java.lang.String"
+        <result property="nickname" column="nick_name" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="phone" column="phone" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="sex" column="sex" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="roleId" column="role_id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="roleName" column="role_name" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="token" column="token" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
@@ -33,7 +35,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_id ,user_name, password ,  nickname,phone,sex,role_id,token, status, created_time , updated_time ,version
+        id,user_id ,user_name, password ,  nick_name,phone,sex,role_id,token, status, created_time , updated_time ,version
     </sql>
 
     <!-- 插入语句 -->
@@ -41,9 +43,9 @@
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_sys_user
-        (user_id ,user_name, password ,  nickname,phone,sex,role_id,token, status, created_time , updated_time ,version)
+        (user_id ,user_name, password ,  nick_name,phone,sex,role_id,token, status, created_time , updated_time ,version)
         VALUES
-        (#{userId},#{userName}, #{password}, #{nickName}, #{phone},#{sex},#{roleId},#{token},#{status}, UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+        (#{userId},#{username}, #{password}, #{nickname}, #{phone},#{sex},#{roleId},#{token},#{status}, UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
     </insert>
 
     <!-- 动态更新语句 -->
@@ -54,7 +56,7 @@
                 password = #{password},
             </if>
             <if test="nickName != null and nickName != ''">
-                nickname = #{nickName},
+                nick_name = #{nickName},
             </if>
             <if test="phone != null and phone != ''">
                 phone = #{phone},
@@ -75,7 +77,7 @@
         </trim>
     </update>
 
-    <select id="queryByUserName" resultMap="userDO" statementType="PREPARED"
+    <select id="queryByUserName" resultMap="user" statementType="PREPARED"
             parameterType="java.lang.String">
         SELECT
         <include refid="Base_Column_List"/>
@@ -83,5 +85,29 @@
         WHERE user_name=#{username} LIMIT 1
     </select>
 
+    <select id="queryUsers" resultMap="user" statementType="PREPARED" >
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_sys_user
+        WHERE 1 = 1
+        <if test="username != null and username != ''">
+            and user_name = #{username}
+        </if>
+        <if test="nickname != null and nickname != ''">
+            nick_name = #{nickname}
+        </if>
+        limit #{offset},#{limit}
+    </select>
 
+    <select id="queryUsersCount" resultType="java.lang.Integer" statementType="PREPARED">
+        SELECT count(1)
+        FROM t_sys_user
+        WHERE 1 = 1
+        <if test="username != null and username != ''">
+            and user_name = #{username}
+        </if>
+        <if test="nickname != null and nickname != ''">
+            nick_name = #{nickname}
+        </if>
+    </select>
 </mapper>
