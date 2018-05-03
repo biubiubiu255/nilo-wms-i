@@ -23,7 +23,7 @@ public class RoleController extends BaseController {
     @Autowired
     private PermissionService permissionService;
 
-    @GetMapping()
+    @GetMapping
     public String list(String searchValue, String searchKey) {
 
         RoleParameter parameter = new RoleParameter();
@@ -33,12 +33,12 @@ public class RoleController extends BaseController {
         return roleService.queryRoles(parameter).toJson();
     }
 
-    @PostMapping()
+    @PostMapping
     public String add(Role role) {
         return ResultMap.success().toJson();
     }
 
-    @PutMapping()
+    @PutMapping
     public String update(Role role) {
         return ResultMap.success().toJson();
     }

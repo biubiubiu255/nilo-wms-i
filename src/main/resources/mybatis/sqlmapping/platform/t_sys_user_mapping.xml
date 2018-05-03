@@ -55,8 +55,8 @@
             <if test="password != null and password != ''">
                 password = #{password},
             </if>
-            <if test="nickName != null and nickName != ''">
-                nick_name = #{nickName},
+            <if test="nickname != null and nickname != ''">
+                nick_name = #{nickname},
             </if>
             <if test="phone != null and phone != ''">
                 phone = #{phone},

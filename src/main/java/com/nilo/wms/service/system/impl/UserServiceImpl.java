@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(User user) {
-
+        userDao.update(user);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
         PageResult<User> list = new PageResult<>();
         int count = userDao.queryUsersCount(parameter);
-        if(count > 0){
+        if (count > 0) {
             list.setCount(count);
             list.setData(userDao.queryUsers(parameter));
         }

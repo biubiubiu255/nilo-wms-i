@@ -14,12 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/user")
+@RestController
+@RequestMapping("/user")
 public class UserController extends BaseController {
     @Autowired
     private UserService userService;
 
-    @GetMapping()
+    @GetMapping
     public String list(String searchValue, String searchKey) {
 
         UserParameter parameter = new UserParameter();
@@ -30,13 +31,13 @@ public class UserController extends BaseController {
         return userService.queryUsers(parameter).toJson();
     }
 
-    @PostMapping()
+    @PostMapping
     public String add(User user) {
         return ResultMap.success().toJson();
     }
 
-    @PutMapping()
-    public String update(User user) {
+    @PutMapping
+    public String put(User user) {
         return ResultMap.success().toJson();
     }
 

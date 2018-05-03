@@ -70,7 +70,7 @@
 <script type="text/html" id="barTpl">
   <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><spring:message code="edit"/></a>
   <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><spring:message code="delete"/></a>
-  <a class="layui-btn layui-btn-xs" lay-event="reset">重置密码</a>
+  <a class="layui-btn layui-btn-xs" lay-event="reset"><spring:message code="reset.password"/></a>
 </script>
 <!-- 表格状态列 -->
 <script type="text/html" id="statusTpl">
@@ -96,5 +96,9 @@
 	i18n['createTime'] = '<spring:message code="create.time"/>';
 	i18n['status'] = '<spring:message code="status"/>';
 	i18n['opt'] = '<spring:message code="opt"/>';
+	i18n['confirmDelete'] = '<spring:message code="confirm.delete"/>';
+	i18n['resetPassword'] = '<spring:message code="reset.password"/>';
+	i18n['confirmResetPassword'] = '<spring:message code="confirm.reset.password"/>';
+
 
 </script>

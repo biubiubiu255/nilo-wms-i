@@ -134,7 +134,7 @@ function getRoles(selectItem) {
 
 //删除
 function doDelete(obj) {
-    layer.confirm('确定要删除吗？', function (index) {
+    layer.confirm(i18n['confirmDelete'], function (index) {
         layer.close(index);
         layer.load(2);
         $.ajax({
@@ -144,10 +144,10 @@ function doDelete(obj) {
             success: function (data) {
                 layer.closeAll('loading');
                 if (data.code == 200) {
-                    layer.msg(data.msg, {icon: 1});
+                    layer.msg("SUCCESS", {icon: 1});
                     obj.del();
                 } else {
-                    layer.msg(data.msg, {icon: 2});
+                    layer.msg(data.error, {icon: 2});
                 }
             }
         });
@@ -186,7 +186,7 @@ function doSearch(table) {
 
 //删除
 function doReSet(userId) {
-    layer.confirm('确定要重置密码吗？', function (index) {
+    layer.confirm(i18n['confirmResetPassword'], function (index) {
         layer.close(index);
         layer.load(2);
         $.post("/servlet/user/psw/" + userId, {
