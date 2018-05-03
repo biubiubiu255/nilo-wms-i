@@ -12,11 +12,11 @@ $(function () {
             {field: 'roleName', sort: true, title: i18n['roleName']},
             {field: 'comments', sort: true, title: i18n['remark']},
             {
-                field: 'createTime', sort: true, templet: function (d) {
-                return layui.util.toDateString(d.createTime);
+                field: 'createdTime', sort: true, templet: function (d) {
+                return layui.util.toDateString(d.createdTime*1000);
             }, title: i18n['createTime']
             },
-            {field: 'isDelete', sort: true, templet: '#statusTpl', width: 80, title: i18n['status']},
+            {field: 'status', sort: true, templet: '#statusTpl', width: 80, title: i18n['status']},
             {align: 'center', toolbar: '#barTpl', minWidth: 180, title: i18n['opt']}
         ]]
     });
