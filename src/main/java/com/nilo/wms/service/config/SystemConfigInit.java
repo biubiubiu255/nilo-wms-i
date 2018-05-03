@@ -20,6 +20,6 @@ public class SystemConfigInit implements InitializingBean {
         systemService.loadingAndRefreshClientConfig();
         // 加载 仓库计费配置文件
         systemService.loadingAndRefreshWMSFeeConfig();
-
+        systemService.loadingAndRefreshRole();
     }
 }

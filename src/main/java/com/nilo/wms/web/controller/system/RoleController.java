@@ -1,6 +1,7 @@
 package com.nilo.wms.web.controller.system;
 
 import com.alibaba.fastjson.JSONArray;
+import com.nilo.wms.common.annotation.RequiresPermissions;
 import com.nilo.wms.common.util.BeanUtils;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dto.parameter.RoleParameter;
@@ -34,12 +35,14 @@ public class RoleController extends BaseController {
     }
 
     @PostMapping
+    @RequiresPermissions("10022")
     public String add(Role role) {
         roleService.add(role);
         return ResultMap.success().toJson();
     }
 
     @PutMapping
+    @RequiresPermissions("10023")
     public String update(Role role) {
 
         roleService.update(role);
@@ -59,6 +62,7 @@ public class RoleController extends BaseController {
     }
 
     @DeleteMapping("/{roleId}")
+    @RequiresPermissions("10024")
     public String delete(@PathVariable("roleId") String roleId) {
 
         roleService.delete(roleId);
@@ -69,6 +73,7 @@ public class RoleController extends BaseController {
      * 角色权限菜单树
      */
     @GetMapping("/tree/{roleId}")
+    @RequiresPermissions("10025")
     public String listPermTree(@PathVariable("roleId") String roleId) {
         List<ZTree> list = permissionService.getPermissionTree(roleId);
         return ResultMap.success().put("zTree", list).toJson();

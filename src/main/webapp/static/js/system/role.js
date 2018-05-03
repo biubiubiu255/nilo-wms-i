@@ -151,8 +151,7 @@ function showPermDialog(roleId) {
     layer.open({
         type: 1,
         title: i18n['permission'],
-        area: '450px',
-        offset: '120px',
+        area: ['550px', '700px'],
         content: $("#permissionTree").html()
     });
 

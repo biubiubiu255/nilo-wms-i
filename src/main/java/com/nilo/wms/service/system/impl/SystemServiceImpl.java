@@ -1,21 +1,21 @@
 package com.nilo.wms.service.system.impl;
 
-import com.nilo.wms.dao.platform.ClientConfigDao;
-import com.nilo.wms.dao.platform.FeeConfigDao;
-import com.nilo.wms.dao.platform.InterfaceConfigDao;
+import com.nilo.wms.dao.platform.*;
 import com.nilo.wms.dto.ClientConfig;
 import com.nilo.wms.dto.fee.FeeConfig;
 import com.nilo.wms.dto.fee.FeePrice;
 import com.nilo.wms.dto.InterfaceConfig;
+import com.nilo.wms.dto.parameter.RoleParameter;
+import com.nilo.wms.dto.system.Permission;
+import com.nilo.wms.dto.system.Role;
+import com.nilo.wms.service.system.RedisUtil;
 import com.nilo.wms.service.system.SystemService;
 import com.nilo.wms.service.config.SystemConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2017/7/6.
@@ -29,6 +29,10 @@ public class SystemServiceImpl implements SystemService {
     private InterfaceConfigDao interfaceConfigDao;
     @Autowired
     private FeeConfigDao feeConfigDao;
+    @Autowired
+    private RoleDao roleDao;
+    @Autowired
+    private PermissionDao permissionDao;
 
     @Override
     public void loadingAndRefreshClientConfig() {
@@ -75,6 +79,21 @@ public class SystemServiceImpl implements SystemService {
             feeConfig.put(entry.getKey(), feeConf);
         }
         SystemConfig.setFeeConfig(feeConfig);
+
+    }
+
+    @Override
+    public void loadingAndRefreshRole() {
+
+        List<Role> roles = roleDao.queryBy(new RoleParameter());
+        for (Role r : roles) {
+            List<Permission> list = permissionDao.queryByRoleId(r.getRoleId());
+            Set<String> s = new HashSet<>();
+            for (Permission p : list) {
+                s.add(p.getPermissionId());
+            }
+            RedisUtil.sAdd(RedisUtil.getRoleKey(r.getRoleId()), s.toArray(new String[list.size()]));
+        }
 
     }
 }

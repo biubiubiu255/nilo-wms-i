@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="p" uri="/permission.tag" %>
+
 <link rel="stylesheet" href="/static/plugins/zTree/css/zTreeStyle/zTreeStyle.css">
 
 <div class="content-header">
@@ -17,8 +19,11 @@
             <option value="roleName"><spring:message code="system.role.name"/></option>
         </select>&emsp;
         <input id="searchValue" class="layui-input search-input" type="text"/>&emsp;
-        <button id="searchBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe615;</i><spring:message
-                code="search"/></button>&emsp;
+        <p:hasPermission name="10000">
+            <button id="searchBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe615;</i><spring:message
+                    code="search"/></button>
+        </p:hasPermission>
+        &emsp;
         <button id="addBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe654;</i><spring:message code="add"/>
         </button>
     </div>
@@ -54,7 +59,7 @@
 <!-- 权限树 -->
 <script type="text/html" id="permissionTree">
     <form id="editPerForm" class="layui-form model-form" action="">
-        <div class="layui-form-item">
+        <div style="width:550px; height:500px; overflow:auto;">
             <ul id="treeAuth" class="ztree" style="padding: 25px 80px;"></ul>
         </div>
         <div class="layui-form-item model-form-footer">

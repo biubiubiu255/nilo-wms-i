@@ -4,13 +4,13 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
  * Created by admin on 2017/10/9.
  */
 public class RedisUtil {
-
 
     public static final String STORAGE = "storage";
 
@@ -142,6 +142,30 @@ public class RedisUtil {
         }
     }
 
+    public static void sAdd(String key, String[] value) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.sadd(key, value);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
+    public static boolean sExist(String key, String value) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.sismember(key, value);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
     public static void hset(String key, String field, String value) {
         Jedis jedis = null;
         try {
@@ -209,7 +233,16 @@ public class RedisUtil {
     public static String getLockOrderKey(String clientCode, String orderNo) {
         return "wms_" + clientCode + "_lock_order_" + orderNo;
     }
-    public static String getPermissionKey(String userId) {
-        return "wms_permission_" + userId;
+
+    public static String getRoleKey(String roleId) {
+        return "wms_role_" + roleId;
+    }
+
+    public static String getUserKey(String userId) {
+        return "wms_user_" + userId;
+    }
+
+    public static boolean hasPermission(String userId,String value){
+        return RedisUtil.sExist(RedisUtil.getRoleKey(RedisUtil.hget(RedisUtil.getUserKey(userId), "roleId")), value);
     }
 }

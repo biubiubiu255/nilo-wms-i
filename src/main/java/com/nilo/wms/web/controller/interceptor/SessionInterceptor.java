@@ -1,19 +1,25 @@
 package com.nilo.wms.web.controller.interceptor;
 
+import com.nilo.wms.common.annotation.RequiresPermissions;
 import com.nilo.wms.common.exception.IllegalTokenException;
+import com.nilo.wms.common.exception.NoPermissionException;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.TokenUtil;
+import com.nilo.wms.service.system.RedisUtil;
+import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 
 public class SessionInterceptor extends HandlerInterceptorAdapter {
 
-    private static final String ALLOW_URL = "/servlet/logout,/servlet/captcha/image,/servlet/login";
+    private static final String ALLOW_URL = "/servlet/logout,/servlet/captcha/image,/servlet/login,/servlet/menu";
     private static final String AJAX_HEADER_KEY = "X-Requested-With";
 
     /**
@@ -27,7 +33,6 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String uri = request.getRequestURI();
-        System.out.println(uri);
         //排除登录请求
         if (uri.indexOf("api") != -1 || ALLOW_URL.indexOf(uri) != -1) {
             return true;
@@ -44,15 +49,20 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
             }
             throw new IllegalTokenException();
         }
-        try {
-            TokenUtil.parseToken(token);
-        } catch (Exception e) {
-            if (isAjax) {
-                response.setStatus(403);
-                return false;
-            }
-            throw new IllegalTokenException();
+        String userId = TokenUtil.parseToken(token).getSubject();
+
+        Method method = ((HandlerMethod) handler).getMethod();
+        RequiresPermissions annotation = method
+                .getAnnotation(RequiresPermissions.class);
+        if (annotation == null) {
+            return true;
         }
+        String requiresPermissions = annotation.value();
+        boolean has = RedisUtil.hasPermission(userId, requiresPermissions);
+        if (!has) {
+            throw new NoPermissionException();
+        }
+
         return true;
     }
 

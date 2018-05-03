@@ -37,9 +37,14 @@ public class DefaultExceptionHandler implements HandlerExceptionResolver {
             WMSException e = (WMSException) ex;
             result.put("error", e.getMessage());
             result.put("msgid", e.getCode());
-        } else if (ex instanceof IllegalTokenException || ex instanceof NoPermissionException) {
+        } else if (ex instanceof IllegalTokenException) {
+            response.setStatus(403);
             result.put("error", ex.getMessage());
             result.put("msgid", "99998");
+        } else if (ex instanceof NoPermissionException) {
+            response.setStatus(402);
+            result.put("error", ex.getMessage());
+            result.put("msgid", "99997");
         } else if (ex instanceof Exception) {
             result.put("error", ex.getMessage());
             result.put("msgid", "99999");

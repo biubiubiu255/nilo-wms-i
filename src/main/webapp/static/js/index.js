@@ -1,155 +1,155 @@
 var refreshNav = true;
-$(function() {
+$(function () {
 
-	initUserInfo();  //获取用户信息
-	initNav();  //获取导航栏
-	
-	//路由注册
-	Q.reg('home',function(){
-		load('home');
-	}).reg('system',function(path){
-		load('system/'+path);
-	}).reg('basic',function(path){
-		load('basic/'+path);
-	}).reg('inbound',function(path){
-		load('inbound/'+path);
-	}).reg('outbound',function(path){
-		load('outbound/'+path);
-	}).reg('storage',function(path){
-		load('storage/'+path);
-	}).reg('config',function(path){
-		load('config/'+path);
-	}).init({
-		index: 'home'
-	});
-	
-	//点击导航切换页面时不刷新导航,其他方式切换页面要刷新导航
-	layui.element.on('nav(index-nav)', function(elem){
-		refreshNav = false;
-		if(document.body.clientWidth<=750){
-			switchNav(true);
-		}
-	});
+    initUserInfo();  //获取用户信息
+    initNav();  //获取导航栏
 
-	//修改密码表单提交事件
-	layui.form.on('submit(pswSubmit)', function(data){
-		data.field.token = getToken();
-		data.field._method = $("#pswForm").attr("method");
-		layer.load(2);
-		$.post("api/user/psw", data.field, function(data){
-			if(data.code==200){
-				layer.msg(data.msg,{icon: 1});
-				setTimeout(function() {
-					loginOut();
-				}, 1500);
-			}else{
-				layer.closeAll('loading');
-				layer.msg(data.msg,{icon: 2});
-			}
-		}, "JSON");
-		return false;
-	});
+    //路由注册
+    Q.reg('home', function () {
+        load('home');
+    }).reg('system', function (path) {
+        load('system/' + path);
+    }).reg('basic', function (path) {
+        load('basic/' + path);
+    }).reg('inbound', function (path) {
+        load('inbound/' + path);
+    }).reg('outbound', function (path) {
+        load('outbound/' + path);
+    }).reg('storage', function (path) {
+        load('storage/' + path);
+    }).reg('config', function (path) {
+        load('config/' + path);
+    }).init({
+        index: 'home'
+    });
+
+    //点击导航切换页面时不刷新导航,其他方式切换页面要刷新导航
+    layui.element.on('nav(index-nav)', function (elem) {
+        refreshNav = false;
+        if (document.body.clientWidth <= 750) {
+            switchNav(true);
+        }
+    });
+
+    //修改密码表单提交事件
+    layui.form.on('submit(pswSubmit)', function (data) {
+        data.field.token = getToken();
+        data.field._method = $("#pswForm").attr("method");
+        layer.load(2);
+        $.post("api/user/psw", data.field, function (data) {
+            if (data.code == 200) {
+                layer.msg(data.msg, {icon: 1});
+                setTimeout(function () {
+                    loginOut();
+                }, 1500);
+            } else {
+                layer.closeAll('loading');
+                layer.msg(data.msg, {icon: 2});
+            }
+        }, "JSON");
+        return false;
+    });
 });
 
 //异步加载子页面
 function load(path) {
 
-	if(getCurrentUser()==null){
-		location.replace("/login.html");
-	}
-	
-	if(refreshNav){
-		activeNav(path);
-	}
-	refreshNav = true;
-	$("#main-content").load("views/" + path +".jsp",function(){
-		layui.element.render('breadcrumb');
-		layui.form.render('select');
-	});
+    if (getCurrentUser() == null) {
+        location.replace("/login.html");
+    }
+
+    if (refreshNav) {
+        activeNav(path);
+    }
+    refreshNav = true;
+    $("#main-content").load("views/" + path + ".jsp?token=" + getToken(), function () {
+        layui.element.render('breadcrumb');
+        layui.form.render('select');
+    });
 }
 
 //获取左侧导航栏
-function initNav(){
-	var indexNavStr = sessionStorage.getItem("index-nav");
-	var indexNav = JSON.parse(indexNavStr);
-	if(indexNav==null){
-		$.get("/servlet/menu", {
-			token : getToken()
-		}, function (data) {
-			if(data.status=='succ'){
-				sessionStorage.setItem("index-nav",JSON.stringify(data.menus));
-				initNav();
-			}else if(data.status=='failed'){
-				layer.msg(data.error,{icon: 2});
-				setTimeout(function() {
-					loginOut();
-				}, 1500);
-			}
-		},"json");
-	}else{
-		layui.laytpl(sideNav.innerHTML).render(indexNav, function(html){
-			$("#index-nav").html(html);
-			layui.element.render('nav', 'index-nav');
-		});
-	}
+function initNav() {
+    var indexNavStr = sessionStorage.getItem("index-nav");
+    var indexNav = JSON.parse(indexNavStr);
+    if (indexNav == null) {
+        $.get("/servlet/menu", {
+            token: getToken()
+        }, function (data) {
+            if (data.status == 'succ') {
+                sessionStorage.setItem("index-nav", JSON.stringify(data.menus));
+                initNav();
+            } else if (data.status == 'failed') {
+                layer.msg(data.error, {icon: 2});
+                setTimeout(function () {
+                    loginOut();
+                }, 1500);
+            }
+        }, "json");
+    } else {
+        layui.laytpl(sideNav.innerHTML).render(indexNav, function (html) {
+            $("#index-nav").html(html);
+            layui.element.render('nav', 'index-nav');
+        });
+    }
 }
 
 //获取用户信息
-function initUserInfo(){
-	try {
-		var user = getCurrentUser();
-		$("#nickname").text(user.nickname);
-	} catch (e) {
-		console.log(e.message);
-	}
+function initUserInfo() {
+    try {
+        var user = getCurrentUser();
+        $("#nickname").text(user.nickname);
+    } catch (e) {
+        console.log(e.message);
+    }
 }
 
 //退出登录
-function loginOut(){
-	localStorage.removeItem("token");
-	localStorage.removeItem("user");
-	sessionStorage.removeItem("index-nav");
-	var load = layer.load(2);
-	$.ajax({
-		url: "/servlet/logout?token="+getToken(), 
-		type: "POST", 
-		dataType: "JSON", 
-		success: function(data){
-			layer.close(load);
-			location.href="/login.html";
-		}
-	});
+function loginOut() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("index-nav");
+    var load = layer.load(2);
+    $.ajax({
+        url: "/servlet/logout?token=" + getToken(),
+        type: "POST",
+        dataType: "JSON",
+        success: function (data) {
+            layer.close(load);
+            location.href = "/login.html";
+        }
+    });
 }
 
 //个人信息
-function myInfo(){
-	var user = getCurrentUser();
-	var content = '<ul class="site-dir" style="padding:25px 35px 8px 35px;"><li>用户名：'+user.username+'</li><li>昵称：'+user.nickname+'</li>';
-	content += '<li>手机号：'+user.phone+'</li><li>性别：'+user.sex+'</li><li>角色：'+user.roleName+'</li></ul>';
-	layer.open({
-		type: 1,
-		title: '个人信息',
-		area: '350px',
-		offset: '120px',
-		content: content,
-		btn: ['关闭'],
-		btnAlign: 'c'
-	});
+function myInfo() {
+    var user = getCurrentUser();
+    var content = '<ul class="site-dir" style="padding:25px 35px 8px 35px;"><li>用户名：' + user.username + '</li><li>昵称：' + user.nickname + '</li>';
+    content += '<li>手机号：' + user.phone + '</li><li>性别：' + user.sex + '</li><li>角色：' + user.roleName + '</li></ul>';
+    layer.open({
+        type: 1,
+        title: '个人信息',
+        area: '350px',
+        offset: '120px',
+        content: content,
+        btn: ['关闭'],
+        btnAlign: 'c'
+    });
 }
 
 //显示表单弹窗
-function updatePsw(){
+function updatePsw() {
 
-	var title;
-	layer.open({
-		type: 1,
-		title: title,
-		area: '400px',
-		offset: '120px',
-		content: $("#pswModel").html()
-	});
-	$("#pswForm")[0].reset();
-	$("#pswCancel").click(function(){
-		layer.closeAll('page');
-	});
+    var title;
+    layer.open({
+        type: 1,
+        title: title,
+        area: '400px',
+        offset: '120px',
+        content: $("#pswModel").html()
+    });
+    $("#pswForm")[0].reset();
+    $("#pswCancel").click(function () {
+        layer.closeAll('page');
+    });
 }

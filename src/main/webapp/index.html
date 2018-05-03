@@ -144,6 +144,7 @@
     $(function () {
         //全局判断ajax操作session是否过期
         $(document).ajaxComplete(function (event, xhr, settings) {
+            // token 无效
             if (xhr.status && xhr.status == 403) {
                 //返回登录页
                 layer.open({
@@ -157,6 +158,12 @@
                         sessionStorage.removeItem("index-nav");
                         location.href = "/login.html";
                     }
+                });
+            }
+            //无权限
+            if (xhr.status && xhr.status == 402) {
+                layer.msg("No Permission", {icon: 2},function () {
+                    layer.closeAll();
                 });
             }
         });

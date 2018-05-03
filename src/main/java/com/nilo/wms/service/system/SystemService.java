@@ -15,4 +15,9 @@ public interface SystemService {
      * 刷新 wms 费用配置
      */
     void loadingAndRefreshWMSFeeConfig();
+
+    /**
+     * 刷新 角色权限配置
+     */
+    void loadingAndRefreshRole();
 }

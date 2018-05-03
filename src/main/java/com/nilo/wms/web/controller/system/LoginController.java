@@ -10,6 +10,7 @@ import com.nilo.wms.common.util.TokenUtil;
 import com.nilo.wms.dto.system.Permission;
 import com.nilo.wms.dto.system.User;
 import com.nilo.wms.service.system.PermissionService;
+import com.nilo.wms.service.system.RedisUtil;
 import com.nilo.wms.service.system.UserService;
 import com.nilo.wms.web.BaseController;
 import com.nilo.wms.web.model.ResultMap;
@@ -56,6 +57,9 @@ public class LoginController extends BaseController {
         String token = TokenUtil.createToken(user.getUserId(), DateUtil.getAppointDate(new Date(), 30));
         user.setPassword(null);
         user.setToken(token);
+
+        RedisUtil.hset(RedisUtil.getUserKey(user.getUserId()), "roleId", user.getRoleId());
+
         return ResultMap.success().put("token", token).put("user", user).toJson();
     }
 
