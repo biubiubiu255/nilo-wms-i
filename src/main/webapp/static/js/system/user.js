@@ -14,12 +14,13 @@ $(function () {
             {field: 'nickname', sort: true, title: i18n['nickname']},
             {field: 'phone', sort: true, title: i18n['phone']},
             {field: 'sex', sort: true, title: i18n['sex']},
+            {field: 'roleName', sort: true, title: i18n['roleName']},
+            {field: 'userStatus', sort: true, templet: '#statusTpl', width: 80, title: i18n['status']},
             {
                 field: 'createTime', sort: true, templet: function (d) {
                 return layui.util.toDateString(d.createTime);
             }, title: i18n['createTime']
             },
-            {field: 'userStatus', sort: true, templet: '#statusTpl', width: 80, title: i18n['status']},
             {align: 'center', toolbar: '#barTpl', minWidth: 180, title: i18n['opt']}
         ]]
     });
@@ -34,14 +35,14 @@ $(function () {
         data.field.token = getToken();
         data.field._method = $("#editForm").attr("method");
         layer.load(2);
-        $.post("api/user", data.field, function (data) {
+        $.post("/servlet/user", data.field, function (data) {
             layer.closeAll('loading');
-            if (data.code == 200) {
-                layer.msg(data.msg, {icon: 1});
+            if ("succ" == data.status) {
+                layer.msg("SUCCESS", {icon: 1});
                 layer.closeAll('page');
                 layui.table.reload('table', {});
             } else {
-                layer.msg(data.msg, {icon: 2});
+                layer.msg(data.error, {icon: 2});
             }
         }, "JSON");
         return false;
@@ -91,7 +92,7 @@ function showEditModel(data) {
         $("#editForm input[name=phone]").val(data.phone);
         $("#editForm").attr("method", "PUT");
         selectItem = data.roleId;
-        if ('F' == data.sex) {
+        if ('M' == data.sex) {
             $("#sexMan").attr("checked", "checked");
             $("#sexWoman").removeAttr("checked");
         } else {
@@ -194,10 +195,10 @@ function doReSet(userId) {
             _method: "PUT"
         }, function (data) {
             layer.closeAll('loading');
-            if (data.code == 200) {
-                layer.msg(data.msg, {icon: 1});
+            if (data.status = 'succ') {
+                layer.msg("SUCCESS", {icon: 1});
             } else {
-                layer.msg(data.msg, {icon: 2});
+                layer.msg(data.error, {icon: 2});
             }
         }, "JSON");
     });

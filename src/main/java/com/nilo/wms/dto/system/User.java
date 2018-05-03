@@ -19,6 +19,8 @@ public class User {
 
     private String roleId;
 
+    private String roleName;
+
     private String token;
 
     private Long createdTime;
@@ -26,6 +28,14 @@ public class User {
     private Long updatedTime;
 
     private String version;
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
 
     public String getUserId() {
         return userId;

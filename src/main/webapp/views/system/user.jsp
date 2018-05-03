@@ -43,14 +43,14 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label"><spring:message code="system.user.phone"/></label>
  			<div class="layui-input-block">
-				<input name="phone" placeholder="<spring:message code="please.input"/> <spring:message code="system.user.phone"/>" type="text" class="layui-input" lay-verify="required|phone" required />
+				<input name="phone" placeholder="<spring:message code="please.input"/> <spring:message code="system.user.phone"/>" type="text" class="layui-input" lay-verify="required" required />
 			</div>
 		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label"><spring:message code="sex"/></label>
  			<div class="layui-input-block">
-				<input type="radio" name="sex" id="sexMan" value="1" title='<spring:message code="male"/>' checked />
-				<input type="radio" name="sex" id="sexWoman" value="2" title='<spring:message code="female"/>' />
+				<input type="radio" name="sex" id="sexMan" value="M" title='<spring:message code="male"/>' checked />
+				<input type="radio" name="sex" id="sexWoman" value="F" title='<spring:message code="female"/>' />
 			</div>
 		</div>
 		<div class="layui-form-item">

@@ -50,7 +50,9 @@ public enum CheckErrorCode implements ErrorCode {
     ROLE_ID_EMPTY("RoleId empty.", "100040"),
     CLASS_EMPTY("class empty.", "100041"),
     LOGISTICS_TYPE_ERROR("logistics_type not exist.", "100042"),
-    ROLE_NAME_EMPTY("RoleName empty.", "100043"),;
+    ROLE_NAME_EMPTY("RoleName empty.", "100043"),
+    USER_ID_EMPTY("UserId empty.", "100044"),
+    ;
 
     private final String description;
     private final String code;

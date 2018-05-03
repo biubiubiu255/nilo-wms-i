@@ -1,11 +1,18 @@
 package com.nilo.wms.service.system.impl;
 
+import com.nilo.wms.common.exception.BizErrorCode;
+import com.nilo.wms.common.exception.CheckErrorCode;
+import com.nilo.wms.common.exception.SysErrorCode;
+import com.nilo.wms.common.exception.WMSException;
+import com.nilo.wms.common.util.AssertUtil;
+import com.nilo.wms.common.util.IdWorker;
 import com.nilo.wms.dao.platform.UserDao;
 import com.nilo.wms.dto.PageResult;
 import com.nilo.wms.dto.parameter.UserParameter;
 import com.nilo.wms.dto.system.User;
 import com.nilo.wms.service.system.UserService;
 import javafx.scene.control.Pagination;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +26,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void add(User user) {
+        AssertUtil.isNotNull(user, SysErrorCode.REQUEST_IS_NULL);
+        AssertUtil.isNotBlank(user.getUsername(), CheckErrorCode.USER_NAME_EMPTY);
 
+        //校验userName 是否存在
+        User query = userDao.queryByUserName(user.getUsername());
+        if (query != null) {
+            throw new WMSException(BizErrorCode.USERNAME_EXIST);
+        }
+        user.setPassword(DigestUtils.md5Hex("12345678"));
+        user.setUserId("" + IdWorker.getInstance().nextId());
+        user.setStatus(1);
+        userDao.insert(user);
     }
 
     @Override
     public void update(User user) {
+        AssertUtil.isNotNull(user, SysErrorCode.REQUEST_IS_NULL);
+        AssertUtil.isNotBlank(user.getUserId(), CheckErrorCode.USER_ID_EMPTY);
+
         userDao.update(user);
     }
 

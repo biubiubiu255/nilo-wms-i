@@ -33,11 +33,17 @@ public class UserController extends BaseController {
 
     @PostMapping
     public String add(User user) {
+
+        userService.add(user);
+
         return ResultMap.success().toJson();
     }
 
     @PutMapping
-    public String put(User user) {
+    public String update(User user) {
+
+        userService.update(user);
+
         return ResultMap.success().toJson();
     }
 

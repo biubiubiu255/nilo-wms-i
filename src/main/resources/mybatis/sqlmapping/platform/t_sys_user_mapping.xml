@@ -21,6 +21,8 @@
                 jdbcType="VARCHAR"/>
         <result property="roleName" column="role_name" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
+        <result property="roleName" column="role_name" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
         <result property="token" column="token" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
 
@@ -79,16 +81,15 @@
 
     <select id="queryByUserName" resultMap="user" statementType="PREPARED"
             parameterType="java.lang.String">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM t_sys_user
+        SELECT u.*,r.role_name
+        FROM t_sys_user u left join t_sys_role r on u.role_id = r.role_id
         WHERE user_name=#{username} LIMIT 1
     </select>
 
     <select id="queryUsers" resultMap="user" statementType="PREPARED" >
         SELECT
-        <include refid="Base_Column_List"/>
-        FROM t_sys_user
+        u.*,r.role_name
+        FROM t_sys_user u left join t_sys_role r on u.role_id = r.role_id
         WHERE 1 = 1
         <if test="username != null and username != ''">
             and user_name = #{username}

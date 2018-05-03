@@ -98,7 +98,7 @@ function initNav(){
 function initUserInfo(){
 	try {
 		var user = getCurrentUser();
-		$("#userNickName").text(user.nickName);
+		$("#nickname").text(user.nickname);
 	} catch (e) {
 		console.log(e.message);
 	}
@@ -124,8 +124,8 @@ function loginOut(){
 //个人信息
 function myInfo(){
 	var user = getCurrentUser();
-	var content = '<ul class="site-dir" style="padding:25px 35px 8px 35px;"><li>账号：'+user.userAccount+'</li><li>用户名：'+user.userNickname+'</li>';
-	content += '<li>手机号：'+user.mobilePhone+'</li><li>性别：'+user.sex+'</li><li>角色：'+user.roleName+'</li></ul>';
+	var content = '<ul class="site-dir" style="padding:25px 35px 8px 35px;"><li>用户名：'+user.username+'</li><li>昵称：'+user.nickname+'</li>';
+	content += '<li>手机号：'+user.phone+'</li><li>性别：'+user.sex+'</li><li>角色：'+user.roleName+'</li></ul>';
 	layer.open({
 		type: 1,
 		title: '个人信息',
@@ -140,13 +140,7 @@ function myInfo(){
 //显示表单弹窗
 function updatePsw(){
 
-	var lan = navigator.language;
 	var title;
-	if(lan=='zh-CN'){
-		title="修改密码";
-	}else{
-		title="Change Password";
-	}
 	layer.open({
 		type: 1,
 		title: title,
