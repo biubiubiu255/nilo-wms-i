@@ -19,13 +19,17 @@
             <option value="roleName"><spring:message code="system.role.name"/></option>
         </select>&emsp;
         <input id="searchValue" class="layui-input search-input" type="text"/>&emsp;
-        <p:hasPermission name="10000">
+        <p:hasPermission name="10021">
             <button id="searchBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe615;</i><spring:message
                     code="search"/></button>
         </p:hasPermission>
         &emsp;
-        <button id="addBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe654;</i><spring:message code="add"/>
-        </button>
+        <p:hasPermission name="10022">
+            <button id="addBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe654;</i><spring:message
+                    code="add"/>
+            </button>
+        </p:hasPermission>
+
     </div>
     <!-- 数据表格 -->
     <table class="layui-table" id="table" lay-filter="table"></table>
@@ -63,18 +67,26 @@
             <ul id="treeAuth" class="ztree" style="padding: 25px 80px;"></ul>
         </div>
         <div class="layui-form-item model-form-footer">
-            <button class="layui-btn layui-btn-primary" type="button" id="btnPerCancel"><spring:message
-                    code="cancel"/></button>
-            <button class="layui-btn" lay-filter="btnPerSubmit" lay-submit><spring:message code="ok"/></button>
+            <p:hasPermission name="10026">
+                <button class="layui-btn layui-btn-primary" type="button" id="btnPerCancel"><spring:message
+                        code="cancel"/></button>
+                <button class="layui-btn" lay-filter="btnPerSubmit" lay-submit><spring:message code="ok"/></button>
+            </p:hasPermission>
         </div>
     </form>
 </script>
 
 <!-- 表格操作列 -->
 <script type="text/html" id="barTpl">
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><spring:message code="edit"/></a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><spring:message code="delete"/></a>
-    <a class="layui-btn layui-btn-xs" lay-event="detail"><spring:message code="system.permission.mgn"/></a>
+    <p:hasPermission name="10023">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><spring:message code="edit"/></a>
+    </p:hasPermission>
+    <p:hasPermission name="10024">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><spring:message code="delete"/></a>
+    </p:hasPermission>
+    <p:hasPermission name="10025">
+        <a class="layui-btn layui-btn-xs" lay-event="detail"><spring:message code="system.permission"/></a>
+    </p:hasPermission>
 </script>
 <!-- 表格状态列 -->
 <script type="text/html" id="statusTpl">

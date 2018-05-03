@@ -25,6 +25,7 @@ public class RoleController extends BaseController {
     private PermissionService permissionService;
 
     @GetMapping
+    @RequiresPermissions("10021")
     public String list(String searchValue, String searchKey) {
 
         RoleParameter parameter = new RoleParameter();
@@ -50,6 +51,7 @@ public class RoleController extends BaseController {
     }
 
     @PutMapping("/status")
+    @RequiresPermissions("10023")
     public String updateStatus(String roleId, int status) {
 
         Role role = new Role();
@@ -80,6 +82,7 @@ public class RoleController extends BaseController {
     }
 
     @PutMapping("/tree")
+    @RequiresPermissions("10026")
     public String savePermTree(String roleId, String permIds) {
 
         List<String> permissionList = JSONArray.parseArray(permIds, String.class);

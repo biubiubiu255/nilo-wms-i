@@ -2,9 +2,12 @@ package com.nilo.wms.service.system.impl;
 
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dao.platform.PermissionDao;
+import com.nilo.wms.dto.PageResult;
+import com.nilo.wms.dto.parameter.PermissionParameter;
 import com.nilo.wms.dto.system.ZTree;
 import com.nilo.wms.dto.system.Permission;
 import com.nilo.wms.service.system.PermissionService;
+import com.nilo.wms.service.system.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,5 +79,34 @@ public class PermissionServiceImpl implements PermissionService {
         //2、插入
         permissionDao.insertRolePermission(permissionId, roleId);
 
+        //更新缓存中信息
+        RedisUtil.del(RedisUtil.getRoleKey(roleId));
+        RedisUtil.sAdd(RedisUtil.getRoleKey(roleId), permissionId.toArray(new String[permissionId.size()]));
+
+    }
+
+    @Override
+    public void add(Permission permission) {
+
+    }
+
+    @Override
+    public void update(Permission permission) {
+
+    }
+
+    @Override
+    public PageResult<Permission> queryPermissions(PermissionParameter parameter) {
+
+        PageResult<Permission> pageResult = new PageResult<>();
+
+        int count = permissionDao.queryPermissionsCount(parameter);
+        if (count == 0) {
+            return pageResult;
+        }
+        pageResult.setCount(count);
+        List<Permission> list = permissionDao.queryPermissions(parameter);
+        pageResult.setData(list);
+        return pageResult;
     }
 }

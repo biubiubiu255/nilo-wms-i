@@ -92,6 +92,7 @@ public class SystemServiceImpl implements SystemService {
             for (Permission p : list) {
                 s.add(p.getPermissionId());
             }
+            RedisUtil.del(RedisUtil.getRoleKey(r.getRoleId()));
             RedisUtil.sAdd(RedisUtil.getRoleKey(r.getRoleId()), s.toArray(new String[list.size()]));
         }
 

@@ -10,6 +10,8 @@
                 jdbcType="VARCHAR"/>
         <result property="parentId" column="parent_Id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
+        <result property="parentName" column="parent_name" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
         <result property="desc_c" column="desc_c" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="desc_e" column="desc_e" javaType="java.lang.String"
@@ -20,6 +22,8 @@
         <result property="icon" column="icon" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="type" column="type" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+        <result property="status" column="status" javaType="java.lang.Integer"
                 jdbcType="INTEGER"/>
     </resultMap>
 
@@ -44,7 +48,27 @@
         INSERT INTO t_sys_role_permission(role_id, permission_id)
         VALUES
         <foreach collection="permissionList" item="item" index="index" separator=",">
-            (#{roleId},  #{item})
+            (#{roleId}, #{item})
         </foreach>
     </insert>
+
+    <select id="queryPermissions" resultMap="permission" statementType="PREPARED" >
+        SELECT
+        a.*, CONCAT(b.desc_e,'-',b.desc_c) parent_name
+        FROM t_sys_permission a left join t_sys_permission b on a.parent_id = b.permission_id
+        WHERE 1 = 1
+        <if test="desc != null and desc != ''">
+            and (desc_c LIKE CONCAT( CONCAT('%',#{desc}),'%') ordesc_e LIKE CONCAT( CONCAT('%',#{desc}),'%') )
+        </if>
+        limit #{offset},#{limit}
+    </select>
+
+    <select id="queryPermissionsCount" resultType="java.lang.Integer" statementType="PREPARED">
+        SELECT count(1)
+        FROM t_sys_permission
+        WHERE 1 = 1
+        <if test="desc != null and desc != ''">
+            and (desc_c LIKE CONCAT( CONCAT('%',#{desc}),'%') ordesc_e LIKE CONCAT( CONCAT('%',#{desc}),'%') )
+        </if>
+    </select>
 </mapper>

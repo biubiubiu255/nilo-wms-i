@@ -1,6 +1,8 @@
 package com.nilo.wms.service.system;
 
 
+import com.nilo.wms.dto.PageResult;
+import com.nilo.wms.dto.parameter.PermissionParameter;
 import com.nilo.wms.dto.system.ZTree;
 import com.nilo.wms.dto.system.Permission;
 
@@ -14,4 +16,9 @@ public interface PermissionService {
 
     void updatePermissionTree(String roleId, List<String> permissionId);
 
+    void add(Permission permission);
+
+    void update(Permission permission);
+
+    PageResult<Permission> queryPermissions(PermissionParameter parameter);
 }

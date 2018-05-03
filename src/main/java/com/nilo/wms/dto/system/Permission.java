@@ -4,11 +4,13 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Permission implements Serializable {
-	private static final long serialVersionUID = -1080567663649018365L;
+    private static final long serialVersionUID = -1080567663649018365L;
 
-	private String permissionId;
+    private String permissionId;
 
     private String parentId;
+
+    private String parentName;
 
     private String desc_c;
 
@@ -20,8 +22,25 @@ public class Permission implements Serializable {
 
     private Integer type;
 
+    private int status;
+
     private List<Permission> subMenus;
 
+    public String getParentName() {
+        return parentName;
+    }
+
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public List<Permission> getSubMenus() {
         return subMenus;
@@ -86,4 +105,9 @@ public class Permission implements Serializable {
     public void setType(Integer type) {
         this.type = type;
     }
+
+    public String getDesc() {
+        return this.desc_e + "-" + this.desc_c;
+    }
+
 }
