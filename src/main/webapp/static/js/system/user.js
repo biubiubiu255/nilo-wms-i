@@ -91,7 +91,7 @@ function showEditModel(data) {
         $("#editForm input[name=phone]").val(data.phone);
         $("#editForm").attr("method", "PUT");
         selectItem = data.roleId;
-        if ('1' == data.sex) {
+        if ('F' == data.sex) {
             $("#sexMan").attr("checked", "checked");
             $("#sexWoman").removeAttr("checked");
         } else {
@@ -116,18 +116,18 @@ function getRoles(selectItem) {
         for (var i = 0; i < roles.length; i++) {
             $("#role-select").append("<option value='" + roles[i].roleId + "'>" + roles[i].roleName + "</option>");
         }
+        $("#role-select").val(selectItem);
         layui.form.render('select');
 
     } else {
-        var index = layer.load(2);
+        var load = layer.load(2);
         $.get("/servlet/role", {
             token: getToken()
         }, function (data) {
             roles = data.data;
-            console.log(roles);
             getRoles(selectItem);
-            layer.close(index);
-        }, "json");
+            layer.close(load);
+        }, "JSON");
     }
 }
 

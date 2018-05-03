@@ -53,8 +53,8 @@ public class UserController extends BaseController {
 
     }
 
-    @DeleteMapping("/{id}")
-    public String delete(String roleId) {
+    @DeleteMapping("/{userId}")
+    public String delete(@PathVariable("userId") String userId) {
         return ResultMap.success().toJson();
     }
 

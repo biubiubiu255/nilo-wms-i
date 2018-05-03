@@ -52,7 +52,7 @@ $(function () {
         if (layEvent === 'edit') { //修改
             showEditModel(data);
         } else if (layEvent === 'del') { //删除
-            doDelete(obj);
+            doDelete(data.roleId);
         } else if (layEvent == 'detail') { //权限树
             showPermDialog(data.roleId);
         }
@@ -92,12 +92,13 @@ function showEditModel(data) {
 }
 
 //删除
-function doDelete(obj) {
+function doDelete(roleId) {
+
     layer.confirm(i18n['confirm_delete'], function (index) {
         layer.close(index);
         var load = layer.load(2);
         $.ajax({
-            url: "/servlet/role/" + obj.data.roleId + "?token=" + getToken(),
+            url: "/servlet/role/" + roleId + "?token=" + getToken(),
             type: "DELETE",
             dataType: "JSON",
             success: function (data) {

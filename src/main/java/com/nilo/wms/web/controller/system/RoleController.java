@@ -58,8 +58,8 @@ public class RoleController extends BaseController {
 
     }
 
-    @DeleteMapping("/{id}")
-    public String delete(String roleId) {
+    @DeleteMapping("/{roleId}")
+    public String delete(@PathVariable("roleId") String roleId) {
 
         roleService.delete(roleId);
         return ResultMap.success().toJson();

@@ -31,19 +31,19 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label"><spring:message code="system.user.username"/></label>
  			<div class="layui-input-block">
-				<input name="userAccount" placeholder="<spring:message code="please.input"/> <spring:message code="system.user.username"/>" type="text" class="layui-input" maxlength="20" lay-verify="required" required />
+				<input name="username" placeholder="<spring:message code="please.input"/> <spring:message code="system.user.username"/>" type="text" class="layui-input" maxlength="20" lay-verify="required" required />
 			</div>
 		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label"><spring:message code="system.user.nickname"/></label>
  			<div class="layui-input-block">
-				<input name="userNickname" placeholder="<spring:message code="please.input"/> <spring:message code="system.user.nickname"/>" type="text" class="layui-input" maxlength="20" lay-verify="required" required />
+				<input name="nickname" placeholder="<spring:message code="please.input"/> <spring:message code="system.user.nickname"/>" type="text" class="layui-input" maxlength="20" lay-verify="required" required />
 			</div>
 		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label"><spring:message code="system.user.phone"/></label>
  			<div class="layui-input-block">
-				<input name="mobilePhone" placeholder="<spring:message code="please.input"/> <spring:message code="system.user.phone"/>" type="text" class="layui-input" lay-verify="required|phone" required />
+				<input name="phone" placeholder="<spring:message code="please.input"/> <spring:message code="system.user.phone"/>" type="text" class="layui-input" lay-verify="required|phone" required />
 			</div>
 		</div>
 		<div class="layui-form-item">
