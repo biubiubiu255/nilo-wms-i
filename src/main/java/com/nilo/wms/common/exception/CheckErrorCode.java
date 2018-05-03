@@ -47,10 +47,10 @@ public enum CheckErrorCode implements ErrorCode {
     RANDOM_CODE_EMPTY("random code empty.", "100037"),
     PAGE_EMPTY("page empty.", "100038"),
     LIMIT_EMPTY("limit empty.", "100039"),
-    ROLE_ID_EMPTY("roleId empty.", "100040"),
+    ROLE_ID_EMPTY("RoleId empty.", "100040"),
     CLASS_EMPTY("class empty.", "100041"),
     LOGISTICS_TYPE_ERROR("logistics_type not exist.", "100042"),
-    ;
+    ROLE_NAME_EMPTY("RoleName empty.", "100043"),;
 
     private final String description;
     private final String code;

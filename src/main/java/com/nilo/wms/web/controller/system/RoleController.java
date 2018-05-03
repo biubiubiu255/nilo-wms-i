@@ -35,11 +35,14 @@ public class RoleController extends BaseController {
 
     @PostMapping
     public String add(Role role) {
+        roleService.add(role);
         return ResultMap.success().toJson();
     }
 
     @PutMapping
     public String update(Role role) {
+
+        roleService.update(role);
         return ResultMap.success().toJson();
     }
 
@@ -57,6 +60,8 @@ public class RoleController extends BaseController {
 
     @DeleteMapping("/{id}")
     public String delete(String roleId) {
+
+        roleService.delete(roleId);
         return ResultMap.success().toJson();
     }
 

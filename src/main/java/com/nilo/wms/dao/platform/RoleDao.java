@@ -13,4 +13,5 @@ public interface RoleDao extends BaseDao<Long, Role> {
 
     List<Role> queryBy(RoleParameter parameter);
 
+    int deleteByRoleId(String roleId);
 }

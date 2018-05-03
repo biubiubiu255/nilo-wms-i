@@ -23,6 +23,15 @@
                 jdbcType="VARCHAR"/>
     </resultMap>
 
+    <!-- 插入语句 -->
+    <insert id="insert" parameterType="com.nilo.wms.dto.system.Role" statementType="PREPARED"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO t_sys_role
+        (role_id ,role_name, comments ,  status, created_time , updated_time ,version)
+        VALUES
+        (#{roleId},#{roleName},#{comments},#{status}, UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+    </insert>
 
     <!-- 根据用户id查询权限 -->
     <select id="queryBy" resultMap="role" parameterType="string">
@@ -39,10 +48,17 @@
             <if test="roleName != null and roleName != ''">
                 role_name = #{roleName},
             </if>
+            <if test="comments != null and comments != ''">
+                comments = #{comments},
+            </if>
             <if test="status != null">
                 status = #{status},
             </if>
             updated_time=UNIX_TIMESTAMP(NOW()),version=UUID()
         </trim>
     </update>
+
+    <delete id="deleteByRoleId">
+        delete from t_sys_role where role_id = #{roleId}
+    </delete>
 </mapper>

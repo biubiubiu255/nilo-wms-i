@@ -54,10 +54,10 @@
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">角色</label>
+			<label class="layui-form-label"><spring:message code="system.role"/></label>
  			<div class="layui-input-block">
 				<select id="role-select" name="roleId" lay-verify="required">
-				</select>   
+				</select>
 			</div>
 		</div>
 		<div class="layui-form-item model-form-footer">
@@ -74,15 +74,8 @@
 </script>
 <!-- 表格状态列 -->
 <script type="text/html" id="statusTpl">
-	<input type="checkbox" value="{{d.roleId}}" lay-filter="statusCB" lay-skin="switch"
+	<input type="checkbox" value="{{d.userId}}" lay-filter="statusCB" lay-skin="switch"
 		   lay-text="<spring:message code='on'/>|<spring:message code='off'/>" {{ d.status== 1?'checked' : '' }}>
-</script>
-<!-- 角色select模板 -->
-<script id="rolesSelect" type="text/html">
-<option value="">-<spring:message code="please.select"/>-</option>
-{{#  layui.each(d, function(index, item){ }}
-<option value="{{ item.roleId }}">{{ item.roleName }}</option>
-{{#  }); }}
 </script>
 <script type="text/javascript" src="/static/js/system/user.js"></script>
 <script>
@@ -96,9 +89,10 @@
 	i18n['createTime'] = '<spring:message code="create.time"/>';
 	i18n['status'] = '<spring:message code="status"/>';
 	i18n['opt'] = '<spring:message code="opt"/>';
-	i18n['confirmDelete'] = '<spring:message code="confirm.delete"/>';
-	i18n['resetPassword'] = '<spring:message code="reset.password"/>';
-	i18n['confirmResetPassword'] = '<spring:message code="confirm.reset.password"/>';
-
+	i18n['add'] = '<spring:message code="add"/>';
+	i18n['edit'] = '<spring:message code="edit"/>';
+	i18n['confirm_delete'] = '<spring:message code="confirm.delete"/>';
+	i18n['confirm_reset_pwd'] = '<spring:message code="confirm.reset.password"/>';
+	i18n['pls_select'] = '<spring:message code="please.select"/>';
 
 </script>

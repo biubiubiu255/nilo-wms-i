@@ -50,6 +50,21 @@
         </div>
     </form>
 </script>
+
+<!-- 权限树 -->
+<script type="text/html" id="permissionTree">
+    <form id="editPerForm" class="layui-form model-form" action="">
+        <div class="layui-form-item">
+            <ul id="treeAuth" class="ztree" style="padding: 25px 80px;"></ul>
+        </div>
+        <div class="layui-form-item model-form-footer">
+            <button class="layui-btn layui-btn-primary" type="button" id="btnPerCancel"><spring:message
+                    code="cancel"/></button>
+            <button class="layui-btn" lay-filter="btnPerSubmit" lay-submit><spring:message code="ok"/></button>
+        </div>
+    </form>
+</script>
+
 <!-- 表格操作列 -->
 <script type="text/html" id="barTpl">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><spring:message code="edit"/></a>
@@ -63,7 +78,7 @@
 </script>
 
 <script type="text/javascript" src="/static/js/system/role.js"></script>
-<script type="text/javascript" src="/static/plugins/zTree/js/jquery.ztree.core-3.5.min.js" />
+<script type="text/javascript" src="/static/plugins/zTree/js/jquery.ztree.core-3.5.min.js"/>
 <script type="text/javascript" src="/static/plugins/zTree/js/jquery.ztree.excheck-3.5.min.js"></script>
 <script>
     var i18n = new Object();
@@ -74,5 +89,7 @@
     i18n['opt'] = '<spring:message code="opt"/>';
     i18n['add'] = '<spring:message code="add"/>';
     i18n['edit'] = '<spring:message code="edit"/>';
+    i18n['permission'] = '<spring:message code="system.permission"/>';
+    i18n['confirm_delete'] = '<spring:message code="confirm.delete"/>';
 
 </script>

@@ -76,7 +76,7 @@ $(function () {
 function showEditModel(data) {
     layer.open({
         type: 1,
-        title: data == null ? "<spring:message code='add'/>" : "<spring:message code='edit'/>",
+        title: data == null ? i18n['add'] : i18n['edit'],
         area: '450px',
         offset: '120px',
         content: $("#addModel").html()
@@ -86,9 +86,9 @@ function showEditModel(data) {
     var selectItem = "";
     if (data != null) {
         $("#editForm input[name=userId]").val(data.userId);
-        $("#editForm input[name=userAccount]").val(data.userAccount);
-        $("#editForm input[name=userNickname]").val(data.userNickname);
-        $("#editForm input[name=mobilePhone]").val(data.mobilePhone);
+        $("#editForm input[name=username]").val(data.username);
+        $("#editForm input[name=nickname]").val(data.nickname);
+        $("#editForm input[name=phone]").val(data.phone);
         $("#editForm").attr("method", "PUT");
         selectItem = data.roleId;
         if ('1' == data.sex) {
@@ -111,30 +111,29 @@ function showEditModel(data) {
 var roles = null;
 function getRoles(selectItem) {
     if (roles != null) {
-        layui.laytpl(rolesSelect.innerHTML).render(roles, function (html) {
-            $("#role-select").html(html);
-            $("#role-select").val(selectItem);
-            layui.form.render('select');
-            layer.closeAll('loading');
-        });
+        $("#role-select").empty();
+        $("#role-select").prepend("<option value=''>" + i18n['pls_select'] + "</option>");
+        for (var i = 0; i < roles.length; i++) {
+            $("#role-select").append("<option value='" + roles[i].roleId + "'>" + roles[i].roleName + "</option>");
+        }
+        layui.form.render('select');
+
     } else {
         var index = layer.load(2);
         $.get("/servlet/role", {
-            token: getToken(),
-            isDelete: 0
+            token: getToken()
         }, function (data) {
-            if ("succ" == data.status) {
-                roles = data.response;
-                getRoles(selectItem);
-            }
+            roles = data.data;
+            console.log(roles);
+            getRoles(selectItem);
             layer.close(index);
-        });
+        }, "json");
     }
 }
 
 //删除
 function doDelete(obj) {
-    layer.confirm(i18n['confirmDelete'], function (index) {
+    layer.confirm(i18n['confirm_delete'], function (index) {
         layer.close(index);
         layer.load(2);
         $.ajax({
@@ -143,7 +142,7 @@ function doDelete(obj) {
             dataType: "JSON",
             success: function (data) {
                 layer.closeAll('loading');
-                if (data.code == 200) {
+                if ("succ" == data.status) {
                     layer.msg("SUCCESS", {icon: 1});
                     obj.del();
                 } else {
@@ -156,8 +155,9 @@ function doDelete(obj) {
 
 //更改状态
 function updateStatus(obj) {
-    var load= layer.load(2);
+    var load = layer.load(2);
     var newStatus = obj.elem.checked ? 1 : 0;
+    console.log(obj);
     $.post("/servlet/user/status", {
         userId: obj.elem.value,
         status: newStatus,
@@ -165,7 +165,7 @@ function updateStatus(obj) {
         token: getToken()
     }, function (data) {
         layer.close(load);
-        if (data.status='succ') {
+        if (data.status = 'succ') {
             layui.table.reload('table', {});
         } else {
             layer.msg(data.error, {icon: 2});
@@ -184,9 +184,9 @@ function doSearch(table) {
     layui.table.reload('table', {where: {searchKey: key, searchValue: value}});
 }
 
-//删除
+//重置密码
 function doReSet(userId) {
-    layer.confirm(i18n['confirmResetPassword'], function (index) {
+    layer.confirm(i18n['confirm_reset_pwd'], function (index) {
         layer.close(index);
         layer.load(2);
         $.post("/servlet/user/psw/" + userId, {
