@@ -52,6 +52,10 @@ public enum CheckErrorCode implements ErrorCode {
     LOGISTICS_TYPE_ERROR("logistics_type not exist.", "100042"),
     ROLE_NAME_EMPTY("RoleName empty.", "100043"),
     USER_ID_EMPTY("UserId empty.", "100044"),
+    PERMISSION_ID_EMPTY("PermissionId empty.", "100045"),
+    PERMISSION_Type_EMPTY("Permission Type empty.", "100046"),
+    PERMISSION_DESC_EMPTY("Permission Desc empty.", "100047"),
+
     ;
 
     private final String description;

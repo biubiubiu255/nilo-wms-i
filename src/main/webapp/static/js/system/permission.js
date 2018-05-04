@@ -13,7 +13,7 @@ $(function() {
             {field:'parentName', sort: true, title: '父级'},
             {field:'desc', sort: true, title: '名称'},
             {field:'value', sort: true, title: 'URL'},
-            {field:'type', sort: true, templet:function(d){ return d.permissionType==1?'M':'B'; }, title: '类型'},
+            {field:'typeDesc', sort: true, title: '类型'},
             {field:'createdTime', sort: true, templet:function(d){ return layui.util.toDateString(d.createdTime); }, title: '创建时间'},
             {field:'status', sort: true, templet: '#statusTpl',width: 80, title: '状态'},
             {align:'center', toolbar: '#barTpl', minWidth: 110, title: '操作'}
@@ -32,8 +32,8 @@ $(function() {
         layer.load(1);
         $.post("/servlet/permission", data.field, function(data){
             layer.closeAll('loading');
-            if(data.code==200){
-                layer.msg(data.msg,{icon: 1});
+            if(data.status=="succ"){
+                layer.msg("SUCCESS",{icon: 1});
                 layer.closeAll('page');
                 layui.table.reload('table', {});
                 parents1 = null;
@@ -104,7 +104,7 @@ function showEditModel(data){
 
     getParents(selectItem,type);
     //
-    layui.form.on('radio(permissionType)', function(data){
+    layui.form.on('select(permissionType)', function(data){
         getParents(selectItem, data.value);
     });
 }
@@ -115,12 +115,14 @@ var parents2 = null;
 function getParents(selectItem,type){
     var parents = (type==0?parents1:parents2);
     if(parents!=null) {
-        layui.laytpl(parentsSelect.innerHTML).render(parents, function(html){
-            $("#parent-select").html(html);
-            $("#parent-select").val(selectItem);
-            layui.form.render('select');
-            layer.closeAll('loading');
-        });
+
+        $("#parent-select").empty();
+        $("#parent-select").prepend("<option value=''>" + i18n['pls_select'] + "</option>");
+        for (var i = 0; i < parents.length; i++) {
+            $("#parent-select").append("<option value='" + parents[i].permissionId + "'>" + parents[i].desc + "</option>");
+        }
+        $("#parent-select").val(selectItem);
+        layui.form.render('select');
     }else{
         layer.load(1);
         $.get("/servlet/permission/parent/"+type,{

@@ -20,5 +20,7 @@ public interface PermissionService {
 
     void update(Permission permission);
 
+    void delete(String permissionId);
+
     PageResult<Permission> queryPermissions(PermissionParameter parameter);
 }

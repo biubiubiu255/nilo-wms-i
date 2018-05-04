@@ -9,7 +9,17 @@ public class PermissionParameter {
 
     private String desc;
 
+    private Integer type;
+
     private Page page;
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 
     public String getDesc() {
         return desc;

@@ -62,9 +62,12 @@
         <div class="layui-form-item">
             <label class="layui-form-label">类型</label>
             <div class="layui-input-block">
-                <input type="radio" name="permissionType" id="type0" lay-filter="permissionType" value="0" title="菜单"
-                       checked/>
-                <input type="radio" name="permissionType" id="type1" lay-filter="permissionType" value="1" title="按钮"/>
+                <select lay-filter="permissionType">
+                    <option value="">-<spring:message code="please.select"/>-</option>
+                    <option value="0"><spring:message code="navigation"/></option>
+                    <option value="1"><spring:message code="menu"/></option>
+                    <option value="2"><spring:message code="button"/></option>
+                </select>
             </div>
         </div>
         <div class="layui-form-item model-form-footer">

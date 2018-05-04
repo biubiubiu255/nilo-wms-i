@@ -33,26 +33,41 @@ public class PermissionController extends BaseController {
 
     @GetMapping("/parent/{type}")
     public String listParent(@PathVariable("type") int type) {
-        return null;
+        PermissionParameter parameter = new PermissionParameter();
+        parameter.setPage(getPage());
+        parameter.setType(type);
+        return permissionService.queryPermissions(parameter).toJson();
     }
 
     @PostMapping()
     public String add(Permission permission) {
+
+        permissionService.add(permission);
+
         return ResultMap.success().toJson();
     }
 
     @PutMapping()
     public String update(Permission permission) {
+
+        permissionService.update(permission);
         return ResultMap.success().toJson();
     }
 
     @PutMapping("status")
     public String updateStatus(String permissionId, int status) {
+        Permission permission = new Permission();
+        permission.setPermissionId(permissionId);
+        permission.setStatus(status);
+        permissionService.update(permission);
         return ResultMap.success().toJson();
     }
 
     @DeleteMapping("/{permissionId}")
     public String delete(@PathVariable("permissionId") String permissionId) {
+
+        permissionService.delete(permissionId);
+
         return ResultMap.success().toJson();
     }
 

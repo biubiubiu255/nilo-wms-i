@@ -25,4 +25,6 @@ public interface PermissionDao extends BaseDao<Long, Permission> {
     int queryPermissionsCount(PermissionParameter parameter);
 
     List<Permission> queryPermissions(PermissionParameter parameter);
+
+    int deleteByPermissionId(String permissionId);
 }

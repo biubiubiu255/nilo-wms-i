@@ -46,6 +46,10 @@
         delete from t_sys_role_permission where role_id = #{roleId}
     </delete>
 
+    <delete id="deleteByPermissionId">
+        delete from t_sys_permission where permission_id = #{permissionId}
+    </delete>
+
     <insert id="insertRolePermission" statementType="PREPARED">
         INSERT INTO t_sys_role_permission(role_id, permission_id)
         VALUES
@@ -59,18 +63,24 @@
         a.*, b.desc_c parent_desc_c ,b.desc_e parent_desc_e
         FROM t_sys_permission a left join t_sys_permission b on a.parent_id = b.permission_id
         WHERE 1 = 1
+        <if test="type != null">
+            and a.type = #{type}
+        </if>
         <if test="desc != null and desc != ''">
-            and (desc_c LIKE CONCAT( CONCAT('%',#{desc}),'%') or desc_e LIKE CONCAT( CONCAT('%',#{desc}),'%') )
+            and (a.desc_c LIKE CONCAT( CONCAT('%',#{desc}),'%') or a.desc_e LIKE CONCAT( CONCAT('%',#{desc}),'%') )
         </if>
         limit #{offset},#{limit}
     </select>
 
     <select id="queryPermissionsCount" resultType="java.lang.Integer" statementType="PREPARED">
         SELECT count(1)
-        FROM t_sys_permission
+        FROM t_sys_permission a
         WHERE 1 = 1
+        <if test="type != null">
+            and a.type = #{type}
+        </if>
         <if test="desc != null and desc != ''">
-            and (desc_c LIKE CONCAT( CONCAT('%',#{desc}),'%') ordesc_e LIKE CONCAT( CONCAT('%',#{desc}),'%') )
+            and (a.desc_c LIKE CONCAT( CONCAT('%',#{desc}),'%') or a.desc_e LIKE CONCAT( CONCAT('%',#{desc}),'%') )
         </if>
     </select>
 </mapper>

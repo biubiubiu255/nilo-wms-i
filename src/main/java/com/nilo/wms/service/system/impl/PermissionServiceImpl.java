@@ -1,5 +1,8 @@
 package com.nilo.wms.service.system.impl;
 
+import com.nilo.wms.common.exception.CheckErrorCode;
+import com.nilo.wms.common.exception.SysErrorCode;
+import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dao.platform.PermissionDao;
 import com.nilo.wms.dto.common.PageResult;
@@ -88,11 +91,31 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public void add(Permission permission) {
 
+        AssertUtil.isNotNull(permission, SysErrorCode.REQUEST_IS_NULL);
+        AssertUtil.isNotBlank(permission.getPermissionId(), CheckErrorCode.PERMISSION_ID_EMPTY);
+        AssertUtil.isNotNull(permission.getType(), CheckErrorCode.PERMISSION_Type_EMPTY);
+        AssertUtil.isNotBlank(permission.getDesc_c(), CheckErrorCode.PERMISSION_DESC_EMPTY);
+        AssertUtil.isNotBlank(permission.getDesc_e(), CheckErrorCode.PERMISSION_DESC_EMPTY);
+
+        permissionDao.insert(permission);
+
     }
 
     @Override
     public void update(Permission permission) {
 
+        AssertUtil.isNotBlank(permission.getPermissionId(), CheckErrorCode.PERMISSION_ID_EMPTY);
+
+        permissionDao.update(permission);
+
+    }
+
+    @Override
+    public void delete(String permissionId) {
+
+        AssertUtil.isNotBlank(permissionId, CheckErrorCode.PERMISSION_ID_EMPTY);
+
+        permissionDao.deleteByPermissionId(permissionId);
     }
 
     @Override
