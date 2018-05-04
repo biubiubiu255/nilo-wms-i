@@ -5,7 +5,7 @@ import com.nilo.wms.common.exception.SysErrorCode;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.IdWorker;
 import com.nilo.wms.dao.platform.RoleDao;
-import com.nilo.wms.dto.PageResult;
+import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.parameter.RoleParameter;
 import com.nilo.wms.dto.system.Role;
 import com.nilo.wms.service.system.RoleService;

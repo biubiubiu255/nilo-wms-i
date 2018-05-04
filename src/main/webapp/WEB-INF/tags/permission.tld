@@ -9,7 +9,7 @@
     <uri>http://www.nilo.dms.tag</uri>
     <tag>
         <name>hasPermission</name>
-        <tag-class>com.nilo.wms.web.PermissionTag</tag-class>
+        <tag-class>com.nilo.wms.web.tag.PermissionTag</tag-class>
         <attribute>
             <name>name</name>
             <required>true</required>

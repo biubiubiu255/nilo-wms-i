@@ -1,5 +1,7 @@
 package com.nilo.wms.dto.system;
 
+import com.nilo.wms.service.system.SystemCodeUtil;
+
 public class User {
 
     private String userId;
@@ -59,6 +61,10 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getSexDesc() {
+        return SystemCodeUtil.getCodeDesc("sex", this.sex);
     }
 
     public String getSex() {

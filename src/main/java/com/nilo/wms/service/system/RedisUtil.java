@@ -154,6 +154,18 @@ public class RedisUtil {
         }
     }
 
+    public static Set<String> sMember(String key) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.smembers(key);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
     public static boolean sExist(String key, String value) {
         Jedis jedis = null;
         try {
@@ -242,7 +254,7 @@ public class RedisUtil {
         return "wms_user_" + userId;
     }
 
-    public static boolean hasPermission(String userId,String value){
+    public static boolean hasPermission(String userId, String value) {
         return RedisUtil.sExist(RedisUtil.getRoleKey(RedisUtil.hget(RedisUtil.getUserKey(userId), "roleId")), value);
     }
 }

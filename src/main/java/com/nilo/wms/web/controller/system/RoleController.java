@@ -6,7 +6,7 @@ import com.nilo.wms.common.util.BeanUtils;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dto.parameter.RoleParameter;
 import com.nilo.wms.dto.system.Role;
-import com.nilo.wms.dto.system.ZTree;
+import com.nilo.wms.dto.common.ZTree;
 import com.nilo.wms.service.system.PermissionService;
 import com.nilo.wms.service.system.RoleService;
 import com.nilo.wms.web.BaseController;

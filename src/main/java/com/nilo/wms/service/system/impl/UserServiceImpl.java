@@ -7,16 +7,13 @@ import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.IdWorker;
 import com.nilo.wms.dao.platform.UserDao;
-import com.nilo.wms.dto.PageResult;
+import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.parameter.UserParameter;
 import com.nilo.wms.dto.system.User;
 import com.nilo.wms.service.system.UserService;
-import javafx.scene.control.Pagination;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {

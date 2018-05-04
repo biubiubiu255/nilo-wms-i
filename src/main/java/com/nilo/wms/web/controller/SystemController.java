@@ -8,7 +8,7 @@ import com.nilo.wms.common.Principal;
 import com.nilo.wms.common.SessionLocal;
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.WMSException;
-import com.nilo.wms.dto.ClientConfig;
+import com.nilo.wms.dto.common.ClientConfig;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.config.SystemConfig;
 import com.nilo.wms.web.BaseController;

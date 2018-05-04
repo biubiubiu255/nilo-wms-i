@@ -1,16 +1,17 @@
 package com.nilo.wms.service.system.impl;
 
 import com.nilo.wms.dao.platform.*;
-import com.nilo.wms.dto.ClientConfig;
+import com.nilo.wms.dto.common.ClientConfig;
+import com.nilo.wms.dto.common.Dictionary;
+import com.nilo.wms.dto.common.InterfaceConfig;
 import com.nilo.wms.dto.fee.FeeConfig;
 import com.nilo.wms.dto.fee.FeePrice;
-import com.nilo.wms.dto.InterfaceConfig;
 import com.nilo.wms.dto.parameter.RoleParameter;
 import com.nilo.wms.dto.system.Permission;
 import com.nilo.wms.dto.system.Role;
+import com.nilo.wms.service.config.SystemConfig;
 import com.nilo.wms.service.system.RedisUtil;
 import com.nilo.wms.service.system.SystemService;
-import com.nilo.wms.service.config.SystemConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,8 @@ public class SystemServiceImpl implements SystemService {
     private RoleDao roleDao;
     @Autowired
     private PermissionDao permissionDao;
+    @Autowired
+    private DictionaryDao dictionaryDao;
 
     @Override
     public void loadingAndRefreshClientConfig() {
@@ -96,5 +99,16 @@ public class SystemServiceImpl implements SystemService {
             RedisUtil.sAdd(RedisUtil.getRoleKey(r.getRoleId()), s.toArray(new String[list.size()]));
         }
 
+    }
+
+    @Override
+    public void loadingAndRefreshSystemCode() {
+        List<Dictionary> list = dictionaryDao.queryAll();
+        for (Dictionary d : list) {
+            String keyZh = "wms_system_code_zh_" + d.getType();
+            String keyEn = "wms_system_code_en_" + d.getType();
+            RedisUtil.hset(keyZh,d.getCode(),d.getDescC());
+            RedisUtil.hset(keyEn,d.getCode(),d.getDescE());
+        }
     }
 }

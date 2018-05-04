@@ -27,7 +27,7 @@
         id ,client_code,fee_type,class,first_price,second_price,created_time , updated_time ,version
     </sql>
     <!-- 插入语句 -->
-    <insert id="insert" parameterType="com.nilo.wms.dto.ClientConfig" statementType="PREPARED"
+    <insert id="insert" parameterType="com.nilo.wms.dto.common.ClientConfig" statementType="PREPARED"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_config_fee

@@ -4,7 +4,7 @@
 <mapper namespace="com.nilo.wms.dao.platform.ClientConfigDao">
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="clientConfig" type="com.nilo.wms.dto.ClientConfig">
+    <resultMap id="clientConfig" type="com.nilo.wms.dto.common.ClientConfig">
         <result property="clientCode" column="client_code" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="clientName" column="client_name" javaType="java.lang.String"
@@ -32,7 +32,7 @@
         id ,client_code,client_name,client_key,wms_key,wms_customer_id,wms_warehouse_id,status,created_time , updated_time ,version
     </sql>
     <!-- 插入语句 -->
-    <insert id="insert" parameterType="com.nilo.wms.dto.ClientConfig" statementType="PREPARED"
+    <insert id="insert" parameterType="com.nilo.wms.dto.common.ClientConfig" statementType="PREPARED"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_config_client

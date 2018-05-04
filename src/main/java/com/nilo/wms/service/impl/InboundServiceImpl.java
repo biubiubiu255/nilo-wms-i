@@ -17,6 +17,8 @@ import com.nilo.wms.dao.flux.FluxInboundDao;
 import com.nilo.wms.dao.flux.SkuDao;
 import com.nilo.wms.dao.platform.InboundDao;
 import com.nilo.wms.dto.*;
+import com.nilo.wms.dto.common.ClientConfig;
+import com.nilo.wms.dto.common.InterfaceConfig;
 import com.nilo.wms.dto.flux.FLuxRequest;
 import com.nilo.wms.dto.flux.FluxInbound;
 import com.nilo.wms.dto.flux.FluxInboundDetails;

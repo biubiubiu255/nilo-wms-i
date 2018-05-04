@@ -13,7 +13,7 @@ $(function () {
             {field: 'username', sort: true, title: i18n['username']},
             {field: 'nickname', sort: true, title: i18n['nickname']},
             {field: 'phone', sort: true, title: i18n['phone']},
-            {field: 'sex', sort: true,width: 80, title: i18n['sex']},
+            {field: 'sexDesc', sort: true,width: 80, title: i18n['sex']},
             {field: 'roleName', sort: true, title: i18n['roleName']},
             {field: 'userStatus', sort: true, templet: '#statusTpl', width: 80, title: i18n['status']},
             {
@@ -91,6 +91,7 @@ function showEditModel(data) {
         $("#editForm input[name=nickname]").val(data.nickname);
         $("#editForm input[name=phone]").val(data.phone);
         $("#editForm").attr("method", "PUT");
+        $("#editForm input[name=username]").attr("disabled", true);
         selectItem = data.roleId;
         if ('M' == data.sex) {
             $("#sexMan").attr("checked", "checked");

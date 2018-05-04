@@ -18,8 +18,8 @@
         <ul class="layui-nav layui-layout-left">
             <li class="layui-nav-item"><a href="javascript:;" id="switchNav"><i class="layui-icon">&#xe668;</i></a></li>
         </ul>
-        <ul class="layui-nav layui-layout-right" >
-            <li class="layui-nav-item" >
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img id="userHead" src="static/images/head.jpg" class="layui-nav-img"><span
                         id="nickname"></span>
@@ -162,7 +162,7 @@
             }
             //无权限
             if (xhr.status && xhr.status == 402) {
-                layer.msg("No Permission", {icon: 2},function () {
+                layer.msg("No Permission", {icon: 2}, function () {
                     layer.closeAll();
                 });
             }

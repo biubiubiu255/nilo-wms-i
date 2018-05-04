@@ -11,7 +11,7 @@ import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dao.flux.SkuDao;
-import com.nilo.wms.dto.ClientConfig;
+import com.nilo.wms.dto.common.ClientConfig;
 import com.nilo.wms.dto.StorageInfo;
 import com.nilo.wms.dto.StorageParam;
 import com.nilo.wms.service.system.RedisUtil;

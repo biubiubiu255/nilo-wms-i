@@ -1,6 +1,7 @@
 package com.nilo.wms.service;
 
 import com.nilo.wms.dto.*;
+import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.outbound.OutboundHeader;
 
 import java.util.List;

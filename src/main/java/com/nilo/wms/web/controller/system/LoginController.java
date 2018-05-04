@@ -54,6 +54,11 @@ public class LoginController extends BaseController {
         if (user == null || !StringUtil.equalsIgnoreCase(DigestUtils.md5Hex(password), user.getPassword())) {
             throw new WMSException(BizErrorCode.USERNAME_PASSWORD_ERROR);
         }
+        if (user.getStatus() != 1) {
+            throw new IllegalStateException("Account status not allow login.");
+        }
+
+
         String token = TokenUtil.createToken(user.getUserId(), DateUtil.getAppointDate(new Date(), 30));
         user.setPassword(null);
         user.setToken(token);

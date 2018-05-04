@@ -8,7 +8,7 @@ import com.nilo.wms.common.exception.CheckErrorCode;
 import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.StringUtil;
-import com.nilo.wms.dto.ClientConfig;
+import com.nilo.wms.dto.common.ClientConfig;
 import com.nilo.wms.service.config.SystemConfig;
 import org.apache.commons.codec.digest.DigestUtils;
 

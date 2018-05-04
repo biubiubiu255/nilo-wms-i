@@ -2,9 +2,9 @@ package com.nilo.wms.service.system.impl;
 
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dao.platform.PermissionDao;
-import com.nilo.wms.dto.PageResult;
+import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.parameter.PermissionParameter;
-import com.nilo.wms.dto.system.ZTree;
+import com.nilo.wms.dto.common.ZTree;
 import com.nilo.wms.dto.system.Permission;
 import com.nilo.wms.service.system.PermissionService;
 import com.nilo.wms.service.system.RedisUtil;

@@ -12,8 +12,8 @@ $(function() {
             {field:'permissionId', sort: true, title: 'ID'},
             {field:'parentName', sort: true, title: '父级'},
             {field:'desc', sort: true, title: '名称'},
-            {field:'value', sort: true, title: '权限值'},
-            {field:'type', sort: true, templet:function(d){ return d.permissionType==2?'M':'B'; }, title: '类型'},
+            {field:'value', sort: true, title: 'URL'},
+            {field:'type', sort: true, templet:function(d){ return d.permissionType==1?'M':'B'; }, title: '类型'},
             {field:'createdTime', sort: true, templet:function(d){ return layui.util.toDateString(d.createdTime); }, title: '创建时间'},
             {field:'status', sort: true, templet: '#statusTpl',width: 80, title: '状态'},
             {align:'center', toolbar: '#barTpl', minWidth: 110, title: '操作'}

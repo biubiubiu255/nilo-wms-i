@@ -4,7 +4,7 @@
 <mapper namespace="com.nilo.wms.dao.platform.InterfaceConfigDao">
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="interfaceConfig" type="com.nilo.wms.dto.InterfaceConfig">
+    <resultMap id="interfaceConfig" type="com.nilo.wms.dto.common.InterfaceConfig">
         <result property="clientCode" column="client_code" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="method" column="method" javaType="java.lang.String"
@@ -30,7 +30,7 @@
     </sql>
 
     <!-- 插入语句 -->
-    <insert id="insert" parameterType="com.nilo.wms.dto.InterfaceConfig" statementType="PREPARED"
+    <insert id="insert" parameterType="com.nilo.wms.dto.common.InterfaceConfig" statementType="PREPARED"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_config_interface

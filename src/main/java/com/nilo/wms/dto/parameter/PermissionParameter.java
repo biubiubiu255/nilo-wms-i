@@ -1,6 +1,6 @@
 package com.nilo.wms.dto.parameter;
 
-import com.nilo.wms.dto.Page;
+import com.nilo.wms.dto.common.Page;
 
 /**
  * Created by admin on 2018/4/26.

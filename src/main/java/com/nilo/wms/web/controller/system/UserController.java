@@ -10,6 +10,7 @@ import com.nilo.wms.service.system.RoleService;
 import com.nilo.wms.service.system.UserService;
 import com.nilo.wms.web.BaseController;
 import com.nilo.wms.web.model.ResultMap;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +58,16 @@ public class UserController extends BaseController {
 
         return ResultMap.success().toJson();
 
+    }
+
+    @PutMapping("/psw/{userId}")
+    public String psw(@PathVariable("userId") String userId) {
+
+        User user = new User();
+        user.setUserId(userId);
+        user.setPassword(DigestUtils.md5Hex("12345678"));
+        userService.update(user);
+        return ResultMap.success().toJson();
     }
 
     @DeleteMapping("/{userId}")

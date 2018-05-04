@@ -18,7 +18,6 @@ $(function() {
 function getToken() {
 	return localStorage.getItem("token");
 }
-
 //获取当前登录的user
 function getCurrentUser(){
 	return JSON.parse(localStorage.getItem("user"));

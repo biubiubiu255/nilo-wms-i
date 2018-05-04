@@ -17,6 +17,7 @@ public enum BizErrorCode implements ErrorCode {
     RANDOM_CODE_ERROR("random code error.", "20009"),
     USERNAME_PASSWORD_ERROR("username or password error.", "200010"),
     USERNAME_EXIST("username is already exist.", "200011"),
+    USER_STATUS_ILLEGAL("username is already exist.", "200011"),
 
     ;
 

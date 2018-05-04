@@ -1,4 +1,4 @@
-package com.nilo.wms.web;
+package com.nilo.wms.web.tag;
 
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.TokenUtil;

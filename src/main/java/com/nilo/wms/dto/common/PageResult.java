@@ -1,4 +1,4 @@
-package com.nilo.wms.dto;
+package com.nilo.wms.dto.common;
 
 import com.alibaba.fastjson.JSON;
 

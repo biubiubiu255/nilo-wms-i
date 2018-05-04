@@ -20,4 +20,6 @@ public interface SystemService {
      * 刷新 角色权限配置
      */
     void loadingAndRefreshRole();
+
+    void loadingAndRefreshSystemCode();
 }

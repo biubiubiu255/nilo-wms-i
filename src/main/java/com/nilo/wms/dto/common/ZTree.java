@@ -1,4 +1,4 @@
-package com.nilo.wms.dto.system;
+package com.nilo.wms.dto.common;
 
 public class ZTree {
 
