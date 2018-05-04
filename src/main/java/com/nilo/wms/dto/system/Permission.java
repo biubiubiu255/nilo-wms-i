@@ -1,5 +1,10 @@
 package com.nilo.wms.dto.system;
 
+import com.nilo.wms.common.util.StringUtil;
+import com.nilo.wms.service.system.SystemCodeUtil;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -10,7 +15,9 @@ public class Permission implements Serializable {
 
     private String parentId;
 
-    private String parentName;
+    private String parent_desc_c;
+
+    private String parent_desc_e;
 
     private String desc_c;
 
@@ -27,11 +34,8 @@ public class Permission implements Serializable {
     private List<Permission> subMenus;
 
     public String getParentName() {
-        return parentName;
-    }
+        return StringUtil.equals(SystemCodeUtil.getLang(), "zh") ? this.parent_desc_c : this.parent_desc_e;
 
-    public void setParentName(String parentName) {
-        this.parentName = parentName;
     }
 
     public int getStatus() {
@@ -106,8 +110,11 @@ public class Permission implements Serializable {
         this.type = type;
     }
 
-    public String getDesc() {
-        return this.desc_e + "-" + this.desc_c;
+    public String getTypeDesc() {
+        return SystemCodeUtil.getCodeDesc("permission_type", ""+this.type);
     }
 
+    public String getDesc() {
+        return StringUtil.equals(SystemCodeUtil.getLang(), "zh") ? this.desc_c : this.desc_e;
+    }
 }

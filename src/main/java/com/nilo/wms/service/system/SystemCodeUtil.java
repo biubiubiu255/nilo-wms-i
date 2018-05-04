@@ -31,7 +31,6 @@ public class SystemCodeUtil {
 
     public static String getLang() {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getLocale().getLanguage();
-
     }
 
 }

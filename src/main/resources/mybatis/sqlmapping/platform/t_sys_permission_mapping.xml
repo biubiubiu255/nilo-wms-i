@@ -10,7 +10,9 @@
                 jdbcType="VARCHAR"/>
         <result property="parentId" column="parent_Id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="parentName" column="parent_name" javaType="java.lang.String"
+        <result property="parent_desc_c" column="parent_desc_c" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="parent_desc_e" column="parent_desc_e" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="desc_c" column="desc_c" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
@@ -54,11 +56,11 @@
 
     <select id="queryPermissions" resultMap="permission" statementType="PREPARED" >
         SELECT
-        a.*, CONCAT(b.desc_e,'-',b.desc_c) parent_name
+        a.*, b.desc_c parent_desc_c ,b.desc_e parent_desc_e
         FROM t_sys_permission a left join t_sys_permission b on a.parent_id = b.permission_id
         WHERE 1 = 1
         <if test="desc != null and desc != ''">
-            and (desc_c LIKE CONCAT( CONCAT('%',#{desc}),'%') ordesc_e LIKE CONCAT( CONCAT('%',#{desc}),'%') )
+            and (desc_c LIKE CONCAT( CONCAT('%',#{desc}),'%') or desc_e LIKE CONCAT( CONCAT('%',#{desc}),'%') )
         </if>
         limit #{offset},#{limit}
     </select>
