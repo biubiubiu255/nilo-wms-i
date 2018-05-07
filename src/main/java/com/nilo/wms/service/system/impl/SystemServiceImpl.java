@@ -91,11 +91,14 @@ public class SystemServiceImpl implements SystemService {
         List<Role> roles = roleDao.queryBy(new RoleParameter());
         for (Role r : roles) {
             List<Permission> list = permissionDao.queryByRoleId(r.getRoleId());
+            RedisUtil.del(RedisUtil.getRoleKey(r.getRoleId()));
+            if (list == null || list.size() == 0) continue;
+
             Set<String> s = new HashSet<>();
             for (Permission p : list) {
                 s.add(p.getPermissionId());
             }
-            RedisUtil.del(RedisUtil.getRoleKey(r.getRoleId()));
+
             RedisUtil.sAdd(RedisUtil.getRoleKey(r.getRoleId()), s.toArray(new String[list.size()]));
         }
 
@@ -107,8 +110,8 @@ public class SystemServiceImpl implements SystemService {
         for (Dictionary d : list) {
             String keyZh = "wms_system_code_zh_" + d.getType();
             String keyEn = "wms_system_code_en_" + d.getType();
-            RedisUtil.hset(keyZh,d.getCode(),d.getDescC());
-            RedisUtil.hset(keyEn,d.getCode(),d.getDescE());
+            RedisUtil.hset(keyZh, d.getCode(), d.getDescC());
+            RedisUtil.hset(keyEn, d.getCode(), d.getDescE());
         }
     }
 }

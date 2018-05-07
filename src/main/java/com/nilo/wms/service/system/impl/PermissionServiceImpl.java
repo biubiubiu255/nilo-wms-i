@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by ronny on 2017/8/24.
@@ -106,8 +107,23 @@ public class PermissionServiceImpl implements PermissionService {
     public void update(Permission permission) {
 
         AssertUtil.isNotBlank(permission.getPermissionId(), CheckErrorCode.PERMISSION_ID_EMPTY);
-
         permissionDao.update(permission);
+
+        //修改缓存数据
+        Set<String> list = RedisUtil.keys(RedisUtil.getRoleKey("*"));
+        for (String s : list) {
+
+            if (permission.getStatus() == 0) {
+                Set<String> permissions = RedisUtil.sMember(s);
+                for (String p : permissions) {
+                    if (StringUtil.equals(p, permission.getPermissionId())) {
+                        RedisUtil.srem(s, new String[]{permission.getPermissionId()});
+                    }
+                }
+            } else {
+                RedisUtil.sAdd(s, new String[]{permission.getPermissionId()});
+            }
+        }
 
     }
 

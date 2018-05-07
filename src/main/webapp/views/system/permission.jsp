@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="p" uri="/permission.tag" %>
+
 <div class="content-header">
     <h2 class="content-title"><spring:message code="system.permission.mgn"/></h2>
 	<span class="layui-breadcrumb">
@@ -18,11 +20,17 @@
         </select>&emsp;
         <input id="searchValue" class="layui-input search-input" type="text"
                placeholder="<spring:message code="input.search.content"/>"/>&emsp;
-        <button id="searchBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe615;</i><spring:message
-                code="search"/></button>&emsp;
-        <button id="addBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe654;</i><spring:message code="add"/>
-        </button>
-        </button>
+        <p:hasPermission name="10031">
+
+            <button id="searchBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe615;</i><spring:message
+                    code="search"/></button>
+            &emsp;
+        </p:hasPermission>
+        <p:hasPermission name="10032">
+            <button id="addBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe654;</i><spring:message
+                    code="add"/>
+            </button>
+        </p:hasPermission>
     </div>
 
     <table class="layui-table" id="table" lay-filter="table"></table>
@@ -33,7 +41,7 @@
     <form id="editForm" class="layui-form model-form" action="">
         <input name="permissionId" type="hidden"/>
         <div class="layui-form-item">
-            <label class="layui-form-label">类型</label>
+            <label class="layui-form-label"><spring:message code="type"/></label>
             <div class="layui-input-block">
                 <select lay-filter="permissionType" name="type">
                     <option value="">-<spring:message code="please.select"/>-</option>
@@ -44,58 +52,63 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">父级</label>
+            <label class="layui-form-label"><spring:message code="parent"/></label>
             <div class="layui-input-block">
                 <select id="parent-select" name="parentId" lay-verify="required">
                 </select>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">名称</label>
+            <label class="layui-form-label"><spring:message code="system.permission.name_c"/></label>
             <div class="layui-input-block">
-                <input name="desc_c"  type="text" class="layui-input" maxlength="20"
+                <input name="desc_c" type="text" class="layui-input" maxlength="20"
                        lay-verify="required" required/>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">名称</label>
+            <label class="layui-form-label"><spring:message code="system.permission.name_e"/></label>
             <div class="layui-input-block">
-                <input name="desc_e"  type="text" class="layui-input" maxlength="20"
+                <input name="desc_e" type="text" class="layui-input" maxlength="20"
                        lay-verify="required" required/>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">权限值</label>
+            <label class="layui-form-label"><spring:message code="system.permission.id"/></label>
             <div class="layui-input-block">
-                <input name="permissionId"  type="text" class="layui-input" maxlength="20"
+                <input name="permissionId" type="text" class="layui-input" maxlength="20"
                        lay-verify="required" required/>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">URL</label>
             <div class="layui-input-block">
-                <input name="value"  type="text" class="layui-input" maxlength="20"
-                      />
+                <input name="value" type="text" class="layui-input" maxlength="20"
+                />
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">排序号</label>
+            <label class="layui-form-label"><spring:message code="system.permission.order"/></label>
             <div class="layui-input-block">
-                <input name="orderNumber"  type="number" class="layui-input" lay-verify="number"
+                <input name="orderNumber" type="number" class="layui-input" lay-verify="number"
                        required/>
             </div>
         </div>
 
         <div class="layui-form-item model-form-footer">
-            <button class="layui-btn layui-btn-primary" type="button" id="btnCancel">取消</button>
-            <button class="layui-btn" lay-filter="btnSubmit" lay-submit>保存</button>
+            <button class="layui-btn layui-btn-primary" type="button" id="btnCancel"><spring:message
+                    code="cancel"/></button>
+            <button class="layui-btn" lay-filter="btnSubmit" lay-submit><spring:message code="ok"/></button>
         </div>
     </form>
 </script>
 <!-- 表格操作列 -->
 <script type="text/html" id="barTpl">
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <p:hasPermission name="10033">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><spring:message code="edit"/></a>
+    </p:hasPermission>
+    <p:hasPermission name="10034">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><spring:message code="delete"/></a>
+    </p:hasPermission>
 </script>
 <!-- 表格状态列 -->
 <script type="text/html" id="statusTpl">

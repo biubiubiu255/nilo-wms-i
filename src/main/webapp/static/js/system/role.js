@@ -107,7 +107,6 @@ function doDelete(roleId) {
                     layui.table.reload('table', {});
                 } else {
                     layer.msg(data.error, {icon: 2});
-                    layui.table.reload('table', {});
                 }
             }
         });
@@ -129,8 +128,9 @@ function updateStatus(obj) {
         if (data.status == 'succ') {
             layui.table.reload('table', {});
         } else {
-            layer.msg(data.error, {icon: 2});
-            layui.table.reload('table', {});
+            layer.msg(data.error, {icon: 2, time: 2000},function () {
+                layui.table.reload('table', {});
+            });
         }
     }, "json");
 }

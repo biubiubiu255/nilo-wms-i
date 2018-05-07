@@ -1,5 +1,6 @@
 package com.nilo.wms.web.controller.system;
 
+import com.nilo.wms.common.annotation.RequiresPermissions;
 import com.nilo.wms.common.util.BeanUtils;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dto.parameter.RoleParameter;
@@ -22,6 +23,7 @@ public class UserController extends BaseController {
     private UserService userService;
 
     @GetMapping
+    @RequiresPermissions("10011")
     public String list(String searchValue, String searchKey) {
 
         UserParameter parameter = new UserParameter();
@@ -33,6 +35,7 @@ public class UserController extends BaseController {
     }
 
     @PostMapping
+    @RequiresPermissions("10012")
     public String add(User user) {
 
         userService.add(user);
@@ -41,6 +44,7 @@ public class UserController extends BaseController {
     }
 
     @PutMapping
+    @RequiresPermissions("10013")
     public String update(User user) {
 
         userService.update(user);
@@ -49,6 +53,7 @@ public class UserController extends BaseController {
     }
 
     @PutMapping("/status")
+    @RequiresPermissions("10013")
     public String updateStatus(String userId, int status) {
 
         User user = new User();
@@ -61,6 +66,7 @@ public class UserController extends BaseController {
     }
 
     @PutMapping("/psw/{userId}")
+    @RequiresPermissions("10015")
     public String psw(@PathVariable("userId") String userId) {
 
         User user = new User();
@@ -71,6 +77,7 @@ public class UserController extends BaseController {
     }
 
     @DeleteMapping("/{userId}")
+    @RequiresPermissions("10014")
     public String delete(@PathVariable("userId") String userId) {
         return ResultMap.success().toJson();
     }

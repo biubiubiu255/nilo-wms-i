@@ -156,7 +156,7 @@ function doDelete(obj) {
             dataType: "JSON",
             success: function (data) {
                 layer.closeAll('loading');
-                if (data.status = 'succ') {
+                if (data.status == 'succ') {
                     layer.msg("SUCCESS", {icon: 1});
                     obj.del();
                     parents1 = null;
@@ -180,13 +180,14 @@ function updateStatus(obj) {
         token: getToken()
     }, function (data) {
         layer.closeAll('loading');
-        if (data.status = 'succ') {
+        if (data.status == 'succ') {
             layui.table.reload('table', {});
         } else {
-            layer.msg(data.msg, {icon: 2});
-            layui.table.reload('table', {});
+            layer.msg(data.error, {icon: 2, time: 2000},function () {
+                layui.table.reload('table', {});
+            });
         }
-    });
+    },"JSON");
 }
 
 //搜索

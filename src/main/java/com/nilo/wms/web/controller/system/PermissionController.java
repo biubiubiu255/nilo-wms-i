@@ -1,5 +1,6 @@
 package com.nilo.wms.web.controller.system;
 
+import com.nilo.wms.common.annotation.RequiresPermissions;
 import com.nilo.wms.common.util.BeanUtils;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dto.parameter.PermissionParameter;
@@ -21,6 +22,7 @@ public class PermissionController extends BaseController {
     private PermissionService permissionService;
 
     @GetMapping()
+    @RequiresPermissions("10031")
     public String list(String searchKey, String searchValue) {
 
         PermissionParameter parameter = new PermissionParameter();
@@ -32,6 +34,7 @@ public class PermissionController extends BaseController {
     }
 
     @GetMapping("/parent/{type}")
+    @RequiresPermissions("10032")
     public String listParent(@PathVariable("type") int type) {
         PermissionParameter parameter = new PermissionParameter();
         parameter.setPage(getPage());
@@ -45,6 +48,7 @@ public class PermissionController extends BaseController {
     }
 
     @PostMapping()
+    @RequiresPermissions("10032")
     public String add(Permission permission) {
 
         permissionService.add(permission);
@@ -53,6 +57,7 @@ public class PermissionController extends BaseController {
     }
 
     @PutMapping()
+    @RequiresPermissions("10033")
     public String update(Permission permission) {
 
         permissionService.update(permission);
@@ -60,6 +65,7 @@ public class PermissionController extends BaseController {
     }
 
     @PutMapping("status")
+    @RequiresPermissions("10033")
     public String updateStatus(String permissionId, int status) {
         Permission permission = new Permission();
         permission.setPermissionId(permissionId);
@@ -69,6 +75,7 @@ public class PermissionController extends BaseController {
     }
 
     @DeleteMapping("/{permissionId}")
+    @RequiresPermissions("10034")
     public String delete(@PathVariable("permissionId") String permissionId) {
 
         permissionService.delete(permissionId);

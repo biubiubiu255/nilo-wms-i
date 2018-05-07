@@ -167,11 +167,12 @@ function updateStatus(obj) {
         token: getToken()
     }, function (data) {
         layer.close(load);
-        if (data.status = 'succ') {
+        if (data.status == 'succ') {
             layui.table.reload('table', {});
         } else {
-            layer.msg(data.error, {icon: 2});
-            layui.table.reload('table', {});
+            layer.msg(data.error, {icon: 2, time: 2000},function () {
+                layui.table.reload('table', {});
+            });
         }
     });
 }
@@ -196,7 +197,7 @@ function doReSet(userId) {
             _method: "PUT"
         }, function (data) {
             layer.closeAll('loading');
-            if (data.status = 'succ') {
+            if (data.status == 'succ') {
                 layer.msg("SUCCESS", {icon: 1});
             } else {
                 layer.msg(data.error, {icon: 2});

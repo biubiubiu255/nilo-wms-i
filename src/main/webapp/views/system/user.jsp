@@ -1,7 +1,6 @@
-<%@ page import="org.springframework.cglib.core.Local" %>
-<%@ page import="java.util.Locale" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="p" uri="/permission.tag" %>
 <%
     request.setAttribute("lang", request.getLocale().getLanguage());
 %>
@@ -21,13 +20,19 @@
             <option value="username"><spring:message code="system.user.username"/></option>
             <option value="nickname"><spring:message code="system.user.nickname"/></option>
         </select>&emsp;
+
         <input id="searchValue" class="layui-input search-input" type="text"
                placeholder="<spring:message code="input.search.content"/>"/>&emsp;
-        <button id="searchBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe615;</i><spring:message
-                code="search"/></button>&emsp;
-        <button id="addBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe654;</i><spring:message code="add"/>
-        </button>
-        </button>
+        <p:hasPermission name="10011">
+            <button id="searchBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe615;</i><spring:message
+                    code="search"/></button>
+            &emsp;
+        </p:hasPermission>
+        <p:hasPermission name="10012">
+            <button id="addBtn" class="layui-btn search-btn"><i class="layui-icon">&#xe654;</i><spring:message
+                    code="add"/>
+            </button>
+        </p:hasPermission>
     </div>
 
     <table class="layui-table" id="table" lay-filter="table"></table>
@@ -84,9 +89,16 @@
 </script>
 <!-- 表格操作列 -->
 <script type="text/html" id="barTpl">
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><spring:message code="edit"/></a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><spring:message code="delete"/></a>
-    <a class="layui-btn layui-btn-xs" lay-event="reset"><spring:message code="reset.password"/></a>
+    <p:hasPermission name="10013">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><spring:message
+                code="edit"/></a>
+    </p:hasPermission>
+    <p:hasPermission name="10014">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><spring:message code="delete"/></a>
+    </p:hasPermission>
+    <p:hasPermission name="10015">
+        <a class="layui-btn layui-btn-xs" lay-event="reset"><spring:message code="reset.password"/></a>
+    </p:hasPermission>
 </script>
 <!-- 表格状态列 -->
 <script type="text/html" id="statusTpl">

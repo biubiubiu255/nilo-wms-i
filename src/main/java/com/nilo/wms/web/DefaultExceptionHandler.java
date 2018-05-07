@@ -42,7 +42,6 @@ public class DefaultExceptionHandler implements HandlerExceptionResolver {
             result.put("error", ex.getMessage());
             result.put("msgid", "99998");
         } else if (ex instanceof NoPermissionException) {
-            response.setStatus(402);
             result.put("error", ex.getMessage());
             result.put("msgid", "99997");
         } else if (ex instanceof Exception) {

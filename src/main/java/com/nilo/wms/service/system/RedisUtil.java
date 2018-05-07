@@ -153,7 +153,17 @@ public class RedisUtil {
             }
         }
     }
-
+    public static void srem(String key, String[] value) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.srem(key, value);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
     public static Set<String> sMember(String key) {
         Jedis jedis = null;
         try {
