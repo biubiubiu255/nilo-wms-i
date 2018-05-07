@@ -22,7 +22,9 @@ function getToken() {
 function getCurrentUser(){
 	return JSON.parse(localStorage.getItem("user"));
 }
-
+function getLang() {
+	return localStorage.getItem("lang");
+}
 //设置选中导航栏
 function activeNav(path_name){
 	$(".layui-side ul.layui-nav li.layui-nav-item .layui-nav-child dd").removeClass("layui-this");

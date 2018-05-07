@@ -13,7 +13,7 @@
 </div>
 <div>
     <div class="layui-form toolbar">
-        <spring:message code="search"/>:
+        <spring:message code="search"/>：
         <select id="searchKey">
             <option value="">-<spring:message code="please.select"/>-</option>
             <option value="roleName"><spring:message code="system.role.name"/></option>

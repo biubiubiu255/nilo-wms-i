@@ -125,10 +125,14 @@ function loginOut() {
 function myInfo() {
     var user = getCurrentUser();
     var content = '<ul class="site-dir" style="padding:25px 35px 8px 35px;"><li>用户名：' + user.username + '</li><li>昵称：' + user.nickname + '</li>';
-    content += '<li>手机号：' + user.phone + '</li><li>性别：' + user.sex + '</li><li>角色：' + user.roleName + '</li></ul>';
+    content += '<li>手机号：' + user.phone + '</li><li>性别：' + user.sexDesc + '</li><li>角色：' + user.roleName + '</li></ul>';
+
+    if(getLang()=='en_US'){content = '<ul class="site-dir" style="padding:25px 35px 8px 35px;"><li>UserName：' + user.username + '</li><li>NickName：' + user.nickname + '</li>';
+    content += '<li>Phone：' + user.phone + '</li><li>Sex：' + user.sexDesc + '</li><li>RoleName：' + user.roleName + '</li></ul>';
+    }
     layer.open({
         type: 1,
-        title: '个人信息',
+        title: 'Info',
         area: '350px',
         offset: '120px',
         content: content,
