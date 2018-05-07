@@ -1,7 +1,9 @@
 package com.nilo.wms.service.system.impl;
 
+import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.CheckErrorCode;
 import com.nilo.wms.common.exception.SysErrorCode;
+import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dao.platform.PermissionDao;
@@ -97,6 +99,14 @@ public class PermissionServiceImpl implements PermissionService {
         AssertUtil.isNotNull(permission.getType(), CheckErrorCode.PERMISSION_Type_EMPTY);
         AssertUtil.isNotBlank(permission.getDesc_c(), CheckErrorCode.PERMISSION_DESC_EMPTY);
         AssertUtil.isNotBlank(permission.getDesc_e(), CheckErrorCode.PERMISSION_DESC_EMPTY);
+
+        //查询permissionID是否已存在
+        PermissionParameter parameter = new PermissionParameter();
+        parameter.setPermissionId(permission.getPermissionId());
+        List<Permission> p = permissionDao.queryPermissions(parameter);
+        if (p != null && p.size() == 1) {
+            throw new WMSException(BizErrorCode.PERMISSION_ID_EXIST);
+        }
 
         permission.setStatus(1);
         permissionDao.insert(permission);
