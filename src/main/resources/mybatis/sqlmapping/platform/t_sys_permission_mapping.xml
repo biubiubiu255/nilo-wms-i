@@ -18,7 +18,8 @@
                 jdbcType="VARCHAR"/>
         <result property="desc_e" column="desc_e" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-
+        <result property="orderNumber" column="order_number" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
         <result property="value" column="value" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="icon" column="icon" javaType="java.lang.String"

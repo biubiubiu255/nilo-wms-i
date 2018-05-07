@@ -32,6 +32,17 @@
     <form id="editForm" class="layui-form model-form" action="">
         <input name="permissionId" type="hidden"/>
         <div class="layui-form-item">
+            <label class="layui-form-label">类型</label>
+            <div class="layui-input-block">
+                <select lay-filter="permissionType" name="type">
+                    <option value="">-<spring:message code="please.select"/>-</option>
+                    <option value="0"><spring:message code="navigation"/></option>
+                    <option value="1"><spring:message code="menu"/></option>
+                    <option value="2"><spring:message code="button"/></option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
             <label class="layui-form-label">父级</label>
             <div class="layui-input-block">
                 <select id="parent-select" name="parentId" lay-verify="required">
@@ -41,14 +52,28 @@
         <div class="layui-form-item">
             <label class="layui-form-label">名称</label>
             <div class="layui-input-block">
-                <input name="permissionName" placeholder="请输入名称" type="text" class="layui-input" maxlength="20"
+                <input name="desc_c" placeholder="请输入名称" type="text" class="layui-input" maxlength="20"
+                       lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">名称</label>
+            <div class="layui-input-block">
+                <input name="desc_e" placeholder="请输入名称" type="text" class="layui-input" maxlength="20"
                        lay-verify="required" required/>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">权限值</label>
             <div class="layui-input-block">
-                <input name="permissionValue" placeholder="请输入权限值" type="text" class="layui-input" maxlength="20"
+                <input name="permissionId" placeholder="请输入权限值" type="text" class="layui-input" maxlength="20"
+                       lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">URL</label>
+            <div class="layui-input-block">
+                <input name="value" placeholder="请输入权限值" type="text" class="layui-input" maxlength="20"
                        lay-verify="required" required/>
             </div>
         </div>
@@ -59,17 +84,7 @@
                        required/>
             </div>
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">类型</label>
-            <div class="layui-input-block">
-                <select lay-filter="permissionType">
-                    <option value="">-<spring:message code="please.select"/>-</option>
-                    <option value="0"><spring:message code="navigation"/></option>
-                    <option value="1"><spring:message code="menu"/></option>
-                    <option value="2"><spring:message code="button"/></option>
-                </select>
-            </div>
-        </div>
+
         <div class="layui-form-item model-form-footer">
             <button class="layui-btn layui-btn-primary" type="button" id="btnCancel">取消</button>
             <button class="layui-btn" lay-filter="btnSubmit" lay-submit>保存</button>
@@ -90,13 +105,11 @@
 <script>
 
     var i18n = new Object();
-    i18n['username'] = '<spring:message code="system.user.username"/>';
-    i18n['nickname'] = '<spring:message code="system.user.nickname"/>';
-    i18n['phone'] = '<spring:message code="system.user.phone"/>';
-    i18n['sex'] = '<spring:message code="sex"/>';
-    i18n['roleName'] = '<spring:message code="system.role.name"/>';
     i18n['createTime'] = '<spring:message code="create.time"/>';
     i18n['status'] = '<spring:message code="status"/>';
     i18n['opt'] = '<spring:message code="opt"/>';
-
+    i18n['pls_select'] = '<spring:message code="please.select"/>';
+    i18n['confirm_delete'] = '<spring:message code="confirm.delete"/>';
+    i18n['add'] = '<spring:message code="add"/>';
+    i18n['edit'] = '<spring:message code="edit"/>';
 </script>

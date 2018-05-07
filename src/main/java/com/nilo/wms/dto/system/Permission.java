@@ -31,11 +31,21 @@ public class Permission implements Serializable {
 
     private int status;
 
+    private Integer orderNumber;
+
     private List<Permission> subMenus;
 
     public String getParentName() {
         return StringUtil.equals(SystemCodeUtil.getLang(), "zh") ? this.parent_desc_c : this.parent_desc_e;
 
+    }
+
+    public Integer getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
     public int getStatus() {

@@ -35,7 +35,12 @@ public class PermissionController extends BaseController {
     public String listParent(@PathVariable("type") int type) {
         PermissionParameter parameter = new PermissionParameter();
         parameter.setPage(getPage());
-        parameter.setType(type);
+        if(type ==1) {
+            parameter.setType(0);
+        }
+        if(type ==2) {
+            parameter.setType(1);
+        }
         return permissionService.queryPermissions(parameter).toJson();
     }
 
