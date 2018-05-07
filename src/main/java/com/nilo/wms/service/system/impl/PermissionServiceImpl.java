@@ -97,6 +97,7 @@ public class PermissionServiceImpl implements PermissionService {
         AssertUtil.isNotBlank(permission.getDesc_c(), CheckErrorCode.PERMISSION_DESC_EMPTY);
         AssertUtil.isNotBlank(permission.getDesc_e(), CheckErrorCode.PERMISSION_DESC_EMPTY);
 
+        permission.setStatus(1);
         permissionDao.insert(permission);
 
     }

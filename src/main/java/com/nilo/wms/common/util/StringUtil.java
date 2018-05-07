@@ -1,18 +1,10 @@
-/**
- * Leida.com Inc.
- * Copyright (c) 2015-2016 All Rights Reserved.
- */
 package com.nilo.wms.common.util;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * StringUtil方法
- * @author george.mo
- * @version $Id: StringUtil.java, v 0.1 2016年5月16日 下午2:52:01 george.mo Exp $
- */
+
 public class StringUtil {
     /* ============================================================================ */
     /*  常量和singleton。                                                           */

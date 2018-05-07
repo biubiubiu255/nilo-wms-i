@@ -7,11 +7,21 @@ import com.nilo.wms.dto.common.Page;
  */
 public class PermissionParameter {
 
+    private String permissionId;
+
     private String desc;
 
     private Integer type;
 
     private Page page;
+
+    public String getPermissionId() {
+        return permissionId;
+    }
+
+    public void setPermissionId(String permissionId) {
+        this.permissionId = permissionId;
+    }
 
     public Integer getType() {
         return type;

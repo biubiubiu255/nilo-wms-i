@@ -18,8 +18,8 @@
         <spring:message code="search"/>：
         <select id="searchKey">
             <option value="">-<spring:message code="please.select"/>-</option>
-            <option value="user_account"><spring:message code="system.user.username"/></option>
-            <option value="user_nickname"><spring:message code="system.user.nickname"/></option>
+            <option value="username"><spring:message code="system.user.username"/></option>
+            <option value="nickname"><spring:message code="system.user.nickname"/></option>
         </select>&emsp;
         <input id="searchValue" class="layui-input search-input" type="text"
                placeholder="<spring:message code="input.search.content"/>"/>&emsp;

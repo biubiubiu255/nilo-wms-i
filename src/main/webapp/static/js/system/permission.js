@@ -9,18 +9,18 @@ $(function () {
         page: true,
         cols: [[
             {type: 'numbers'},
-            {field: 'permissionId', sort: true, title: 'ID'},
-            {field: 'parentName', sort: true, title: '父级'},
-            {field: 'desc', sort: true, title: '名称'},
+            {field: 'permissionId', sort: true, title: i18n['permission_id']},
+            {field: 'parentName', sort: true, title: i18n['parent']},
+            {field: 'desc', sort: true, title: i18n['permission_name']},
             {field: 'value', sort: true, title: 'URL'},
-            {field: 'typeDesc', sort: true, title: '类型'},
+            {field: 'typeDesc', sort: true, title: i18n['type']},
             {
                 field: 'createdTime', sort: true, templet: function (d) {
                 return layui.util.toDateString(d.createdTime);
-            }, title: '创建时间'
+            }, title: i18n['createTime']
             },
-            {field: 'status', sort: true, templet: '#statusTpl', width: 80, title: '状态'},
-            {align: 'center', toolbar: '#barTpl', minWidth: 110, title: '操作'}
+            {field: 'status', sort: true, templet: '#statusTpl', width: 80, title: i18n['status']},
+            {align: 'center', toolbar: '#barTpl', minWidth: 110, title: i18n['opt']}
         ]]
     });
 
@@ -172,7 +172,7 @@ function doDelete(obj) {
 //更改状态
 function updateStatus(obj) {
     layer.load(1);
-    var newStatus = obj.elem.checked ? 0 : 1;
+    var newStatus = obj.elem.checked ? 1 : 0;
     $.post("/servlet/permission/status", {
         permissionId: obj.elem.value,
         status: newStatus,

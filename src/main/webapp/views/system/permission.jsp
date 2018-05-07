@@ -13,6 +13,7 @@
         <spring:message code="search"/>：
         <select id="searchKey">
             <option value="">-<spring:message code="please.select"/>-</option>
+            <option value="permissionId"><spring:message code="system.permission.id"/></option>
             <option value="desc"><spring:message code="system.permission.name"/></option>
         </select>&emsp;
         <input id="searchValue" class="layui-input search-input" type="text"
@@ -52,35 +53,35 @@
         <div class="layui-form-item">
             <label class="layui-form-label">名称</label>
             <div class="layui-input-block">
-                <input name="desc_c" placeholder="请输入名称" type="text" class="layui-input" maxlength="20"
+                <input name="desc_c"  type="text" class="layui-input" maxlength="20"
                        lay-verify="required" required/>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">名称</label>
             <div class="layui-input-block">
-                <input name="desc_e" placeholder="请输入名称" type="text" class="layui-input" maxlength="20"
+                <input name="desc_e"  type="text" class="layui-input" maxlength="20"
                        lay-verify="required" required/>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">权限值</label>
             <div class="layui-input-block">
-                <input name="permissionId" placeholder="请输入权限值" type="text" class="layui-input" maxlength="20"
+                <input name="permissionId"  type="text" class="layui-input" maxlength="20"
                        lay-verify="required" required/>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">URL</label>
             <div class="layui-input-block">
-                <input name="value" placeholder="请输入权限值" type="text" class="layui-input" maxlength="20"
-                       lay-verify="required" required/>
+                <input name="value"  type="text" class="layui-input" maxlength="20"
+                      />
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">排序号</label>
             <div class="layui-input-block">
-                <input name="orderNumber" placeholder="请输入排序号" type="number" class="layui-input" lay-verify="number"
+                <input name="orderNumber"  type="number" class="layui-input" lay-verify="number"
                        required/>
             </div>
         </div>
@@ -112,4 +113,9 @@
     i18n['confirm_delete'] = '<spring:message code="confirm.delete"/>';
     i18n['add'] = '<spring:message code="add"/>';
     i18n['edit'] = '<spring:message code="edit"/>';
+    i18n['parent'] = '<spring:message code="parent"/>';
+    i18n['permission_id'] = '<spring:message code="system.permission.id"/>';
+    i18n['permission_name'] = '<spring:message code="system.permission.name"/>';
+    i18n['type'] = '<spring:message code="type"/>';
+
 </script>

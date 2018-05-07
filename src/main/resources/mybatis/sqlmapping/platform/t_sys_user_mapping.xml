@@ -92,10 +92,10 @@
         FROM t_sys_user u left join t_sys_role r on u.role_id = r.role_id
         WHERE 1 = 1
         <if test="username != null and username != ''">
-            and user_name = #{username}
+            and user_name LIKE CONCAT( CONCAT('%',#{username}),'%')
         </if>
         <if test="nickname != null and nickname != ''">
-            nick_name = #{nickname}
+            and nick_name LIKE CONCAT( CONCAT('%',#{nickname}),'%')
         </if>
         limit #{offset},#{limit}
     </select>
@@ -105,10 +105,10 @@
         FROM t_sys_user
         WHERE 1 = 1
         <if test="username != null and username != ''">
-            and user_name = #{username}
+            and user_name LIKE CONCAT( CONCAT('%',#{username}),'%')
         </if>
         <if test="nickname != null and nickname != ''">
-            nick_name = #{nickname}
+            and nick_name LIKE CONCAT( CONCAT('%',#{nickname}),'%')
         </if>
     </select>
 </mapper>
