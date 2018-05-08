@@ -54,7 +54,7 @@ public class ReceiverInfo {
     public String getReceiverName() {
         return receiverName;
     }
-    @JSONField(name = "contact_name")
+    @JSONField(name = "receiver_contactname")
     public void setReceiverName(String receiverName) {
         this.receiverName = receiverName;
     }
@@ -62,7 +62,7 @@ public class ReceiverInfo {
     public String getReceiverPhone() {
         return receiverPhone;
     }
-    @JSONField(name = "contact_number")
+    @JSONField(name = "receiver_contactnumber")
     public void setReceiverPhone(String receiverPhone) {
         this.receiverPhone = receiverPhone;
     }
@@ -70,7 +70,7 @@ public class ReceiverInfo {
     public String getReceiverCountry() {
         return receiverCountry;
     }
-    @JSONField(name = "country")
+    @JSONField(name = "receiver_country")
     public void setReceiverCountry(String receiverCountry) {
         this.receiverCountry = receiverCountry;
     }
@@ -78,7 +78,7 @@ public class ReceiverInfo {
     public String getReceiverProvince() {
         return receiverProvince;
     }
-    @JSONField(name = "province")
+    @JSONField(name = "receiver_province")
     public void setReceiverProvince(String receiverProvince) {
         this.receiverProvince = receiverProvince;
     }
@@ -86,7 +86,7 @@ public class ReceiverInfo {
     public String getReceiverCity() {
         return receiverCity;
     }
-    @JSONField(name = "city")
+    @JSONField(name = "receiver_city")
     public void setReceiverCity(String receiverCity) {
         this.receiverCity = receiverCity;
     }

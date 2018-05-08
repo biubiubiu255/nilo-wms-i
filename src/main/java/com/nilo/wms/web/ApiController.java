@@ -62,12 +62,12 @@ public class ApiController extends BaseController {
                 break;
             }
             case CANCEL_OUTBOUND: {
-                String orderNo = JSON.parseObject(data).getString("client_order_sn");
+                String orderNo = JSON.parseObject(data).getString("client_ordersn");
                 outBoundService.cancelOutBound(orderNo);
                 break;
             }
             case CANCEL_INBOUND: {
-                String orderNo = JSON.parseObject(data).getString("client_order_sn");
+                String orderNo = JSON.parseObject(data).getString("client_ordersn");
                 inboundService.cancelInBound(orderNo);
                 break;
             }
@@ -104,12 +104,12 @@ public class ApiController extends BaseController {
                 return ResultMap.success().put("response", list).toJson();
             }
             case OUTBOUND_INFO: {
-                String orderNo = JSON.parseObject(data).getString("client_order_sn");
+                String orderNo = JSON.parseObject(data).getString("client_ordersn");
                 FluxOutbound order = outBoundService.queryFlux(orderNo);
                 return ResultMap.success().put("response", order).toJson();
             }
             case INBOUND_INFO: {
-                String orderNo = JSON.parseObject(data).getString("client_order_sn");
+                String orderNo = JSON.parseObject(data).getString("client_ordersn");
                 FluxInbound inbound = inboundService.queryFlux(orderNo);
                 return ResultMap.success().put("response", inbound).toJson();
             }
@@ -119,7 +119,7 @@ public class ApiController extends BaseController {
                 break;
             }
             case UN_LOCK_STORAGE: {
-                String orderNo = JSON.parseObject(data).getString("client_order_sn");
+                String orderNo = JSON.parseObject(data).getString("client_ordersn");
                 basicDataService.unLockStorage(orderNo);
                 break;
             }

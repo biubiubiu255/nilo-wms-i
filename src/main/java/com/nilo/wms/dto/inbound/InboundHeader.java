@@ -13,11 +13,11 @@ import java.util.List;
 @XmlRootElement(name = "header")
 public class InboundHeader {
     private String customerId;
-    @JSONField(name = "client_order_sn")
+    @JSONField(name = "client_ordersn")
     private String referenceNo;
-    @JSONField(name = "client_order_sn2")
+    @JSONField(name = "client_ordersn2")
     private String referenceNo2;
-    @JSONField(name = "inbound_type")
+    @JSONField(name = "order_type")
     private String asnType;
     private String warehouseId;
     @JSONField(name = "add_time")
@@ -28,18 +28,8 @@ public class InboundHeader {
     private String supplierName;
     @JSONField(name = "carrier_id")
     private String carrierId;
-    @JSONField(name = "carrier_name")
+    @JSONField(name = "deliver_name")
     private String carrierName;
-    @JSONField(name = "user_define1")
-    private String userDefine1;
-    @JSONField(name = "user_define2")
-    private String userDefine2;
-    @JSONField(name = "user_define3")
-    private String userDefine3;
-    @JSONField(name = "user_define4")
-    private String userDefine4;
-    @JSONField(name = "user_define5")
-    private String userDefine5;
 
     @JSONField(name = "order_items_list")
     private List<InboundItem> itemList;
@@ -106,7 +96,6 @@ public class InboundHeader {
         this.orderTime = orderTime;
     }
 
-
     @XmlElement(name = "SupplierID")
     public String getSupplierId() {
         return supplierId;
@@ -143,48 +132,4 @@ public class InboundHeader {
         this.carrierName = carrierName;
     }
 
-    @XmlElement(name = "UserDefine1")
-    public String getUserDefine1() {
-        return userDefine1;
-    }
-
-    public void setUserDefine1(String userDefine1) {
-        this.userDefine1 = userDefine1;
-    }
-
-    @XmlElement(name = "UserDefine2")
-    public String getUserDefine2() {
-        return userDefine2;
-    }
-
-    public void setUserDefine2(String userDefine2) {
-        this.userDefine2 = userDefine2;
-    }
-
-    @XmlElement(name = "UserDefine3")
-    public String getUserDefine3() {
-        return userDefine3;
-    }
-
-    public void setUserDefine3(String userDefine3) {
-        this.userDefine3 = userDefine3;
-    }
-
-    @XmlElement(name = "UserDefine4")
-    public String getUserDefine4() {
-        return userDefine4;
-    }
-
-    public void setUserDefine4(String userDefine4) {
-        this.userDefine4 = userDefine4;
-    }
-
-    @XmlElement(name = "UserDefine5")
-    public String getUserDefine5() {
-        return userDefine5;
-    }
-
-    public void setUserDefine5(String userDefine5) {
-        this.userDefine5 = userDefine5;
-    }
 }

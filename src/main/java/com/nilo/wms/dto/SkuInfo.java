@@ -32,9 +32,9 @@ public class SkuInfo implements Serializable {
     private String storeName;
     @JSONField(name = "price")
     private String price;
-    @JSONField(name = "logistics_type")
+    @JSONField(name = "goods_logistics_type")
     private String logisticsType;
-    @JSONField(name = "class")
+    @JSONField(name = "gc_id_1")
     private String freightClass;
 
     @XmlElement(name="CustomerID")

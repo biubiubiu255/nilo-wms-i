@@ -26,14 +26,21 @@ public class RequestParam {
 
     private String app_key;
 
-    /**
-     * 请求唯一标识
-     */
     private String request_id;
 
     private Long timestamp;
 
     private String method;
+
+    private String country_code;
+
+    public String getCountry_code() {
+        return country_code;
+    }
+
+    public void setCountry_code(String country_code) {
+        this.country_code = country_code;
+    }
 
     public String getRequest_id() {
         return request_id;

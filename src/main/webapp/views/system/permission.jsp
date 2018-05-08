@@ -87,13 +87,6 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label"><spring:message code="system.permission.icon"/></label>
-            <div class="layui-input-block">
-                <input name="icon" class="layui-input"
-                       required/>
-            </div>
-        </div>
-        <div class="layui-form-item">
             <label class="layui-form-label"><spring:message code="system.permission.order"/></label>
             <div class="layui-input-block">
                 <input name="orderNumber" type="number" class="layui-input" lay-verify="number"

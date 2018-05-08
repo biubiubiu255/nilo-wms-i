@@ -14,7 +14,7 @@ public class OutboundItem {
     private String sku;
     @JSONField(name = "goods_num")
     private Integer qty;
-    @JSONField(name = "goods_price")
+    @JSONField(name = "price")
     private Double unitPrice;
 
     private int lineNo;
