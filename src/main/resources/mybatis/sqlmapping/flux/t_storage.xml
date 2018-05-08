@@ -21,7 +21,7 @@
 
         SELECT *
         FROM (SELECT tt.*, ROWNUM AS rowno
-        FROM ( SELECT B.SKU_GROUP7 as store_id,
+        FROM ( SELECT nvl(B.SKU_GROUP7,'') as store_id,
         a.sku as sku,
         nvl(b.ReservedField03,0) as safe_storage,
         SUM(A.QTY - A.QTYALLOCATED - A.QTYONHOLD - A.QTYMVIN - A.QTYMVOUT) as storage

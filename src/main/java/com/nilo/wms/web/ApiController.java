@@ -3,6 +3,7 @@ package com.nilo.wms.web;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.nilo.wms.common.enums.MethodEnum;
+import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.dto.*;
 import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.flux.FluxInbound;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ronny on 2017/8/30.
@@ -115,8 +117,12 @@ public class ApiController extends BaseController {
             }
             case LOCK_STORAGE: {
                 OutboundHeader outBound = JSON.parseObject(data, OutboundHeader.class);
-                basicDataService.lockStorage(outBound);
-                break;
+                List<Map<String, String>> response = basicDataService.lockStorage(outBound);
+                if (response == null) {
+                    break;
+                } else {
+                    return ResultMap.error(BizErrorCode.STORAGE_NOT_ENOUGH.getCode(), BizErrorCode.STORAGE_NOT_ENOUGH.getDescription()).put("response", response).toJson();
+                }
             }
             case UN_LOCK_STORAGE: {
                 String orderNo = JSON.parseObject(data).getString("client_ordersn");

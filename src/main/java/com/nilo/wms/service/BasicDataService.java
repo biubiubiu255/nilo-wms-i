@@ -5,6 +5,7 @@ import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.outbound.OutboundHeader;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by admin on 2018/3/19.
@@ -17,7 +18,7 @@ public interface BasicDataService {
 
     PageResult<StorageInfo> queryStorageDetail(StorageParam param);
 
-    void lockStorage(OutboundHeader header);
+    List<Map<String, String>> lockStorage(OutboundHeader header);
 
     void unLockStorage(String orderNo);
 

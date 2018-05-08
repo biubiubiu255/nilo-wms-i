@@ -11,7 +11,7 @@ public enum BizErrorCode implements ErrorCode {
     NOT_EXIST("{0} not exist.", "200003"),
     OUTBOUND_ALREADY_EXIST("referenceNo {0} already exist.", "200004"),
     INBOUND_ALREADY_EXIST("referenceNo {0} already exist.", "200005"),
-    STORAGE_NOT_ENOUGH("sku {0} storage not enough.", "200006"),
+    STORAGE_NOT_ENOUGH("storage not enough.", "200006"),
     OUTBOUND_NOT_EXIST("referenceNo not exist.", "200007"),
     ORDER_TYPE_NOT_EXIST("order_type not exist.", "20008"),
     RANDOM_CODE_ERROR("random code error.", "20009"),

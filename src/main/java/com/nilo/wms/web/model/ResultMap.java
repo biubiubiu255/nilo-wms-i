@@ -26,13 +26,13 @@ public class ResultMap extends HashMap<String, Object> {
      * 返回失败
      */
     public static ResultMap error(String message) {
-        return error(9999, message);
+        return error("9999", message);
     }
 
     /**
      * 返回失败
      */
-    public static ResultMap error(int code, String message) {
+    public static ResultMap error(String code, String message) {
         ResultMap resultMap = new ResultMap();
         resultMap.put("msgid", code);
         resultMap.put("error", message);

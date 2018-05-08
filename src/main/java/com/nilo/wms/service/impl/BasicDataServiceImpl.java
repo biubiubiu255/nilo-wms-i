@@ -144,7 +144,7 @@ public class BasicDataServiceImpl implements BasicDataService {
     }
 
     @Override
-    public void lockStorage(OutboundHeader header) {
+    public List<Map<String, String>> lockStorage(OutboundHeader header) {
 
         //check
         AssertUtil.isNotNull(header, SysErrorCode.REQUEST_IS_NULL);
@@ -160,7 +160,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         String orderNoKey = RedisUtil.getLockOrderKey(clientCode, header.getOrderNo());
         boolean keyExist = RedisUtil.hasKey(orderNoKey);
         if (keyExist) {
-            return;
+            return null;
         }
 
         //获取redis锁
@@ -171,30 +171,37 @@ public class BasicDataServiceImpl implements BasicDataService {
             throw new WMSException(SysErrorCode.SYSTEM_ERROR);
         }
 
-        Map<String, Integer> lockRecord = new HashMap<String, Integer>();
-        String notEnoughSku = "";
+
+        List<Map<String, String>> result = new ArrayList<>();
+
+        Map<String, Integer> lockRecord = new HashMap<>();
         boolean lockSuccess = true;
         for (OutboundItem item : header.getItemList()) {
             String sku = item.getSku();
             int qty = item.getQty();
             String key = RedisUtil.getSkuKey(clientCode, sku);
             String lockSto = jedis.hget(key, RedisUtil.LOCK_STORAGE);
-            int lockStoInt = ((lockSto == null ? 0 : Integer.parseInt(lockSto))) + qty;
+            int lockStoInt = lockSto == null ? 0 : Integer.parseInt(lockSto);
             String sto = jedis.hget(key, RedisUtil.STORAGE);
+            int stoInt = sto == null ? 0 : Integer.parseInt(sto);
             //校验库存是否足够
-            if (sto == null || lockStoInt > Integer.parseInt(sto)) {
-                notEnoughSku = sku;
+            if (sto == null || lockStoInt + qty > stoInt) {
+                Map<String, String> notEnoughMap = new HashMap<>();
+                notEnoughMap.put("sku", sku);
+                notEnoughMap.put("storage", "" + stoInt);
+                notEnoughMap.put("lock_storage", "" + lockStoInt);
+                result.add(notEnoughMap);
                 lockSuccess = false;
-                break;
+                continue;
             }
             //记录锁定
-            lockRecord.put(key, lockStoInt);
+            lockRecord.put(key, lockStoInt + qty);
         }
 
 
         if (!lockSuccess) {
             RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
-            throw new WMSException(BizErrorCode.STORAGE_NOT_ENOUGH, notEnoughSku);
+            return result;
         }
 
         for (Map.Entry<String, Integer> entry : lockRecord.entrySet()) {
@@ -209,6 +216,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         }
         RedisUtil.hset(orderNoKey, RedisUtil.LOCK_TIME, DateUtil.formatCurrent(DateUtil.LONG_WEB_FORMAT));
 
+        return null;
     }
 
 
@@ -347,6 +355,8 @@ public class BasicDataServiceImpl implements BasicDataService {
         StorageParam param = new StorageParam();
         param.setWarehouseId(config.getWarehouseId());
         param.setCustomerId(config.getCustomerId());
+        param.setPage(1);
+        param.setLimit(10000);
         List<StorageInfo> list = skuDao.queryBy(param);
         if (list == null || list.size() == 0) return;
         Set<String> cacheSkuList = RedisUtil.keys(RedisUtil.getSkuKey(clientCode, "*"));

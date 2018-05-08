@@ -34,7 +34,6 @@
             </button>
         </p:hasPermission>
     </div>
-
     <table class="layui-table" id="table" lay-filter="table"></table>
 </div>
 

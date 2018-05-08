@@ -1,5 +1,4 @@
 $(function () {
-
     //渲染表格
     layui.table.render({
         elem: '#table',
