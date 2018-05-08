@@ -4,15 +4,12 @@ import com.nilo.wms.common.annotation.RequiresPermissions;
 import com.nilo.wms.common.util.BeanUtils;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dto.parameter.PermissionParameter;
-import com.nilo.wms.dto.parameter.RoleParameter;
 import com.nilo.wms.dto.system.Permission;
 import com.nilo.wms.service.system.PermissionService;
 import com.nilo.wms.web.BaseController;
 import com.nilo.wms.web.model.ResultMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.UnsupportedEncodingException;
 
 
 @RestController
@@ -38,10 +35,10 @@ public class PermissionController extends BaseController {
     public String listParent(@PathVariable("type") int type) {
         PermissionParameter parameter = new PermissionParameter();
         parameter.setPage(getPage());
-        if(type ==1) {
+        if (type == 1) {
             parameter.setType(0);
         }
-        if(type ==2) {
+        if (type == 2) {
             parameter.setType(1);
         }
         return permissionService.queryPermissions(parameter).toJson();

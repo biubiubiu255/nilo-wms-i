@@ -3,17 +3,13 @@ package com.nilo.wms.web.controller.system;
 import com.nilo.wms.common.annotation.RequiresPermissions;
 import com.nilo.wms.common.util.BeanUtils;
 import com.nilo.wms.common.util.StringUtil;
-import com.nilo.wms.dto.parameter.RoleParameter;
 import com.nilo.wms.dto.parameter.UserParameter;
-import com.nilo.wms.dto.system.Role;
 import com.nilo.wms.dto.system.User;
-import com.nilo.wms.service.system.RoleService;
 import com.nilo.wms.service.system.UserService;
 import com.nilo.wms.web.BaseController;
 import com.nilo.wms.web.model.ResultMap;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
