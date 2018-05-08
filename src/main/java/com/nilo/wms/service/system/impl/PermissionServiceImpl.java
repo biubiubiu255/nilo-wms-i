@@ -119,19 +119,21 @@ public class PermissionServiceImpl implements PermissionService {
         AssertUtil.isNotBlank(permission.getPermissionId(), CheckErrorCode.PERMISSION_ID_EMPTY);
         permissionDao.update(permission);
 
-        //修改缓存数据
-        Set<String> list = RedisUtil.keys(RedisUtil.getRoleKey("*"));
-        for (String s : list) {
-
-            if (permission.getStatus() == 0) {
-                Set<String> permissions = RedisUtil.sMember(s);
-                for (String p : permissions) {
-                    if (StringUtil.equals(p, permission.getPermissionId())) {
-                        RedisUtil.srem(s, new String[]{permission.getPermissionId()});
+        if (permission.getStatus() != null) {
+            //修改缓存数据
+            Set<String> list = RedisUtil.keys(RedisUtil.getRoleKey("*"));
+            for (String s : list) {
+                if (permission.getStatus() == 0) {
+                    Set<String> permissions = RedisUtil.sMember(s);
+                    for (String p : permissions) {
+                        if (StringUtil.equals(p, permission.getPermissionId())) {
+                            RedisUtil.srem(s, new String[]{permission.getPermissionId()});
+                            break;
+                        }
                     }
+                } else {
+                    RedisUtil.sAdd(s, new String[]{permission.getPermissionId()});
                 }
-            } else {
-                RedisUtil.sAdd(s, new String[]{permission.getPermissionId()});
             }
         }
 
@@ -143,6 +145,18 @@ public class PermissionServiceImpl implements PermissionService {
         AssertUtil.isNotBlank(permissionId, CheckErrorCode.PERMISSION_ID_EMPTY);
 
         permissionDao.deleteByPermissionId(permissionId);
+
+        //修改缓存数据
+        Set<String> list = RedisUtil.keys(RedisUtil.getRoleKey("*"));
+        for (String s : list) {
+            Set<String> permissions = RedisUtil.sMember(s);
+            for (String p : permissions) {
+                if (StringUtil.equals(p, permissionId)) {
+                    RedisUtil.srem(s, new String[]{permissionId});
+                }
+            }
+        }
+
     }
 
     @Override

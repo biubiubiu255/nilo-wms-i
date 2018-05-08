@@ -4,21 +4,28 @@ import com.nilo.wms.common.exception.CheckErrorCode;
 import com.nilo.wms.common.exception.SysErrorCode;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.IdWorker;
+import com.nilo.wms.dao.platform.PermissionDao;
 import com.nilo.wms.dao.platform.RoleDao;
 import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.parameter.RoleParameter;
+import com.nilo.wms.dto.system.Permission;
 import com.nilo.wms.dto.system.Role;
+import com.nilo.wms.service.system.RedisUtil;
 import com.nilo.wms.service.system.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private RoleDao roleDao;
+    @Autowired
+    private PermissionDao permissionDao;
 
     @Override
     public PageResult<Role> queryRoles(RoleParameter parameter) {
@@ -37,6 +44,7 @@ public class RoleServiceImpl implements RoleService {
         role.setRoleId("" + IdWorker.getInstance().nextId());
         role.setStatus(1);
         roleDao.insert(role);
+
     }
 
     @Override
@@ -44,14 +52,32 @@ public class RoleServiceImpl implements RoleService {
 
         AssertUtil.isNotNull(role, SysErrorCode.REQUEST_IS_NULL);
         AssertUtil.isNotBlank(role.getRoleId(), CheckErrorCode.ROLE_ID_EMPTY);
-
         roleDao.update(role);
+
+        //更新状态，
+        if (role.getStatus() != null) {
+            if (role.getStatus() == 0) {
+                RedisUtil.del(RedisUtil.getRoleKey(role.getRoleId()));
+            } else {
+                List<Permission> list = permissionDao.queryByRoleId(role.getRoleId());
+                RedisUtil.del(RedisUtil.getRoleKey(role.getRoleId()));
+                if (list == null || list.size() == 0) return;
+                Set<String> s = new HashSet<>();
+                for (Permission p : list) {
+                    s.add(p.getPermissionId());
+                }
+                RedisUtil.sAdd(RedisUtil.getRoleKey(role.getRoleId()), s.toArray(new String[list.size()]));
+            }
+        }
+
     }
 
     @Override
     public void delete(String roleId) {
         AssertUtil.isNotBlank(roleId, CheckErrorCode.ROLE_ID_EMPTY);
         roleDao.deleteByRoleId(roleId);
+
+        RedisUtil.del(RedisUtil.getRoleKey(roleId));
     }
 
 }

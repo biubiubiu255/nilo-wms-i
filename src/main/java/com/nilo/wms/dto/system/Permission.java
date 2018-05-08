@@ -29,7 +29,7 @@ public class Permission implements Serializable {
 
     private Integer type;
 
-    private int status;
+    private Integer status;
 
     private Integer orderNumber;
 
@@ -48,11 +48,11 @@ public class Permission implements Serializable {
         this.orderNumber = orderNumber;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
