@@ -88,9 +88,16 @@ public class OutboundServiceImpl implements OutboundService {
         Principal principal = SessionLocal.getPrincipal();
         String clientCode = principal.getClientCode();
 
+        // 判断订单号是否锁定库存过
+        String orderNoKey = RedisUtil.getLockOrderKey(clientCode, outBound.getOrderNo());
+        boolean keyExist = RedisUtil.hasKey(orderNoKey);
+        //锁定库存记录不存在
+        if (!keyExist) {
+            throw new WMSException(BizErrorCode.NOT_LOCK_STORAGE);
+        }
+
         outBound.setCustomerId(principal.getCustomerId());
         outBound.setWarehouseId(principal.getWarehouseId());
-
 
         int lineNo = 0;
         for (OutboundItem item : outBound.getItemList()) {
@@ -98,10 +105,8 @@ public class OutboundServiceImpl implements OutboundService {
             item.setLineNo(lineNo + 1);
         }
 
-
         OutboundDO outboundDO = outboundDao.queryByReferenceNo(clientCode, outBound.getOrderNo());
         if (outboundDO != null) return;
-
 
         //构建flux请求对象
         FLuxRequest request = new FLuxRequest();

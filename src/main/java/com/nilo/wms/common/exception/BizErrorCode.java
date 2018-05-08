@@ -18,6 +18,7 @@ public enum BizErrorCode implements ErrorCode {
     USERNAME_PASSWORD_ERROR("username or password error.", "200010"),
     USERNAME_EXIST("username is already exist.", "200011"),
     PERMISSION_ID_EXIST("permissionId is already exist.", "200013"),
+    NOT_LOCK_STORAGE("Not lock Storage", "200014"),
 
     ;
 

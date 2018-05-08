@@ -299,28 +299,6 @@ public class BasicDataServiceImpl implements BasicDataService {
                 }
             }
             RedisUtil.del(orderNoKey);
-        } else {
-            //未锁定库存过，则只扣减库存,可能出现库存不足情况
-            for (OutboundItem item : header.getItemList()) {
-                //扣减库存
-                String key = RedisUtil.getSkuKey(clientCode, item.getSku());
-                String sto = jedis.hget(key, RedisUtil.STORAGE);
-                int stoInt = Integer.parseInt(sto == null ? "0" : sto) - item.getQty();
-                jedis.hset(key, RedisUtil.STORAGE, "" + stoInt);
-
-                //库存少于安全库存 发送通知
-                String safeSto = jedis.hget(key, RedisUtil.SAFE_STORAGE);
-                int safeInt = Integer.parseInt(safeSto == null ? "0" : safeSto);
-                if (stoInt < safeInt) {
-                    String storeId = jedis.hget(key, RedisUtil.STORE);
-                    StorageInfo info = new StorageInfo();
-                    info.setSku(item.getSku());
-                    info.setStoreId(storeId);
-                    info.setSafeStorage(safeInt);
-                    info.setStorage(stoInt);
-                    lessThanSafe.add(info);
-                }
-            }
         }
         RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
 
