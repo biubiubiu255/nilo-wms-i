@@ -69,9 +69,9 @@ public class InboundServiceImpl implements InboundService {
         AssertUtil.isNotNull(inbound, SysErrorCode.REQUEST_IS_NULL);
         AssertUtil.isNotBlank(inbound.getReferenceNo(), CheckErrorCode.CLIENT_ORDER_EMPTY);
         AssertUtil.isNotBlank(inbound.getAsnType(), CheckErrorCode.ORDER_TYPE_EMPTY);
-        AssertUtil.isNotBlank(inbound.getOrderTime(), CheckErrorCode.ADD_TIME_EMPTY);
         AssertUtil.isNotNull(inbound.getItemList(), CheckErrorCode.ITEM_EMPTY);
 
+        inbound.setOrderTime(DateUtil.getSysTimeStamp());
 
         //保存
         Principal principal = SessionLocal.getPrincipal();

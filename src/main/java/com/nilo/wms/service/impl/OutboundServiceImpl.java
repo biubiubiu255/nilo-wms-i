@@ -77,12 +77,14 @@ public class OutboundServiceImpl implements OutboundService {
         AssertUtil.isNotBlank(outBound.getIsCod(), CheckErrorCode.IS_POD_EMPTY);
         AssertUtil.isNotBlank(outBound.getDeliveryNo(), CheckErrorCode.WAYBILL_EMPTY);
         AssertUtil.isFalse(outBound.getOrderAmount() == 0, CheckErrorCode.ORDER_AMOUNT_EMPTY);
-        AssertUtil.isNotBlank(outBound.getOrderTime(), CheckErrorCode.ADD_TIME_EMPTY);
         AssertUtil.isNotNull(outBound.getItemList(), CheckErrorCode.ITEM_EMPTY);
         AssertUtil.isNotNull(outBound.getReceiverInfo(), CheckErrorCode.RECEIVER_INFO_EMPTY);
         AssertUtil.isNotBlank(outBound.getReceiverInfo().getReceiverAddress(), CheckErrorCode.RECEIVER_ADDRESS_EMPTY);
         AssertUtil.isNotBlank(outBound.getReceiverInfo().getReceiverName(), CheckErrorCode.RECEIVER_NAME_EMPTY);
         AssertUtil.isNotBlank(outBound.getReceiverInfo().getReceiverPhone(), CheckErrorCode.RECEIVER_PHONE_EMPTY);
+
+
+        outBound.setOrderTime(DateUtil.getSysTimeStamp());
 
         //设置仓库信息
         Principal principal = SessionLocal.getPrincipal();
