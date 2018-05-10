@@ -184,25 +184,29 @@ public class InboundServiceImpl implements InboundService {
         ClientConfig clientConfig = SystemConfig.getClientConfig().get(clientCode);
         InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("wms_inbound_notify");
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("list", list);
-        map.put("status", 99);
-        String data = JSON.toJSONString(map);
-        Map<String, String> params = new HashMap<>();
-        params.put("method", interfaceConfig.getMethod());
-        params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
-        params.put("data", data);
-        params.put("app_key", "wms");
-        params.put("request_id", UUID.randomUUID().toString());
-        params.put("timestamp", "" + DateUtil.getSysTimeStamp());
+        for (InboundHeader in : list) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("status", 99);
+            map.put("client_ordersn",in.getReferenceNo());
+            map.put("order_type",in.getAsnType());
+            String data = JSON.toJSONString(map);
+            Map<String, String> params = new HashMap<>();
+            params.put("method", interfaceConfig.getMethod());
+            params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
+            params.put("data", data);
+            params.put("app_key", "wms");
+            params.put("country_code", "ke");
+            params.put("request_id", UUID.randomUUID().toString());
+            params.put("timestamp", "" + DateUtil.getSysTimeStamp());
 
-        NotifyRequest notify = new NotifyRequest();
-        notify.setParam(params);
-        notify.setUrl(interfaceConfig.getUrl());
-        try {
-            notifyDataBusProducer.sendMessage(notify);
-        } catch (Exception e) {
-            logger.error("confirmSO send message failed.", e);
+            NotifyRequest notify = new NotifyRequest();
+            notify.setParam(params);
+            notify.setUrl(interfaceConfig.getUrl());
+            try {
+                notifyDataBusProducer.sendMessage(notify);
+            } catch (Exception e) {
+                logger.error("confirmSO send message failed.", e);
+            }
         }
 
         //更新inbound状态

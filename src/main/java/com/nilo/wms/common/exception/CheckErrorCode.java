@@ -15,7 +15,7 @@ public enum CheckErrorCode implements ErrorCode {
     TIMESTAMP_ERROR("Request timeout", "100006"),
     SING_ERROR("Sign is error.", "100007"),
     DECODE_ERROR("UrlDecode error.", "100008"),
-    CLIENT_ORDER_EMPTY("client_order_sn empty.", "100009"),
+    CLIENT_ORDER_EMPTY("client_ordersn empty.", "100009"),
     WAYBILL_EMPTY("waybill_number empty.", "100010"),
     ORDER_AMOUNT_EMPTY("Order Amount Empty.", "100011"),
     ASN_NO_EMPTY("Asn No. Empty.", "100012"),

@@ -8,7 +8,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 public class FluxOutbound {
     @JSONField(name = "wms_order_sn")
     private String wmsOrderNo;
-    @JSONField(name = "client_order_sn")
+    @JSONField(name = "client_ordersn")
     private String referenceNo;
     @JSONField(name = "status")
     private int status;

@@ -11,7 +11,7 @@ import java.util.List;
 public class FluxInbound {
     @JSONField(name = "wms_order_sn")
     private String wmsAsnNo;
-    @JSONField(name = "client_order_sn")
+    @JSONField(name = "client_ordersn")
     private String referenceNo;
     @JSONField(name = "status")
     private int status;

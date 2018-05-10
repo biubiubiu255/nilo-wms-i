@@ -223,33 +223,37 @@ public class OutboundServiceImpl implements OutboundService {
         ClientConfig clientConfig = SystemConfig.getClientConfig().get(clientCode);
         InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("wms_outbound_notify");
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("list", list);
-        if (result) {
-            map.put("status", 99);
-        } else {
-            map.put("status", 90);
+        for (OutboundDO out : outList) {
+            Map<String, Object> map = new HashMap<>();
+            if (result) {
+                map.put("status", 99);
+            } else {
+                map.put("status", 90);
+            }
+            map.put("client_ordersn", out.getReferenceNo());
+            map.put("order_type", out.getOrderType());
+
+            String data = JSON.toJSONString(map);
+
+            Map<String, String> params = new HashMap<>();
+            params.put("method", interfaceConfig.getMethod());
+            params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
+            params.put("data", data);
+            params.put("app_key", "wms");
+            params.put("country_code", "ke");
+            params.put("request_id", UUID.randomUUID().toString());
+            params.put("timestamp", "" + DateUtil.getSysTimeStamp());
+
+            // 通知状态变更
+            NotifyRequest notify = new NotifyRequest();
+            notify.setParam(params);
+            notify.setUrl(interfaceConfig.getUrl());
+            try {
+                notifyDataBusProducer.sendMessage(notify);
+            } catch (Exception e) {
+                logger.error("confirmSO send message failed.", e);
+            }
         }
-        String data = JSON.toJSONString(map);
-
-        Map<String, String> params = new HashMap<>();
-        params.put("method", interfaceConfig.getMethod());
-        params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
-        params.put("data", data);
-        params.put("app_key", "wms");
-        params.put("request_id", UUID.randomUUID().toString());
-        params.put("timestamp", "" + DateUtil.getSysTimeStamp());
-
-        // 通知状态变更
-        NotifyRequest notify = new NotifyRequest();
-        notify.setParam(params);
-        notify.setUrl(interfaceConfig.getUrl());
-        try {
-            notifyDataBusProducer.sendMessage(notify);
-        } catch (Exception e) {
-            logger.error("confirmSO send message failed.", e);
-        }
-
 
         // 修改DMS重量
         List<String> waybillList = new ArrayList<>();
