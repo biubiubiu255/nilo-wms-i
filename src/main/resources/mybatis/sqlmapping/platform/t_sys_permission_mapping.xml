@@ -44,6 +44,9 @@
             <if test="desc_e != null and desc_e != ''">
                 desc_e = #{desc_e},
             </if>
+            <if test="value != null and value != ''">
+                value = #{value},
+            </if>
             <if test="parentId != null and parentId != ''">
                 parent_id = #{parentId},
             </if>

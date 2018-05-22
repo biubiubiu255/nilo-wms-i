@@ -9,7 +9,7 @@
                 jdbcType="INTEGER"/>
         <result property="customerId" column="customer_id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="warehouseId" column="warehouse_id" javaType="java.lang.String"
+        <result property="warehouseCode" column="warehouse_code" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="referenceNo" column="reference_no" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
@@ -20,16 +20,16 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id ,customer_id,warehouse_id,reference_no,sku,qty
+        id ,customer_id,warehouse_code,reference_no,sku,qty
     </sql>
 
 
     <insert id="insertBatch" parameterType="java.util.List">
         INSERT INTO t_outbound_item
-        ( customer_id,warehouse_id,reference_no,sku,qty)
+        ( customer_id,warehouse_code,reference_no,sku,qty)
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
-            (#{item.customerId},#{item.warehouseId}, #{item.referenceNo},#{item.sku},#{item.qty})
+            (#{item.customerId},#{item.warehouseCode}, #{item.referenceNo},#{item.sku},#{item.qty})
         </foreach>
     </insert>
 
@@ -38,9 +38,9 @@
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_outbound_item
-        ( customer_id,warehouse_id,reference_no,sku,qty)
+        ( customer_id,warehouse_code,reference_no,sku,qty)
         VALUES
-        (#{customerId},#{warehouseId}, #{referenceNo},#{sku},#{qty})
+        (#{customerId},#{warehouseCode}, #{referenceNo},#{sku},#{qty})
     </insert>
 
     <select id="queryByReferenceNo" resultMap="OutboundItemDO" statementType="PREPARED">

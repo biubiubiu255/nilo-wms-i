@@ -1,9 +1,12 @@
 var refreshNav = true;
+
 $(function () {
 
     initUserInfo();  //获取用户信息
     initNav();  //获取导航栏
-
+    initPermission();  //获取用户权限
+    loadI18n(getNavLanguage());
+    refreshI18n();
     //路由注册
     Q.reg('home', function () {
         load('home');
@@ -62,7 +65,7 @@ function load(path) {
         activeNav(path);
     }
     refreshNav = true;
-    $("#main-content").load("views/" + path + ".jsp?token=" + getToken(), function () {
+    $("#main-content").load("views/" + path + ".html?token=" + getToken(), function () {
         layui.element.render('breadcrumb');
         layui.form.render('select');
     });
@@ -94,6 +97,31 @@ function initNav() {
     }
 }
 
+//获取用户权限
+function initPermission() {
+    var p = sessionStorage.getItem("permissions");
+    if (p == null) {
+        $.get("/servlet/permissions", {
+            token: getToken()
+        }, function (data) {
+            if (data.status == 'succ') {
+                var temp = new Array();
+                var permissionData = data.permissions;
+                for (var i = 0; i < permissionData.length; i++) {
+                    temp.push(permissionData[i].permissionId);
+                }
+                sessionStorage.setItem("permissions", JSON.stringify(temp));
+            } else if (data.status == 'failed') {
+                layer.msg(data.error, {icon: 2});
+                setTimeout(function () {
+                    loginOut();
+                }, 1500);
+            }
+        }, "json");
+    }
+
+}
+
 //获取用户信息
 function initUserInfo() {
     try {
@@ -109,6 +137,7 @@ function loginOut() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     sessionStorage.removeItem("index-nav");
+    sessionStorage.removeItem("permissions");
     var load = layer.load(2);
     $.ajax({
         url: "/servlet/logout?token=" + getToken(),
@@ -124,12 +153,8 @@ function loginOut() {
 //个人信息
 function myInfo() {
     var user = getCurrentUser();
-    var content = '<ul class="site-dir" style="padding:25px 35px 8px 35px;"><li>用户名：' + user.username + '</li><li>昵称：' + user.nickname + '</li>';
-    content += '<li>手机号：' + user.phone + '</li><li>性别：' + user.sexDesc + '</li><li>角色：' + user.roleName + '</li></ul>';
-
-    if(getLang()=='en_US'){content = '<ul class="site-dir" style="padding:25px 35px 8px 35px;"><li>UserName：' + user.username + '</li><li>NickName：' + user.nickname + '</li>';
-    content += '<li>Phone：' + user.phone + '</li><li>Sex：' + user.sexDesc + '</li><li>RoleName：' + user.roleName + '</li></ul>';
-    }
+    var content = '<ul class="site-dir" style="padding:25px 35px 8px 35px;"><li>'+getI18nAttr("system_user_username")+'：' + user.username + '</li><li>'+getI18nAttr("system_user_nickname")+'：' + user.nickname + '</li>';
+    content += '<li>'+getI18nAttr("system_user_phone")+'：' + user.phone + '</li><li>'+getI18nAttr("sex")+'：' + user.sexDesc + '</li><li>'+getI18nAttr("system_role_name")+'：' + user.roleName + '</li></ul>';
     layer.open({
         type: 1,
         title: 'Info',
@@ -157,3 +182,4 @@ function updatePsw() {
         layer.closeAll('page');
     });
 }
+

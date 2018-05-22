@@ -93,12 +93,6 @@
         <url-pattern>/servlet/security/*</url-pattern>
     </filter-mapping>
     -->
-    <jsp-config>
-        <taglib>
-            <taglib-uri>/permission.tag</taglib-uri>
-            <taglib-location>/WEB-INF/tags/permission.tld</taglib-location>
-        </taglib>
-    </jsp-config>
     <session-config>
         <session-timeout>120</session-timeout>
     </session-config>

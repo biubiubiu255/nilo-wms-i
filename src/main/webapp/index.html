@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta charset="utf-8"/>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>WMS</title>
     <link rel="stylesheet" href="/static/plugins/layui/css/layui.css"/>
@@ -27,15 +27,15 @@
                 <dl class="layui-nav-child">
                     <dd>
                         <a href="javascript:myInfo();"><i class="layui-icon">&#xe612;</i>&emsp;<span
-                                id="personal_info_span"></span></a>
+                                i18n="personal_info_span"/></a>
                     </dd>
                     <dd>
                         <a href="javascript:updatePsw();"><i class="layui-icon">&#xe631;</i>&emsp;<span
-                                id="change_password_span"></span></a>
+                                i18n="change_password_span"/></a>
                     </dd>
                     <dd>
                         <a href="javascript:loginOut();"><i class="layui-icon">&#xe66d;</i>&emsp;<span
-                                id="logout_span"></span></a>
+                                i18n="logout_span"/></a>
                     </dd>
                 </dl>
             </li>
@@ -61,10 +61,12 @@
 </div>
 
 <script type="text/javascript" src="/static/plugins/jquery/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/static/plugins/jquery/jquery.i18n.properties-1.0.9.js"></script>
 <script type="text/javascript" src="/static/plugins/q.js"></script>
 <script type="text/javascript" src="/static/plugins/layui/layui.all.js"></script>
 <script type="text/javascript" src="/static/js/comment.js"></script>
 <script type="text/javascript" src="/static/js/index.js"></script>
+<script type="text/javascript" src="/static/js/i18n.js"></script>
 <!-- 侧导航渲染模板 -->
 <script id="sideNav" type="text/html">
     {{#  layui.each(d, function(index, item){ }}
@@ -98,49 +100,29 @@
 <div id="pswModel" style="display: none">
     <form id="pswForm" class="layui-form model-form" action="" method="put">
         <div class="layui-form-item">
-            <label class="layui-form-label"><span id="old_password_span"></span></label>
+            <label class="layui-form-label"><span i18n="old_password_span"/></label>
             <div class="layui-input-block">
                 <input name="oldPsw" placeholder="" type="password" class="layui-input" maxlength="12"
                        lay-verify="required|pass" required/>
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label"><span id="new_password_span"></span></label>
+            <label class="layui-form-label"><span i18n="new_password_span"/></label>
             <div class="layui-input-block">
                 <input name="newPsw" placeholder="" type="password" class="layui-input" maxlength="12"
                        lay-verify="required|pass" required/>
             </div>
         </div>
         <div class="layui-form-item model-form-footer">
-            <button class="layui-btn layui-btn-primary" type="button" id="pswCancel"><span id="cancel_span"></span>
+            <button class="layui-btn layui-btn-primary" type="button" id="pswCancel"><span i18n="cancel"/>
             </button>
-            <button class="layui-btn" lay-filter="pswSubmit" lay-submit><span id="ok_span"></span></button>
+            <button class="layui-btn" lay-filter="pswSubmit" lay-submit><span i18n="ok"/></button>
         </div>
     </form>
 </div>
 
 <script>
 
-    var lan = navigator.language;
-    if (lan == 'zh-CN') {
-        $("#personal_info_span").html("个人信息");
-        $("#change_password_span").html("修改密码");
-        $("#logout_span").html("退出登录");
-        $("#old_password_span").html("旧密码");
-        $("#new_password_span").html("新密码");
-        $("#ok_span").html("确认");
-        $("#cancel_span").html("取消");
-
-    } else {
-        $("#personal_info_span").html("Personal Info");
-        $("#change_password_span").html("Change Password");
-        $("#logout_span").html("Logout");
-        $("#old_password_span").html("Old Password");
-        $("#new_password_span").html("New Password");
-        $("#ok_span").html("OK");
-        $("#cancel_span").html("Cancel");
-
-    }
     $(function () {
         //全局判断ajax操作session是否过期
         $(document).ajaxComplete(function (event, xhr, settings) {

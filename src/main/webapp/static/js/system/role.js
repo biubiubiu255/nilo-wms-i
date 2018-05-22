@@ -1,4 +1,8 @@
 $(function () {
+
+    refreshPermission();
+
+
     //渲染表格
     layui.table.render({
         elem: '#table',
@@ -9,17 +13,22 @@ $(function () {
         page: true,
         cols: [[
             {type: 'numbers'},
-            {field: 'roleName', sort: true, title: i18n['roleName']},
-            {field: 'comments', sort: true, title: i18n['remark']},
+            {field: 'roleName', sort: true, title: getI18nAttr('system_role_name')},
+            {field: 'comments', sort: true, title: getI18nAttr('remark')},
             {
                 field: 'createdTime', sort: true, templet: function (d) {
                 return layui.util.toDateString(d.createdTime*1000);
-            }, title: i18n['createTime']
+            }, title: getI18nAttr('create_time')
             },
-            {field: 'status', sort: true, templet: '#statusTpl', width: 80, title: i18n['status']},
-            {align: 'center', toolbar: '#barTpl', minWidth: 180, title: i18n['opt']}
-        ]]
+            {field: 'status', sort: true, templet: '#statusTpl', width: 80, title: getI18nAttr('status')},
+            {align: 'center', toolbar: '#barTpl', minWidth: 180, title: getI18nAttr('opt')}
+        ]],
+        done: function(res, curr, count){
+            refreshI18n();
+        }
     });
+
+
 
     //添加按钮点击事件
     $("#addBtn").click(function () {
@@ -69,14 +78,18 @@ $(function () {
     });
 });
 
+
 //显示表单弹窗
 function showEditModel(data) {
     layer.open({
         type: 1,
-        title: data == null ? i18n['add'] : i18n['edit'],
+        title: data == null ? getI18nAttr('add') : getI18nAttr('edit'),
         area: '450px',
         offset: '120px',
-        content: $("#addModel").html()
+        content: $("#addModel").html(),
+        success: function(layero, index){
+            refreshI18n(layero);
+        }
     });
     $("#editForm")[0].reset();
     $("#editForm").attr("method", "POST");
@@ -89,12 +102,13 @@ function showEditModel(data) {
     $("#btnCancel").click(function () {
         layer.closeAll('page');
     });
+    refreshI18n();
 }
 
 //删除
 function doDelete(roleId) {
 
-    layer.confirm(i18n['confirm_delete'], function (index) {
+    layer.confirm(getI18nAttr('confirm_delete'), function (index) {
         layer.close(index);
         var load = layer.load(2);
         $.ajax({
@@ -150,10 +164,15 @@ function showPermDialog(roleId) {
 
     layer.open({
         type: 1,
-        title: i18n['permission'],
+        title: getI18nAttr('system_permission'),
         area: ['550px', '700px'],
-        content: $("#permissionTree").html()
+        content: $("#permissionTree").html(),
+        success: function(layero, index){
+            refreshI18n(layero);
+        }
     });
+
+    //console.log($("#permissionTree").html());
 
     var load = layer.load(2);
     var setting = {
@@ -162,11 +181,16 @@ function showPermDialog(roleId) {
             simpleData: {enable: true}
         }
     };
+
     $.get("/servlet/role/tree/" + roleId, {
         token: getToken()
     }, function (data) {
         layer.close(load);
-        $.fn.zTree.init($("#treeAuth"), setting, data.zTree);
+        setTimeout(function () {
+            //alert($("#treeAuth").length);
+            $.fn.zTree.init($("#treeAuth").eq(0), setting, data.zTree);
+        },500);
+
     }, "json");
 
     $("#btnPerCancel").click(function () {

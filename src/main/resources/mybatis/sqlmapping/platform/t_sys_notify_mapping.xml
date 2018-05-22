@@ -4,7 +4,7 @@
 <mapper namespace="com.nilo.wms.dao.platform.NotifyDao">
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="notifyDO" type="com.nilo.wms.dto.NotifyDO">
+    <resultMap id="notify" type="com.nilo.wms.dto.Notify">
         <result property="id" column="id" javaType="java.lang.Long"
                 jdbcType="INTEGER"/>
 
@@ -33,7 +33,7 @@
     </sql>
 
     <!-- 插入语句 -->
-    <insert id="insert" parameterType="com.nilo.wms.dto.NotifyDO" statementType="PREPARED"
+    <insert id="insert" parameterType="com.nilo.wms.dto.Notify" statementType="PREPARED"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_sys_notify
@@ -42,7 +42,7 @@
         (#{notifyId},#{url},#{param},#{result},#{num},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
     </insert>
     <!-- 动态更新语句 -->
-    <update id="update" parameterType="com.nilo.wms.dto.NotifyDO" statementType="PREPARED">
+    <update id="update" parameterType="com.nilo.wms.dto.Notify" statementType="PREPARED">
         update t_sys_notify
         <trim prefix="set" suffixOverrides="," suffix="where notify_id=#{notifyId}">
             <if test="status != null">
@@ -59,14 +59,14 @@
     </update>
 
 
-    <select id="queryByNotifyId" resultMap="notifyDO" statementType="PREPARED">
+    <select id="queryByNotifyId" resultMap="notify" statementType="PREPARED">
         SELECT
         <include refid="Base_Column_List"/>
         FROM t_sys_notify where notify_id=#{notifyId}
     </select>
 
 
-    <select id="queryFailed" resultMap="notifyDO" statementType="PREPARED">
+    <select id="queryFailed" resultMap="notify" statementType="PREPARED">
         SELECT <include refid="Base_Column_List"/> FROM t_sys_notify WHERE  FROM_UNIXTIME(created_time,'%Y%m%d') = date_format(now(),'%Y%m%d') and status = 0
     </select>
 </mapper>

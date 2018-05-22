@@ -1,4 +1,8 @@
+
 $(function () {
+
+    refreshPermission();
+    refreshI18n();
     //渲染表格
     layui.table.render({
         elem: '#table',
@@ -9,20 +13,22 @@ $(function () {
         page: true,
         cols: [[
             {type: 'numbers'},
-            {field: 'username', sort: true, title: i18n['username']},
-            {field: 'nickname', sort: true, title: i18n['nickname']},
-            {field: 'phone', sort: true, title: i18n['phone']},
-            {field: 'sexDesc', sort: true,width: 80, title: i18n['sex']},
-            {field: 'roleName', sort: true, title: i18n['roleName']},
-            {field: 'userStatus', sort: true, templet: '#statusTpl', width: 80, title: i18n['status']},
+            {field: 'username', sort: true, title: getI18nAttr('system_user_username')},
+            {field: 'nickname', sort: true, title: getI18nAttr('system_user_nickname')},
+            {field: 'phone', sort: true, title: getI18nAttr('system_user_phone')},
+            {field: 'sexDesc', sort: true, width: 80, title: getI18nAttr('sex')},
+            {field: 'roleName', sort: true, title: getI18nAttr('system_role_name')},
+            {field: 'userStatus', sort: true, templet: '#statusTpl', width: 80, title: getI18nAttr('status')},
             {
                 field: 'createdTime', sort: true, templet: function (d) {
-                return layui.util.toDateString(d.createdTime*1000);
-            }, title: i18n['createTime']
+                return layui.util.toDateString(d.createdTime * 1000);
+            }, title: getI18nAttr('create_time')
             },
-            {align: 'center', toolbar: '#barTpl', minWidth: 180, title: i18n['opt']}
+            {align: 'center', toolbar: '#barTpl', minWidth: 180, title: getI18nAttr('opt')}
         ]]
     });
+
+
 
     //添加按钮点击事件
     $("#addBtn").click(function () {
@@ -76,22 +82,27 @@ $(function () {
 function showEditModel(data) {
     layer.open({
         type: 1,
-        title: data == null ? i18n['add'] : i18n['edit'],
+        title: data == null ? getI18nAttr('add') : getI18nAttr('edit'),
         area: '450px',
         offset: '120px',
-        content: $("#addModel").html()
+        content: $("#addModel").html(),
+        success: function(layero, index){
+            refreshI18n(layero);
+        }
     });
+
     $("#editForm")[0].reset();
     $("#editForm").attr("method", "POST");
     var selectItem = "";
+    var selectItemWarehouse = "";
     if (data != null) {
         $("#editForm input[name=userId]").val(data.userId);
         $("#editForm input[name=username]").val(data.username);
         $("#editForm input[name=nickname]").val(data.nickname);
         $("#editForm input[name=phone]").val(data.phone);
-        $("#editForm").attr("method", "PUT");
         $("#editForm input[name=username]").attr("disabled", true);
         selectItem = data.roleId;
+        selectItemWarehouse = data.roleId;
         if ('M' == data.sex) {
             $("#sexMan").attr("checked", "checked");
             $("#sexWoman").removeAttr("checked");
@@ -104,8 +115,9 @@ function showEditModel(data) {
     $("#btnCancel").click(function () {
         layer.closeAll('page');
     });
-
     getRoles(selectItem);
+    drawWarehouseSelect(selectItemWarehouse);
+
 }
 
 //获取所有角色
@@ -113,7 +125,7 @@ var roles = null;
 function getRoles(selectItem) {
     if (roles != null) {
         $("#role-select").empty();
-        $("#role-select").prepend("<option value=''>" + i18n['pls_select'] + "</option>");
+        $("#role-select").prepend("<option value=''>" + getI18nAttr('pls_select') + "</option>");
         for (var i = 0; i < roles.length; i++) {
             $("#role-select").append("<option value='" + roles[i].roleId + "'>" + roles[i].roleName + "</option>");
         }
@@ -132,9 +144,34 @@ function getRoles(selectItem) {
     }
 }
 
+
+//获取所有仓库
+var warehouseList = null;
+function drawWarehouseSelect(selectItem) {
+    if (warehouseList != null) {
+        $("#warehouse-select").empty();
+        $("#warehouse-select").prepend("<option value=''>" + getI18nAttr('pls_select') + "</option>");
+        for (var i = 0; i < warehouseList.length; i++) {
+            $("#warehouse-select").append("<option value='" + warehouseList[i].id + "'>" + warehouseList[i].name + "</option>");
+        }
+        $("#warehouse-select").val(selectItem);
+        layui.form.render('select');
+
+    } else {
+        var load = layer.load(2);
+        $.get("/servlet/warehouseList", {
+            token: getToken()
+        }, function (data) {
+            warehouseList = data.response;
+            drawWarehouseSelect(selectItem);
+            layer.close(load);
+        }, "JSON");
+    }
+}
+
 //删除
 function doDelete(obj) {
-    layer.confirm(i18n['confirm_delete'], function (index) {
+    layer.confirm(getI18nAttr('confirm_delete'), function (index) {
         layer.close(index);
         layer.load(2);
         $.ajax({
@@ -169,7 +206,7 @@ function updateStatus(obj) {
         if (data.status == 'succ') {
             layui.table.reload('table', {});
         } else {
-            layer.msg(data.error, {icon: 2, time: 2000},function () {
+            layer.msg(data.error, {icon: 2, time: 2000}, function () {
                 layui.table.reload('table', {});
             });
         }
@@ -188,7 +225,7 @@ function doSearch(table) {
 
 //重置密码
 function doReSet(userId) {
-    layer.confirm(i18n['confirm_reset_pwd'], function (index) {
+    layer.confirm(getI18nAttr('confirm_reset_pwd'), function (index) {
         layer.close(index);
         layer.load(2);
         $.post("/servlet/user/psw/" + userId, {

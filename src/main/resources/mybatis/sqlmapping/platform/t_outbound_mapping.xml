@@ -11,7 +11,7 @@
                 jdbcType="VARCHAR"/>
         <result property="customerId" column="customer_id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="warehouseId" column="warehouse_id" javaType="java.lang.String"
+        <result property="warehouseCode" column="warehouse_code" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="referenceNo" column="reference_no" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
@@ -28,7 +28,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id ,client_code,customer_id,warehouse_id,reference_no,order_type,waybill_num,status,created_time , updated_time ,version
+        id ,order_no,customer_id,warehouse_code,reference_no,order_type,waybill_num,status,created_time , updated_time ,version
     </sql>
 
     <!-- 插入语句 -->
@@ -36,15 +36,15 @@
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_outbound
-        ( client_code,customer_id,warehouse_id,reference_no,order_type,waybill_num,status,created_time , updated_time ,version)
+        ( order_no,customer_id,warehouse_code,reference_no,order_type,waybill_num,status,created_time , updated_time ,version)
         VALUES
-        (#{clientCode},#{customerId},#{warehouseId}, #{referenceNo},#{orderType},#{waybillNum},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+        (#{order_no},#{customerId},#{warehouseCode}, #{referenceNo},#{orderType},#{waybillNum},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
     </insert>
     <!-- 动态更新语句 -->
     <update id="update" parameterType="com.nilo.wms.dto.outbound.OutboundDO" statementType="PREPARED">
         update t_outbound
         <trim prefix="set" suffixOverrides=","
-              suffix="where client_code = #{clientCode} and  reference_no=#{referenceNo}">
+              suffix="where order_no = #{order_no} and  reference_no=#{referenceNo}">
             <if test="status != null">
                 status = #{status},
             </if>

@@ -1,4 +1,8 @@
 $(function () {
+
+    refreshPermission();
+    refreshI18n();
+
     //渲染表格
     layui.table.render({
         elem: '#table',
@@ -9,20 +13,24 @@ $(function () {
         page: true,
         cols: [[
             {type: 'numbers'},
-            {field: 'permissionId', sort: true, title: i18n['permission_id']},
-            {field: 'parentName', sort: true, title: i18n['parent']},
-            {field: 'desc', sort: true, title: i18n['permission_name']},
+            {field: 'permissionId', sort: true, title: getI18nAttr('system_permission_id')},
+            {field: 'parentName', sort: true, title: getI18nAttr('parent')},
+            {field: 'desc', sort: true, title: getI18nAttr('system_permission_name')},
             {field: 'value', sort: true, title: 'URL'},
-            {field: 'typeDesc', sort: true, title: i18n['type']},
+            {field: 'typeDesc', sort: true, title: getI18nAttr('type')},
             {
                 field: 'createdTime', sort: true, templet: function (d) {
                 return layui.util.toDateString(d.createdTime);
-            }, title: i18n['createTime']
+            }, title: getI18nAttr('create_time')
             },
-            {field: 'status', sort: true, templet: '#statusTpl', width: 80, title: i18n['status']},
-            {align: 'center', toolbar: '#barTpl', minWidth: 110, title: i18n['opt']}
-        ]]
+            {field: 'status', sort: true, templet: '#statusTpl', width: 80, title: getI18nAttr('status')},
+            {align: 'center', toolbar: '#barTpl', minWidth: 110, title: getI18nAttr('opt')}
+        ]],
+        done: function(res, curr, count){
+            refreshI18n();
+        }
     });
+
 
     //添加按钮点击事件
     $("#addBtn").click(function () {
@@ -76,7 +84,7 @@ $(function () {
 function showEditModel(data) {
     layer.open({
         type: 1,
-        title: data == null ? i18n['add'] : i18n['edit'],
+        title: data == null ? getI18nAttr('add') : getI18nAttr('edit'),
         area: '450px',
         offset: '120px',
         content: $("#addModel").html()
@@ -93,6 +101,7 @@ function showEditModel(data) {
         $("#editForm input[name=value]").val(data.value);
         $("#editForm input[name=orderNumber]").val(data.orderNumber);
         $("#editForm").attr("method", "PUT");
+        $("#editForm input[name=permissionId]").attr({"disabled":"", "class":"layui-input layui-disabled"});
         selectItem = data.parentId;
         type = data.type;
         $("select[name='type']").val(type);
@@ -107,6 +116,8 @@ function showEditModel(data) {
     layui.form.on('select(permissionType)', function (data) {
         getParents(selectItem, data.value);
     });
+
+    refreshI18n();
 }
 
 //获取所有父级菜单
@@ -125,7 +136,7 @@ function getParents(selectItem, type) {
     }
     if (parents != null) {
         $("#parent-select").empty();
-        $("#parent-select").prepend("<option value=''>" + i18n['pls_select'] + "</option>");
+        $("#parent-select").prepend("<option value=''>" + getI18nAttr('please_select') + "</option>");
         for (var i = 0; i < parents.length; i++) {
             $("#parent-select").append("<option value='" + parents[i].permissionId + "'>" + parents[i].desc + "</option>");
         }
@@ -147,7 +158,7 @@ function getParents(selectItem, type) {
 
 //删除
 function doDelete(obj) {
-    layer.confirm(i18n['confirm_delete'], function (index) {
+    layer.confirm(getI18nAttr('confirm_delete'), function (index) {
         layer.close(index);
         layer.load(1);
         $.ajax({

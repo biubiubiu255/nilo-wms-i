@@ -1,17 +1,17 @@
 package com.nilo.wms.dao.platform;
 
 import com.nilo.wms.common.BaseDao;
-import com.nilo.wms.dto.NotifyDO;
+import com.nilo.wms.dto.platform.Notify;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface NotifyDao extends BaseDao<Long, NotifyDO> {
+public interface NotifyDao extends BaseDao<Long, Notify> {
 
-    NotifyDO queryByNotifyId(@Param("notifyId") String notifyId);
+    Notify queryByNotifyId(@Param("notifyId") String notifyId);
 
-    List<NotifyDO> queryFailed();
+    List<Notify> queryFailed();
 
 }

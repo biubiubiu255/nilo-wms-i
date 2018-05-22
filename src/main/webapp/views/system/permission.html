@@ -1,0 +1,95 @@
+
+<div class="content-header">
+	<span class="layui-breadcrumb">
+	  <a href="#!home"><span i18n="home_page"/></a>
+	  <a><cite><span i18n="system_permission_mgn"/></cite></a>
+	</span>
+    <div class="layui-form toolbar">
+        <span i18n="search"/>：
+        <select id="searchKey">
+            <option value="" i18n="please_select"></option>
+            <option value="permissionId" i18n="system_permission_id"></option>
+            <option value="desc" i18n="system_permission_name"></option>
+        </select>&emsp;
+        <input id="searchValue" class="layui-input search-input" type="text"/>&emsp;
+
+        <button id="searchBtn" class="layui-btn search-btn" permission="10031"><i class="layui-icon">&#xe615;</i><span i18n="search"/></button>
+        <button id="addBtn" class="layui-btn search-btn" permission="10032"><i class="layui-icon">&#xe654;</i><span i18n="add"/></button>
+    </div>
+
+</div>
+<table class="layui-table" id="table" lay-filter="table"></table>
+<!-- 表单弹窗 -->
+<script type="text/html" id="addModel">
+    <form id="editForm" class="layui-form model-form" action="">
+        <input name="permissionId" type="hidden"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="type"/></label>
+            <div class="layui-input-block">
+                <select lay-filter="permissionType" name="type">
+                    <option value=""  i18n="please_select"></option>
+                    <option value="0" i18n="navigation"></option>
+                    <option value="1" i18n="menu"></option>
+                    <option value="2" i18n="button"></option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="parent"/></label>
+            <div class="layui-input-block">
+                <select id="parent-select" name="parentId" lay-verify="required">
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="system_permission_name_c"/></label>
+            <div class="layui-input-block">
+                <input name="desc_c" type="text" class="layui-input" maxlength="20"
+                       lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="system_permission_name_e"/></label>
+            <div class="layui-input-block">
+                <input name="desc_e" type="text" class="layui-input" maxlength="20"
+                       lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="system_permission_id"/></label>
+            <div class="layui-input-block">
+                <input name="permissionId" type="text" class="layui-input" maxlength="20"
+                       lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">URL</label>
+            <div class="layui-input-block">
+                <input name="value" type="text" class="layui-input" maxlength="20"
+                />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="system_permission_order"/></label>
+            <div class="layui-input-block">
+                <input name="orderNumber" type="number" class="layui-input" lay-verify="number"
+                       required/>
+            </div>
+        </div>
+
+        <div class="layui-form-item model-form-footer">
+            <button class="layui-btn layui-btn-primary" type="button" id="btnCancel"><span i18n="cancel"/></button>
+            <button class="layui-btn" lay-filter="btnSubmit" lay-submit><span i18n="ok"/></button>
+        </div>
+    </form>
+</script>
+<!-- 表格操作列 -->
+<script type="text/html" id="barTpl">
+    <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit" permission="10033"><span i18n="edit"/></button>
+    <button class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"   permission="10034"><span i18n="delete"/></button>
+</script>
+<!-- 表格状态列 -->
+<script type="text/html" id="statusTpl">
+    <input type="checkbox" value="{{d.permissionId}}" lay-filter="statusCB" lay-skin="switch"
+           lay-text="On|Off" {{ d.status== 1?'checked' : '' }}></script>
+<script type="text/javascript" src="/static/js/system/permission.js"></script>

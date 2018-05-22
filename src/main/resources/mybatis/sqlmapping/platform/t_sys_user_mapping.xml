@@ -7,6 +7,9 @@
     <resultMap id="user" type="com.nilo.wms.dto.system.User">
         <result property="userId" column="user_id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
+        <result property="warehouseCode" column="warehouse_code" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+
         <result property="username" column="user_name" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="password" column="password" javaType="java.lang.String"
@@ -37,7 +40,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_id ,user_name, password ,  nick_name,phone,sex,role_id,token, status, created_time , updated_time ,version
+        id, warehouse_code, user_id ,user_name, password , nick_name, phone, sex, role_id, token, status, created_time, updated_time, version
     </sql>
 
     <!-- 插入语句 -->
@@ -45,15 +48,18 @@
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_sys_user
-        (user_id ,user_name, password ,  nick_name,phone,sex,role_id,token, status, created_time , updated_time ,version)
+        (user_id , warehouse_code, user_name, password ,  nick_name,phone,sex,role_id,token, status, created_time , updated_time ,version)
         VALUES
-        (#{userId},#{username}, #{password}, #{nickname}, #{phone},#{sex},#{roleId},#{token},#{status}, UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+        (#{userId}, #{warehouseCode}, #{username}, #{password}, #{nickname}, #{phone},#{sex},#{roleId},#{token},#{status}, UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
     </insert>
 
     <!-- 动态更新语句 -->
     <update id="update" parameterType="com.nilo.wms.dto.system.User" statementType="PREPARED">
         update t_sys_user
         <trim prefix="set" suffixOverrides="," suffix="where user_id=#{userId}">
+            <if test="warehouseCode != null">
+                warehouse_code = #{warehouseCode},
+            </if>
             <if test="password != null and password != ''">
                 password = #{password},
             </if>
@@ -86,7 +92,7 @@
         WHERE user_name=#{username} LIMIT 1
     </select>
 
-    <select id="queryUsers" resultMap="user" statementType="PREPARED" >
+    <select id="queryUsers" resultMap="user" statementType="PREPARED">
         SELECT
         u.*,r.role_name
         FROM t_sys_user u left join t_sys_role r on u.role_id = r.role_id

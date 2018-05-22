@@ -1,10 +1,9 @@
 package com.nilo.wms.dao.platform;
 
 import com.nilo.wms.common.BaseDao;
-import com.nilo.wms.dto.parameter.PermissionParameter;
+import com.nilo.wms.dto.platform.parameter.PermissionParam;
 import com.nilo.wms.dto.system.Permission;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,9 +21,9 @@ public interface PermissionDao extends BaseDao<Long, Permission> {
 
     int insertRolePermission(@Param("permissionList") List<String> permissionList, @Param("roleId") String roleId);
 
-    int queryPermissionsCount(PermissionParameter parameter);
+    int queryPermissionsCount(PermissionParam parameter);
 
-    List<Permission> queryPermissions(PermissionParameter parameter);
+    List<Permission> queryPermissions(PermissionParam parameter);
 
     int deleteByPermissionId(String permissionId);
 }

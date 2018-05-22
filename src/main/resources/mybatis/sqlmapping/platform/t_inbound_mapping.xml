@@ -4,14 +4,14 @@
 <mapper namespace="com.nilo.wms.dao.platform.InboundDao">
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="InboundDO" type="com.nilo.wms.dto.inbound.InboundDO">
+    <resultMap id="InboundMap" type="com.nilo.wms.dto.inbound.Inbound">
         <result property="id" column="id" javaType="java.lang.Long"
                 jdbcType="INTEGER"/>
         <result property="clientCode" column="client_code" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="customerId" column="customer_id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="warehouseId" column="warehouse_id" javaType="java.lang.String"
+        <result property="warehouseCode" column="warehouse_code" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="referenceNo" column="reference_no" javaType="java.lang.String"
                  jdbcType="VARCHAR"/>
@@ -30,20 +30,20 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id ,client_code,customer_id,warehouse_id,reference_no,reference_no2,asn_type,store_id,status,created_time , updated_time ,version
+        id ,client_code,customer_id,warehouse_code,reference_no,reference_no2,asn_type,store_id,status,created_time , updated_time ,version
     </sql>
 
     <!-- 插入语句 -->
-    <insert id="insert" parameterType="com.nilo.wms.dto.inbound.InboundDO" statementType="PREPARED"
+    <insert id="insert" parameterType="com.nilo.wms.dto.inbound.Inbound" statementType="PREPARED"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_inbound
-        ( client_code,customer_id,warehouse_id,reference_no,reference_no2,asn_type,store_id,status,created_time , updated_time ,version)
+        ( client_code,customer_id,warehouse_code,reference_no,reference_no2,asn_type,store_id,status,created_time , updated_time ,version)
         VALUES
-        (#{clientCode},#{customerId},#{warehouseId}, #{referenceNo},#{referenceNo2},#{asnType},#{storeId},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+        (#{clientCode},#{customerId},#{warehouseCode}, #{referenceNo},#{referenceNo2},#{asnType},#{storeId},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
     </insert>
     <!-- 动态更新语句 -->
-    <update id="update" parameterType="com.nilo.wms.dto.inbound.InboundDO" statementType="PREPARED">
+    <update id="update" parameterType="com.nilo.wms.dto.inbound.Inbound" statementType="PREPARED">
         update t_inbound
         <trim prefix="set" suffixOverrides="," suffix="where client_code=#{clientCode} and reference_no=#{referenceNo}">
             <if test="status != null">
@@ -53,7 +53,7 @@
         </trim>
     </update>
 
-    <select id="queryByReferenceNo" resultMap="InboundDO" statementType="PREPARED">
+    <select id="queryByReferenceNo" resultMap="InboundMap" statementType="PREPARED">
         SELECT
         <include refid="Base_Column_List"/>
         FROM t_inbound where client_code=#{clientCode} and reference_no=#{referenceNo}

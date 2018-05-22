@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nilo.wms.dao.platform.InboundDao">
+
+    <!-- 实体bean与数据字段对应关系 -->
+    <resultMap id="InboundDetailMap" type="com.nilo.wms.dto.inbound.InboundDetail">
+        <result property="id" column="id" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+        <result property="locationID" column="location_id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="warehouseCode" column="warehouse_code" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+        <result property="putawaySequence" column="putaway_sequence" javaType="java.lang.Short"
+                jdbcType="SMALLINT"/>
+        <result property="pickSequence" column="pick_sequence" javaType="java.lang.Short"
+                jdbcType="SMALLINT"/>
+        <result property="putawayZone" column="putaway_zone" javaType="java.lang.Short"
+                jdbcType="SMALLINT"/>
+        <result property="pickZone" column="pick_zone" javaType="java.lang.Short"
+                jdbcType="SMALLINT"/>
+        <result property="areMixGoods" column="are_mix_goods" javaType="java.lang.Boolean"
+                jdbcType="BIT"/>
+        <result property="areMixLot" column="are_mix_lot" javaType="java.lang.Boolean"
+                jdbcType="BIT"/>
+        <result property="createdTime" column="created_time" javaType="java.lang.Long"
+                jdbcType="INTEGER"/>
+        <result property="status" column="status" javaType="java.lang.Byte"
+                jdbcType="TINYINT"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List_2">
+        asn_no, line_no, sku, desc_e, desc_c, expected_qty, received_qty, received_location, status, created_time, created_by, updated_time, updated_by, version
+    </sql>
+
+    <!-- 插入语句 -->
+    <insert id="insertDetail" parameterType="com.nilo.wms.dto.basic.Location" statementType="PREPARED"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO t_bas_location
+        (location_id, warehouse_code, putaway_sequence, pick_sequence, putaway_zone, pick_zone, are_mix_goods, are_mix_lot, created_time, status)
+        VALUES
+        (#{locationID}, #{warehouseCode}, #{putawaySequence}, #{pickSequence}, #{putawayZone}, #{pickZone}, #{areMixGoods}, #{areMixLot}, UNIX_TIMESTAMP(NOW()), #{status})
+    </insert>
+
+    <!-- 动态更新语句 -->
+    <update id="updateDetail" parameterType="com.nilo.wms.dto.basic.Location" statementType="PREPARED">
+        update t_bas_location
+        <trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+            <if test="locationID != null and locationID != '' ">
+                location_id = #{locationID},
+            </if>
+            <if test="warehouseCode != null">
+                warehouse_code = #{warehouseCode},
+            </if>
+            <if test="putawaySequence != null">
+                putaway_sequence = #{putawaySequence},
+            </if>
+            <if test="pickSequence != null">
+                pick_sequence = #{pickSequence},
+            </if>
+            <if test="putawayZone != null">
+                putaway_zone = #{putawayZone},
+            </if>
+            <if test="pickZone != null">
+                pick_zone = #{pickZone},
+            </if>
+            <if test="areMixGoods != null">
+                are_mix_goods = #{areMixGoods},
+            </if>
+            <if test="areMixLot != null">
+                are_mix_lot = #{areMixLot},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </trim>
+    </update>
+
+    <select id="queryDetailBy" resultMap="InboundDetailMap" statementType="PREPARED" >
+        SELECT *
+        FROM t_bas_location
+        WHERE 1
+        <if test="now.id != null">
+            and id = #{now.id}
+        </if>
+        <if test="now.locationID != null and now.locationID!='' ">
+            and location_id = #{now.locationID}
+        </if>
+        <if test="now.warehouseCode != null">
+            and warehouse_code = #{now.warehouseCode}
+        </if>
+        <if test="now.status != null">
+            and status = #{now.status}
+        </if>
+        <if test=" limit != null and limit != 0 " >
+            limit
+            <if test="offset!=null" >
+                #{offset},
+            </if>
+            #{limit}
+        </if>
+    </select>
+
+    <select id="queryDetailByCount" resultType="java.lang.Integer" statementType="PREPARED">
+        SELECT
+        COUNT(1)
+        FROM t_bas_location
+        WHERE 1
+        <if test="id != null">
+            and id = #{id}
+        </if>
+        <if test="locationID != null and locationID!='' ">
+            and location_id = #{locationID}
+        </if>
+        <if test="warehouseCode != null">
+            and warehouse_code = #{warehouseCode}
+        </if>
+        <if test="status != null">
+            and status = #{status}
+        </if>
+    </select>
+
+    <delete id="deleteDetailById" statementType="PREPARED">
+        DELETE FROM t_bas_location WHERE id=#{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,81 @@
+
+<link rel="stylesheet" href="/static/plugins/zTree/css/zTreeStyle/zTreeStyle.css">
+
+<div class="content-header">
+	<span class="layui-breadcrumb">
+	  <a href="#!home"><span i18n="home_page"></span></a>
+	  <a><cite><span i18n="system_role_mgn"></span></cite></a>
+	</span>
+
+    <div class="layui-form toolbar">
+        <span i18n="search"></span>：
+        <select id="searchKey">
+            <option value="" i18n="please_select"></option>
+            <option value="roleName" i18n="system_role_name"></option>
+        </select>&emsp;
+        <input id="searchValue" class="layui-input search-input" type="text"/>&emsp;
+        <button id="searchBtn" class="layui-btn search-btn" permission="10021"><i class="layui-icon">
+            &#xe615;</i><span i18n="search"></span></button>
+        &emsp;
+        <button id="addBtn" class="layui-btn search-btn" permission="10029"><i class="layui-icon">
+            &#xe654;</i><span i18n="add"></span>
+        </button>
+    </div>
+</div>
+<!-- 数据表格 -->
+<table class="layui-table" id="table" lay-filter="table"></table>
+<!-- 表单弹窗 -->
+<script type="text/html" id="addModel">
+    <form id="editForm" class="layui-form model-form" action="">
+        <input name="roleId" type="hidden"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="system_role_name"></span></label>
+            <div class="layui-input-block">
+                <input name="roleName" placeholder="" type="text" class="layui-input" maxlength="100"
+                       lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="remark"></span></label>
+            <div class="layui-input-block">
+                <textarea name="comments" placeholder="" class="layui-textarea" maxlength="200"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item model-form-footer">
+            <button class="layui-btn layui-btn-primary" type="button" id="btnCancel"><span i18n="cancel"></span></button>
+            <button class="layui-btn" lay-filter="btnSubmit" lay-submit><span i18n="ok"></span></button>
+        </div>
+    </form>
+</script>
+
+<!-- 权限树 -->
+<script id="permissionTree" type="text/html" >
+    <form id="editPerForm" class="layui-form model-form" action="">
+        <div style="width:550px; height:500px; overflow:auto;">
+            <ul id="treeAuth" class="ztree" style="padding: 25px 80px;"></ul>
+        </div>
+        <div class="layui-form-item model-form-footer">
+            <button class="layui-btn layui-btn-primary" type="button" id="btnPerCancel" >
+                <span i18n="cancel"/></button>
+            <button class="layui-btn" permission="10026" lay-filter="btnPerSubmit" lay-submit><span i18n="ok"/></button>
+        </div>
+    </form>
+</script>
+
+
+
+<!-- 表格操作列 -->
+<script type="text/html" id="barTpl">
+    <button permission="10023" class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><span i18n="edit"></span></button>
+    <button permission="10024" class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><span i18n="delete"></span></button>
+    <button permission="10025" class="layui-btn layui-btn-xs" lay-event="detail"><span i18n="system_permission"></span></button>
+</script>
+<!-- 表格状态列 -->
+<script type="text/html" id="statusTpl">
+    <input type="checkbox" value="{{d.roleId}}" lay-filter="statusCB" lay-skin="switch"
+           lay-text="On|Off" {{ d.status== 1?'checked' : '' }}>
+</script>
+
+<script type="text/javascript" src="/static/js/system/role.js"></script>
+<script type="text/javascript" src="/static/plugins/zTree/js/jquery.ztree.core-3.5.min.js"/>
+<script type="text/javascript" src="/static/plugins/zTree/js/jquery.ztree.excheck-3.5.min.js"></script>
