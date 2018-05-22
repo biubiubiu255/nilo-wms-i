@@ -21,5 +21,4 @@ public interface SystemService {
      */
     void loadingAndRefreshRole();
 
-    void loadingAndRefreshSystemCode();
 }

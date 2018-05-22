@@ -1,15 +1,34 @@
 package com.nilo.wms.dto.common;
 
-public class Page{
+public class Page {
 
-    public Page(int offset,int limit){
+    public void setPageInfo(Page page) {
+        this.offset = page.getOffset();
+        this.limit = page.getLimit();
+    }
+
+    public Page(int offset, int limit) {
         this.offset = offset;
         this.limit = limit;
     }
 
-    private int offset;
+    public Page() {
+    }
 
-    private int limit;
+    private int count;
+
+    private int offset = 1;
+
+    private int limit = 10;
+
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     public int getOffset() {
         return offset;
@@ -26,4 +45,5 @@ public class Page{
     public void setLimit(int limit) {
         this.limit = limit;
     }
+
 }

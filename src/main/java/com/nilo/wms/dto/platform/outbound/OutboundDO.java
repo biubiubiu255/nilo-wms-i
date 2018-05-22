@@ -9,8 +9,8 @@ import com.nilo.wms.common.BaseDo;
 public class OutboundDO extends BaseDo<Long> {
 
     private String clientCode;
-    private String customerId;
-    private String warehouseId;
+    private String customerCode;
+    private String warehouseCode;
     private String referenceNo;
     private String orderType;
     private String waybillNum;
@@ -32,20 +32,20 @@ public class OutboundDO extends BaseDo<Long> {
         this.clientCode = clientCode;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public String getCustomerCode() {
+        return customerCode;
     }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
+    public void setCustomerCode(String customerCode) {
+        this.customerCode = customerCode;
     }
 
-    public String getWarehouseId() {
-        return warehouseId;
+    public String getWarehouseCode() {
+        return warehouseCode;
     }
 
-    public void setWarehouseId(String warehouseId) {
-        this.warehouseId = warehouseId;
+    public void setWarehouseCode(String warehouseCode) {
+        this.warehouseCode = warehouseCode;
     }
 
     public String getReferenceNo() {

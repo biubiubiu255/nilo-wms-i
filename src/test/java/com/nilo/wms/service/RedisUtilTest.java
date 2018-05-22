@@ -25,20 +25,13 @@ public class RedisUtilTest {
         System.out.println("Jedis 1");
         System.out.println(jedis1.get(key));
         String requestId = UUID.randomUUID().toString();
-        boolean getLock = RedisUtil.tryGetDistributedLock(jedis1, key, requestId);
-        System.out.println("getLock :" + getLock);
-        if (getLock) {
-            System.out.println("............11111");
-        }
+        RedisUtil.tryGetDistributedLock(jedis1, key, requestId);
+
         Jedis jedis2 = RedisUtil.getResource();
         System.out.println("Jedis 2");
         System.out.println(jedis2.get(key));
         String requestId2 = UUID.randomUUID().toString();
-        boolean getLock2 = RedisUtil.tryGetDistributedLock(jedis2, key, requestId2);
-        System.out.println("getLock2 :" + getLock2);
-        if (getLock2) {
-            System.out.println("............22222");
-        }
+        RedisUtil.tryGetDistributedLock(jedis2, key, requestId2);
         RedisUtil.releaseDistributedLock(jedis1, key, requestId);
         RedisUtil.releaseDistributedLock(jedis2, key, requestId2);
     }
@@ -58,14 +51,11 @@ public class RedisUtilTest {
                     Jedis j = RedisUtil.getResource();
                     String key = "lock_lock";
                     String uuid = UUID.randomUUID().toString();
-                    boolean getLock = RedisUtil.tryGetDistributedLock(j, key, uuid);
-                    if (getLock) {
-                        Integer value = Integer.parseInt(j.get(key_test));
-                        j.set(key_test, "" + (value + 1));
-                        RedisUtil.releaseDistributedLock(j, key, uuid);
-                    } else {
-                        System.out.println("Failed--" + Thread.currentThread().getId());
-                    }
+                    RedisUtil.tryGetDistributedLock(j, key, uuid);
+                    Integer value = Integer.parseInt(j.get(key_test));
+                    j.set(key_test, "" + (value + 1));
+                    RedisUtil.releaseDistributedLock(j, key, uuid);
+
                 }
             });
             threads.add(t);

@@ -7,7 +7,7 @@
     <resultMap id="OutboundItemDO" type="com.nilo.wms.dto.outbound.OutboundItemDO">
         <result property="id" column="id" javaType="java.lang.Long"
                 jdbcType="INTEGER"/>
-        <result property="customerId" column="customer_id" javaType="java.lang.String"
+        <result property="customerCode" column="customer_id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="warehouseCode" column="warehouse_code" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
@@ -29,7 +29,7 @@
         ( customer_id,warehouse_code,reference_no,sku,qty)
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
-            (#{item.customerId},#{item.warehouseCode}, #{item.referenceNo},#{item.sku},#{item.qty})
+            (#{item.customerCode},#{item.warehouseCode}, #{item.referenceNo},#{item.sku},#{item.qty})
         </foreach>
     </insert>
 
@@ -40,7 +40,7 @@
         INSERT INTO t_outbound_item
         ( customer_id,warehouse_code,reference_no,sku,qty)
         VALUES
-        (#{customerId},#{warehouseCode}, #{referenceNo},#{sku},#{qty})
+        (#{customerCode},#{warehouseCode}, #{referenceNo},#{sku},#{qty})
     </insert>
 
     <select id="queryByReferenceNo" resultMap="OutboundItemDO" statementType="PREPARED">

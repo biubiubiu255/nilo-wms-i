@@ -1,5 +1,7 @@
 package com.nilo.wms.web.controller.interceptor;
 
+import com.nilo.wms.common.Principal;
+import com.nilo.wms.common.SessionLocal;
 import com.nilo.wms.common.annotation.RequiresPermissions;
 import com.nilo.wms.common.exception.IllegalTokenException;
 import com.nilo.wms.common.exception.NoPermissionException;
@@ -51,7 +53,8 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
         if (!has) {
             throw new NoPermissionException();
         }
-
+        Principal principal = RedisUtil.getPrincipal(userId);
+        SessionLocal.setPrincipal(principal);
         return true;
     }
 

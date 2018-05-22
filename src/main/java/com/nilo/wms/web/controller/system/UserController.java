@@ -3,11 +3,11 @@ package com.nilo.wms.web.controller.system;
 import com.nilo.wms.common.annotation.RequiresPermissions;
 import com.nilo.wms.common.util.BeanUtils;
 import com.nilo.wms.common.util.StringUtil;
-import com.nilo.wms.dto.parameter.UserParameter;
+import com.nilo.wms.dto.platform.common.ResultMap;
+import com.nilo.wms.dto.platform.parameter.UserParam;
 import com.nilo.wms.dto.system.User;
 import com.nilo.wms.service.system.UserService;
 import com.nilo.wms.web.BaseController;
-import com.nilo.wms.web.model.ResultMap;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +22,11 @@ public class UserController extends BaseController {
     @RequiresPermissions("10011")
     public String list(String searchValue, String searchKey) {
 
-        UserParameter parameter = new UserParameter();
+        UserParam parameter = new UserParam();
         if (StringUtil.isNotBlank(searchKey)) {
             BeanUtils.setProperty(parameter, searchKey, searchValue);
         }
-        parameter.setPage(getPage());
+        parameter.setPageInfo(getPage());
         return userService.queryUsers(parameter).toJson();
     }
 

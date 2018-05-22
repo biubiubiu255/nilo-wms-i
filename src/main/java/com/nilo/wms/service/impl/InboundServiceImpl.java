@@ -23,9 +23,9 @@ import com.nilo.wms.dto.flux.FLuxRequest;
 import com.nilo.wms.dto.flux.FluxInbound;
 import com.nilo.wms.dto.flux.FluxInboundDetails;
 import com.nilo.wms.dto.flux.FluxResponse;
-import com.nilo.wms.dto.inbound.InboundDO;
 import com.nilo.wms.dto.inbound.InboundHeader;
 import com.nilo.wms.dto.inbound.InboundItem;
+import com.nilo.wms.dto.platform.inbound.Inbound;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.InboundService;
@@ -84,7 +84,7 @@ public class InboundServiceImpl implements InboundService {
             item.setLineNo(lineNo + 1);
         }
 
-        InboundDO inboundDO = inboundDao.queryByReferenceNo(clientCode, inbound.getReferenceNo());
+        Inbound inboundDO = inboundDao.queryByReferenceNo(clientCode, inbound.getReferenceNo());
         if (inboundDO != null) return;
 
         //构建flux请求对象
@@ -119,15 +119,13 @@ public class InboundServiceImpl implements InboundService {
             throw new RuntimeException(response.getReturnDesc());
         }
         //保存记录
-        InboundDO insert = new InboundDO();
-        insert.setClientCode(clientCode);
+        Inbound insert = new Inbound();
         insert.setReferenceNo(inbound.getReferenceNo());
         insert.setReferenceNo2(inbound.getReferenceNo2());
-        insert.setCustomerId(inbound.getCustomerId());
-        insert.setWarehouseId(inbound.getWarehouseId());
-        insert.setStatus(InboundStatusEnum.create.getCode());
+        insert.setCustomerCode(inbound.getCustomerId());
+        insert.setWarehouseCode(inbound.getWarehouseId());
+        insert.setStatus((short) InboundStatusEnum.create.getCode());
         insert.setAsnType(inbound.getAsnType());
-        insert.setStoreId(inbound.getSupplierId());
         inboundDao.insert(insert);
     }
 
@@ -138,13 +136,13 @@ public class InboundServiceImpl implements InboundService {
 
         String clientCode = SessionLocal.getPrincipal().getClientCode();
 
-        InboundDO inboundDO = inboundDao.queryByReferenceNo(clientCode, referenceNo);
+        Inbound inboundDO = inboundDao.queryByReferenceNo(clientCode, referenceNo);
         if (inboundDO == null) throw new WMSException(BizErrorCode.NOT_EXIST, referenceNo);
         if (inboundDO.getStatus() == InboundStatusEnum.cancelled.getCode()) return;
 
         // 通知flux
         FLuxRequest request = new FLuxRequest();
-        String xmlData = "<xmldata><data><ordernos><OrderNo>" + referenceNo + "</OrderNo><OrderType>" + inboundDO.getAsnType() + "</OrderType><CustomerID>" + inboundDO.getCustomerId() + "</CustomerID><WarehouseID>" + inboundDO.getWarehouseId() + "</WarehouseID></ordernos></data></xmldata>";
+        String xmlData = "<xmldata><data><ordernos><OrderNo>" + referenceNo + "</OrderNo><OrderType>" + inboundDO.getAsnType() + "</OrderType><CustomerID>" + inboundDO.getCustomerCode() + "</CustomerID><WarehouseID>" + inboundDO.getWarehouseCode() + "</WarehouseID></ordernos></data></xmldata>";
         request.setData(xmlData);
         request.setMessageid("ASNC");
         request.setMethod("cancelASNData");
@@ -154,10 +152,9 @@ public class InboundServiceImpl implements InboundService {
             throw new RuntimeException(response.getReturnDesc());
         }
         //修改状态
-        InboundDO update = new InboundDO();
-        update.setClientCode(clientCode);
+        Inbound update = new Inbound();
         update.setReferenceNo(referenceNo);
-        update.setStatus(InboundStatusEnum.cancelled.getCode());
+        update.setStatus((short) InboundStatusEnum.cancelled.getCode());
         inboundDao.update(update);
     }
 
@@ -173,13 +170,14 @@ public class InboundServiceImpl implements InboundService {
         Iterator<InboundHeader> iterator = list.iterator();
         while (iterator.hasNext()) {
             InboundHeader in = iterator.next();
-            InboundDO inboundDO = inboundDao.queryByReferenceNo(clientCode, in.getReferenceNo());
+            Inbound inboundDO = inboundDao.queryByReferenceNo(clientCode, in.getReferenceNo());
             if (inboundDO == null) {
                 iterator.remove();
             } else if (inboundDO.getStatus() == InboundStatusEnum.closed.getCode()) {
                 iterator.remove();
             }
-            in.setSupplierId(inboundDO.getStoreId());
+            in.setSupplierId(inboundDO.getSupplierId());
+            in.setSupplierName(inboundDO.getSupplierName());
         }
         ClientConfig clientConfig = SystemConfig.getClientConfig().get(clientCode);
         InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("wms_inbound_notify");
@@ -187,8 +185,8 @@ public class InboundServiceImpl implements InboundService {
         for (InboundHeader in : list) {
             Map<String, Object> map = new HashMap<>();
             map.put("status", 99);
-            map.put("client_ordersn",in.getReferenceNo());
-            map.put("order_type",in.getAsnType());
+            map.put("client_ordersn", in.getReferenceNo());
+            map.put("order_type", in.getAsnType());
             String data = JSON.toJSONString(map);
             Map<String, String> params = new HashMap<>();
             params.put("method", interfaceConfig.getMethod());
@@ -212,10 +210,9 @@ public class InboundServiceImpl implements InboundService {
         //更新inbound状态
         List<String> skuList = new ArrayList<>();
         for (InboundHeader in : list) {
-            InboundDO update = new InboundDO();
-            update.setClientCode(clientCode);
+            Inbound update = new Inbound();
             update.setReferenceNo(in.getReferenceNo());
-            update.setStatus(InboundStatusEnum.closed.getCode());
+            update.setStatus((short) InboundStatusEnum.closed.getCode());
             inboundDao.update(update);
             for (InboundItem item : in.getItemList()) {
                 skuList.add(item.getSku());
@@ -230,8 +227,7 @@ public class InboundServiceImpl implements InboundService {
         //获取redis锁
         Jedis jedis = RedisUtil.getResource();
         String requestId = UUID.randomUUID().toString();
-        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
-        if (!getLock) throw new WMSException(SysErrorCode.SYSTEM_ERROR);
+        RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
         //更新库存
         for (StorageInfo i : storageList) {
             String key = RedisUtil.getSkuKey(clientCode, i.getSku());

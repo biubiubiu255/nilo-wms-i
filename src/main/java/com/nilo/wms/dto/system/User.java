@@ -16,6 +16,7 @@ public class User {
 
     private String sex;
 
+    private String warehouseCode;
     //1正常，2冻结
     private Integer status;
 
@@ -30,6 +31,14 @@ public class User {
     private Long updatedTime;
 
     private String version;
+
+    public String getWarehouseCode() {
+        return warehouseCode;
+    }
+
+    public void setWarehouseCode(String warehouseCode) {
+        this.warehouseCode = warehouseCode;
+    }
 
     public String getRoleName() {
         return roleName;

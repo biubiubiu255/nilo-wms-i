@@ -8,8 +8,8 @@ import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dao.platform.PermissionDao;
 import com.nilo.wms.dto.common.PageResult;
-import com.nilo.wms.dto.parameter.PermissionParameter;
 import com.nilo.wms.dto.common.ZTree;
+import com.nilo.wms.dto.platform.parameter.PermissionParam;
 import com.nilo.wms.dto.system.Permission;
 import com.nilo.wms.service.system.PermissionService;
 import com.nilo.wms.service.system.RedisUtil;
@@ -33,17 +33,29 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public List<Permission> getMenusByUser(String userId) {
 
-        List<Permission> results = new ArrayList<Permission>();
+        List<Permission> results = new ArrayList<>();
         List<Permission> permissions = permissionDao.queryByUserId(userId);
         for (Permission p : permissions) {
             if ("0".equals(p.getParentId())) {
-                List<Permission> subMenu = new ArrayList<Permission>();
+                List<Permission> subMenu = new ArrayList<>();
                 for (Permission t : permissions) {
                     if (p.getPermissionId().equals(t.getParentId())) {
                         subMenu.add(t);
                     }
                 }
                 p.setSubMenus(subMenu);
+                results.add(p);
+            }
+        }
+        return results;
+    }
+
+    @Override
+    public List<Permission> getPermissionByUser(String userId) {
+        List<Permission> results = new ArrayList<>();
+        List<Permission> permissions = permissionDao.queryByUserId(userId);
+        for (Permission p : permissions) {
+            if (p.getType() == 2) {
                 results.add(p);
             }
         }
@@ -101,9 +113,11 @@ public class PermissionServiceImpl implements PermissionService {
         AssertUtil.isNotBlank(permission.getDesc_e(), CheckErrorCode.PERMISSION_DESC_EMPTY);
 
         //查询permissionID是否已存在
-        PermissionParameter parameter = new PermissionParameter();
+        PermissionParam parameter = new PermissionParam();
         parameter.setPermissionId(permission.getPermissionId());
+
         List<Permission> p = permissionDao.queryPermissions(parameter);
+
         if (p != null && p.size() == 1) {
             throw new WMSException(BizErrorCode.PERMISSION_ID_EXIST);
         }
@@ -160,7 +174,7 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public PageResult<Permission> queryPermissions(PermissionParameter parameter) {
+    public PageResult<Permission> queryPermissions(PermissionParam parameter) {
 
         PageResult<Permission> pageResult = new PageResult<>();
 

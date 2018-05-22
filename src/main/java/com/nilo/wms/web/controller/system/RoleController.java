@@ -4,13 +4,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.nilo.wms.common.annotation.RequiresPermissions;
 import com.nilo.wms.common.util.BeanUtils;
 import com.nilo.wms.common.util.StringUtil;
+import com.nilo.wms.dto.common.ResultMap;
 import com.nilo.wms.dto.common.ZTree;
-import com.nilo.wms.dto.parameter.RoleParameter;
+import com.nilo.wms.dto.platform.parameter.RoleParam;
 import com.nilo.wms.dto.system.Role;
 import com.nilo.wms.service.system.PermissionService;
 import com.nilo.wms.service.system.RoleService;
 import com.nilo.wms.web.BaseController;
-import com.nilo.wms.web.model.ResultMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +28,7 @@ public class RoleController extends BaseController {
     @RequiresPermissions("10021")
     public String list(String searchValue, String searchKey) {
 
-        RoleParameter parameter = new RoleParameter();
+        RoleParam parameter = new RoleParam();
         if (StringUtil.isNotBlank(searchKey)) {
             BeanUtils.setProperty(parameter, searchKey, searchValue);
         }
@@ -45,7 +45,6 @@ public class RoleController extends BaseController {
     @PutMapping
     @RequiresPermissions("10023")
     public String update(Role role) {
-
         roleService.update(role);
         return ResultMap.success().toJson();
     }
@@ -84,7 +83,6 @@ public class RoleController extends BaseController {
     @PutMapping("/tree")
     @RequiresPermissions("10026")
     public String savePermTree(String roleId, String permIds) {
-
         List<String> permissionList = JSONArray.parseArray(permIds, String.class);
         permissionService.updatePermissionTree(roleId, permissionList);
         return ResultMap.success().toJson();

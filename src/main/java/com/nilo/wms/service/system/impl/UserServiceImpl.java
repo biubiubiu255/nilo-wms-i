@@ -8,7 +8,7 @@ import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.IdWorker;
 import com.nilo.wms.dao.platform.UserDao;
 import com.nilo.wms.dto.common.PageResult;
-import com.nilo.wms.dto.parameter.UserParameter;
+import com.nilo.wms.dto.platform.parameter.UserParam;
 import com.nilo.wms.dto.system.User;
 import com.nilo.wms.service.system.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService {
     public void add(User user) {
         AssertUtil.isNotNull(user, SysErrorCode.REQUEST_IS_NULL);
         AssertUtil.isNotBlank(user.getUsername(), CheckErrorCode.USER_NAME_EMPTY);
-
         //校验userName 是否存在
         User query = userDao.queryByUserName(user.getUsername());
         if (query != null) {
@@ -51,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageResult<User> queryUsers(UserParameter parameter) {
+    public PageResult<User> queryUsers(UserParam parameter) {
 
         PageResult<User> list = new PageResult<>();
         int count = userDao.queryUsersCount(parameter);

@@ -33,11 +33,11 @@
         LEFT JOIN VIEW_MULTIWAREHOUSE C
         ON A.LOCATIONID = C.LOCATIONID
         WHERE D.LOTATT08 = 'N'
-        <if test="param.customerId !=null and param.customerId !='' ">
-            and a.customerid = #{param.customerId}
+        <if test="param.customerCode !=null and param.customerCode !='' ">
+            and a.customerid = #{param.customerCode}
         </if>
-        <if test="param.warehouseId !=null and param.warehouseId !='' ">
-            and c.warehouseid = #{param.warehouseId}
+        <if test="param.warehouseCode !=null and param.warehouseCode !='' ">
+            and c.warehouseid = #{param.warehouseCode}
         </if>
         <if test="param.sku !=null and param.sku.size() > 0">
             and a.sku in
@@ -69,11 +69,11 @@
         LEFT JOIN VIEW_MULTIWAREHOUSE C
         ON A.LOCATIONID = C.LOCATIONID
         WHERE D.LOTATT08 = 'N'
-        <if test="param.customerId !=null and param.customerId !='' ">
-            and a.customerid = #{param.customerId}
+        <if test="param.customerCode !=null and param.customerCode !='' ">
+            and a.customerid = #{param.customerCode}
         </if>
-        <if test="param.warehouseId !=null and param.warehouseId !='' ">
-            and c.warehouseid = #{param.warehouseId}
+        <if test="param.warehouseCode !=null and param.warehouseCode !='' ">
+            and c.warehouseid = #{param.warehouseCode}
         </if>
         <if test="param.sku !=null and param.sku.size() > 0">
             and a.sku in
@@ -93,6 +93,6 @@
 
 
     <update id="updateSafeQty">
-        update bas_sku set ReservedField03 =#{safeQty} where customerId = #{customerId} and sku=#{sku}
+        update bas_sku set ReservedField03 =#{safeQty} where customerCode = #{customerCode} and sku=#{sku}
     </update>
 </mapper>

@@ -22,15 +22,15 @@ import com.nilo.wms.dto.flux.FLuxRequest;
 import com.nilo.wms.dto.flux.FluxOutbound;
 import com.nilo.wms.dto.flux.FluxResponse;
 import com.nilo.wms.dto.flux.FluxWeight;
-import com.nilo.wms.dto.outbound.OutboundDO;
 import com.nilo.wms.dto.outbound.OutboundHeader;
 import com.nilo.wms.dto.outbound.OutboundItem;
-import com.nilo.wms.dto.outbound.OutboundItemDO;
+import com.nilo.wms.dto.platform.outbound.OutboundDO;
+import com.nilo.wms.dto.platform.outbound.OutboundItemDO;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.OutboundService;
-import com.nilo.wms.service.system.RedisUtil;
 import com.nilo.wms.service.config.SystemConfig;
+import com.nilo.wms.service.system.RedisUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -197,10 +197,7 @@ public class OutboundServiceImpl implements OutboundService {
             //获取redis锁
             Jedis jedis = RedisUtil.getResource();
             String requestId = UUID.randomUUID().toString();
-            boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
-            if (!getLock) {
-                throw new WMSException(SysErrorCode.SYSTEM_ERROR);
-            }
+            RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
             for (OutboundItemDO item : itemList) {
                 String key = RedisUtil.getSkuKey(clientCode, item.getSku());
                 String sto = jedis.hget(key, RedisUtil.STORAGE);
@@ -354,8 +351,8 @@ public class OutboundServiceImpl implements OutboundService {
         insert.setClientCode(SessionLocal.getPrincipal().getClientCode());
         insert.setReferenceNo(outBound.getOrderNo());
         insert.setOrderType(outBound.getOrderType());
-        insert.setCustomerId(outBound.getCustomerId());
-        insert.setWarehouseId(outBound.getWarehouseId());
+        insert.setCustomerCode(outBound.getCustomerId());
+        insert.setWarehouseCode(outBound.getWarehouseId());
         insert.setStatus(OutBoundStatusEnum.create.getCode());
         insert.setWaybillNum(outBound.getDeliveryNo());
         outboundDao.insert(insert);

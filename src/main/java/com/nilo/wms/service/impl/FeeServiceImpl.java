@@ -50,7 +50,7 @@ public class FeeServiceImpl implements FeeService {
         if (config == null) {
             throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
         }
-        List<FeeDO> list = feeDao.queryStorage(config.getCustomerId(), config.getWarehouseId());
+        List<FeeDO> list = feeDao.queryStorage(config.getCustomerCode(), config.getWarehouseCode());
 
         for (FeeDO d : list) {
             Fee f = new Fee();
@@ -75,7 +75,7 @@ public class FeeServiceImpl implements FeeService {
         if (config == null) {
             throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
         }
-        List<FeeDO> list = feeDao.queryInBoundOrderHandler(config.getCustomerId(), config.getWarehouseId(), date);
+        List<FeeDO> list = feeDao.queryInBoundOrderHandler(config.getCustomerCode(), config.getWarehouseCode(), date);
         for (FeeDO o : list) {
             Fee f = new Fee();
             f.setOrder_sn(o.getOrderNo());
@@ -105,7 +105,7 @@ public class FeeServiceImpl implements FeeService {
             throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
         }
 
-        List<FeeDO> list = feeDao.queryOrderHandler(config.getCustomerId(), config.getWarehouseId(), date);
+        List<FeeDO> list = feeDao.queryOrderHandler(config.getCustomerCode(), config.getWarehouseCode(), date);
 
         Map<String, String> categoriesMap = new HashMap<>();
 
@@ -142,7 +142,7 @@ public class FeeServiceImpl implements FeeService {
         if (config == null) {
             throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
         }
-        List<FeeDO> list = feeDao.queryOrderReturn(config.getCustomerId(), config.getWarehouseId(), date);
+        List<FeeDO> list = feeDao.queryOrderReturn(config.getCustomerCode(), config.getWarehouseCode(), date);
 
         Map<String, String> categoriesMap = new HashMap<>();
         for (FeeDO o : list) {
@@ -178,7 +178,7 @@ public class FeeServiceImpl implements FeeService {
         if (config == null) {
             throw new WMSException(BizErrorCode.APP_KEY_NOT_EXIST);
         }
-        List<FeeDO> list = feeDao.queryReturnMerchant(config.getCustomerId(), config.getWarehouseId(), date);
+        List<FeeDO> list = feeDao.queryReturnMerchant(config.getCustomerCode(), config.getWarehouseCode(), date);
         for (FeeDO o : list) {
             Fee f = new Fee();
             f.setOrder_sn(o.getOrderNo());
@@ -213,8 +213,8 @@ public class FeeServiceImpl implements FeeService {
         //设置调用api主体信息
         Principal principal = new Principal();
         principal.setClientCode(clientCode);
-        principal.setCustomerId(config.getCustomerId());
-        principal.setWarehouseId(config.getWarehouseId());
+        principal.setCustomerId(config.getCustomerCode());
+        principal.setWarehouseId(config.getWarehouseCode());
         SessionLocal.setPrincipal(principal);
 
         InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("wms_fee");

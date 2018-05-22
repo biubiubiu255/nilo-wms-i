@@ -1,7 +1,7 @@
 package com.nilo.wms.dao.platform;
 
 import com.nilo.wms.common.BaseDao;
-import com.nilo.wms.dto.outbound.OutboundItemDO;
+import com.nilo.wms.dto.platform.outbound.OutboundItemDO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

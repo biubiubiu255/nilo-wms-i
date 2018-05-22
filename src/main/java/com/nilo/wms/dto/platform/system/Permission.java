@@ -1,7 +1,7 @@
 package com.nilo.wms.dto.platform.system;
 
 import com.nilo.wms.common.util.StringUtil;
-import com.nilo.wms.service.common.SystemCodeUtil;
+import com.nilo.wms.service.system.SystemCodeUtil;
 
 import java.io.Serializable;
 import java.util.List;

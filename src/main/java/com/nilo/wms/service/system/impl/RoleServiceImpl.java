@@ -7,7 +7,7 @@ import com.nilo.wms.common.util.IdWorker;
 import com.nilo.wms.dao.platform.PermissionDao;
 import com.nilo.wms.dao.platform.RoleDao;
 import com.nilo.wms.dto.common.PageResult;
-import com.nilo.wms.dto.parameter.RoleParameter;
+import com.nilo.wms.dto.platform.parameter.RoleParam;
 import com.nilo.wms.dto.system.Permission;
 import com.nilo.wms.dto.system.Role;
 import com.nilo.wms.service.system.RedisUtil;
@@ -28,7 +28,7 @@ public class RoleServiceImpl implements RoleService {
     private PermissionDao permissionDao;
 
     @Override
-    public PageResult<Role> queryRoles(RoleParameter parameter) {
+    public PageResult<Role> queryRoles(RoleParam parameter) {
 
         List<Role> list = roleDao.queryBy(parameter);
         PageResult<Role> result = new PageResult<>();

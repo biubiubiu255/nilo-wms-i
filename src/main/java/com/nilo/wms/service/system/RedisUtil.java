@@ -1,10 +1,12 @@
 package com.nilo.wms.service.system;
 
+import com.nilo.wms.common.Principal;
+import com.nilo.wms.common.exception.SysErrorCode;
+import com.nilo.wms.common.exception.WMSException;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -54,23 +56,21 @@ public class RedisUtil {
      * @param requestId 请求标识
      * @return 是否获取成功
      */
-    public static boolean tryGetDistributedLock(Jedis jedis, String lockKey, String requestId) {
+    public static void tryGetDistributedLock(Jedis jedis, String lockKey, String requestId) {
 
         for (int i = 0; i < 10; i++) {
             String result = jedis.set(lockKey, requestId, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, 5000);
             if (LOCK_SUCCESS.equals(result)) {
-                return true;
+                return;
             } else {
                 try {
                     Thread.sleep(100 + (int) Math.random() * 10);
                 } catch (Exception e) {
-
                 }
             }
         }
         returnResource(jedis);
-        return false;
-
+        throw new WMSException(SysErrorCode.SYSTEM_ERROR);
     }
 
     /**
@@ -153,6 +153,7 @@ public class RedisUtil {
             }
         }
     }
+
     public static void srem(String key, String[] value) {
         Jedis jedis = null;
         try {
@@ -164,6 +165,7 @@ public class RedisUtil {
             }
         }
     }
+
     public static Set<String> sMember(String key) {
         Jedis jedis = null;
         try {
@@ -267,4 +269,15 @@ public class RedisUtil {
     public static boolean hasPermission(String userId, String value) {
         return RedisUtil.sExist(RedisUtil.getRoleKey(RedisUtil.hget(RedisUtil.getUserKey(userId), "roleId")), value);
     }
+
+    public static Principal getPrincipal(String userId) {
+        Principal p = new Principal();
+        String key = RedisUtil.getUserKey(userId);
+        p.setRoleId(RedisUtil.hget(key, "roleId"));
+        p.setUserId(userId);
+        p.setWarehouseCode(RedisUtil.hget(key, "warehouseCode"));
+        p.setUserName(RedisUtil.hget(key, "userName"));
+        return p;
+    }
+
 }

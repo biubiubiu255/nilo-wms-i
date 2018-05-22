@@ -121,8 +121,8 @@ public class RequestParam {
         Principal principal = new Principal();
         principal.setClientCode(app_key);
         principal.setMethod(method);
-        principal.setCustomerId(config.getCustomerId());
-        principal.setWarehouseId(config.getWarehouseId());
+        principal.setCustomerId(config.getCustomerCode());
+        principal.setWarehouseId(config.getWarehouseCode());
         SessionLocal.setPrincipal(principal);
     }
 

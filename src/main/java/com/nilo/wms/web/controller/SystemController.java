@@ -38,8 +38,8 @@ public class SystemController extends BaseController {
         //设置调用api主体信息
         Principal principal = new Principal();
         principal.setClientCode(clientCode);
-        principal.setCustomerId(config.getCustomerId());
-        principal.setWarehouseId(config.getWarehouseId());
+        principal.setCustomerId(config.getCustomerCode());
+        principal.setWarehouseId(config.getWarehouseCode());
         SessionLocal.setPrincipal(principal);
         basicDataService.syncStock(clientCode);
         return toJsonTrueMsg();

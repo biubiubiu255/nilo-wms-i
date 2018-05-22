@@ -33,7 +33,7 @@
             select h.orderno,h.soreference1,h.sostatus,nvl(s.grossweight,0) weight
               from doc_order_header h left join DOC_Order_Packing_Summary s
                on h.orderno = s.orderno
-               where h.customerId = #{customerId} and h.soreference1 = #{referenceNo}
+               where h.customerCode = #{customerCode} and h.soreference1 = #{referenceNo}
     </select>
 
     <select id="queryWeight" resultMap="weight">
@@ -46,7 +46,7 @@
     </select>
 
     <select id="querySales" resultMap="sale">
-        select d.sku, sum(d.qtyordered) qty from doc_order_details d where d.customerid=#{customerId} and d.linestatus !=90 and to_char(d.addtime,'YYYY-MM-DD') between #{startDate} and #{endDate}
+        select d.sku, sum(d.qtyordered) qty from doc_order_details d where d.customerid=#{customerCode} and d.linestatus !=90 and to_char(d.addtime,'YYYY-MM-DD') between #{startDate} and #{endDate}
         group by d.sku
     </select>
 

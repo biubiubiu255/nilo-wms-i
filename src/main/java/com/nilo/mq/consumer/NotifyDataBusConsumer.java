@@ -6,18 +6,11 @@ import com.nilo.mq.model.ConsumerDesc;
 import com.nilo.mq.model.NotifyRequest;
 import com.nilo.mq.model.NotifyResponse;
 import com.nilo.wms.common.util.HttpUtil;
-import com.nilo.wms.common.util.MailInfo;
-import com.nilo.wms.common.util.SendEmailUtil;
 import com.nilo.wms.dao.platform.NotifyDao;
-import com.nilo.wms.dto.NotifyDO;
+import com.nilo.wms.dto.platform.Notify;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by admin on 2017/10/18.
@@ -59,9 +52,9 @@ public class NotifyDataBusConsumer extends AbstractMQConsumer {
 
     private void saveNotify(NotifyRequest request, String notifyId, String response, boolean success) {
 
-        NotifyDO query = notifyDao.queryByNotifyId(notifyId);
+        Notify query = notifyDao.queryByNotifyId(notifyId);
         if (query == null) {
-            NotifyDO notifyDO = new NotifyDO();
+            Notify notifyDO = new Notify();
             notifyDO.setUrl(request.getUrl());
             notifyDO.setStatus(success ? 1 : 0);
             notifyDO.setNum(1);
@@ -70,7 +63,7 @@ public class NotifyDataBusConsumer extends AbstractMQConsumer {
             notifyDO.setResult(response);
             notifyDao.insert(notifyDO);
         } else {
-            NotifyDO update = new NotifyDO();
+            Notify update = new Notify();
             update.setNotifyId(notifyId);
             update.setStatus(success ? 1 : 0);
             update.setNum(query.getNum() + 1);

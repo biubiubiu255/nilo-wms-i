@@ -60,7 +60,7 @@ public class SafeStockSchedule {
             //总天数
             int days = calendar1.getActualMaximum(Calendar.DATE);
             //查询销售量
-            List<FluxOutboundDetails> list = fluxOutboundDao.querySales(config.getCustomerId(), startDate, endDate);
+            List<FluxOutboundDetails> list = fluxOutboundDao.querySales(config.getCustomerCode(), startDate, endDate);
             Iterator<FluxOutboundDetails> iterator = list.iterator();
             while (iterator.hasNext()) {
                 FluxOutboundDetails details = iterator.next();
@@ -74,7 +74,7 @@ public class SafeStockSchedule {
             for (FluxOutboundDetails d : list) {
                 //计算安全库存
                 long safeQty = Math.round(customer_factor * Math.sqrt(1 * 1 * (d.getQty() / days) + 1 * 1 * replenishment_lead_time * replenishment_lead_time));
-                skuDao.updateSafeQty(config.getCustomerId(), d.getSku(), "" + safeQty);
+                skuDao.updateSafeQty(config.getCustomerCode(), d.getSku(), "" + safeQty);
             }
         } catch (Exception ex) {
             logger.error("SyncStockSchedule failed. {}", ex.getMessage(), ex);

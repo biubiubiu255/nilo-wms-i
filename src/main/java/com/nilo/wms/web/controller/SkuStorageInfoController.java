@@ -112,8 +112,7 @@ public class SkuStorageInfoController extends BaseController {
         //获取redis锁
         Jedis jedis = RedisUtil.getResource();
         String requestId = UUID.randomUUID().toString();
-        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
-        if (!getLock) throw new WMSException(SysErrorCode.SYSTEM_ERROR);
+        RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
 
         RedisUtil.hset(RedisUtil.getSkuKey(clientCode, sku), RedisUtil.LOCK_STORAGE, "" + lockStorage);
         RedisUtil.hset(RedisUtil.getSkuKey(clientCode, sku), RedisUtil.STORAGE, "" + redisStorage);

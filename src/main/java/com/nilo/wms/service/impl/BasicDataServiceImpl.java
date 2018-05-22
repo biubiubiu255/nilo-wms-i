@@ -14,7 +14,10 @@ import com.nilo.wms.common.util.DateUtil;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.XmlUtil;
 import com.nilo.wms.dao.flux.SkuDao;
-import com.nilo.wms.dto.*;
+import com.nilo.wms.dto.SkuInfo;
+import com.nilo.wms.dto.StorageInfo;
+import com.nilo.wms.dto.StorageParam;
+import com.nilo.wms.dto.SupplierInfo;
 import com.nilo.wms.dto.common.ClientConfig;
 import com.nilo.wms.dto.common.InterfaceConfig;
 import com.nilo.wms.dto.common.PageResult;
@@ -24,8 +27,8 @@ import com.nilo.wms.dto.outbound.OutboundHeader;
 import com.nilo.wms.dto.outbound.OutboundItem;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
-import com.nilo.wms.service.system.RedisUtil;
 import com.nilo.wms.service.config.SystemConfig;
+import com.nilo.wms.service.system.RedisUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,11 +169,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         //获取redis锁
         Jedis jedis = RedisUtil.getResource();
         String requestId = UUID.randomUUID().toString();
-        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
-        if (!getLock) {
-            throw new WMSException(SysErrorCode.SYSTEM_ERROR);
-        }
-
+        RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
 
         List<Map<String, String>> result = new ArrayList<>();
 
@@ -238,9 +237,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         //获取redis锁
         Jedis jedis = RedisUtil.getResource();
         String requestId = UUID.randomUUID().toString();
-        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
-        if (!getLock) throw new WMSException(SysErrorCode.SYSTEM_ERROR);
-
+        RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
         // 查询锁定列表
         Set<String> skuList = jedis.hkeys(orderNoKey);
         skuList.remove(RedisUtil.LOCK_TIME);
@@ -269,8 +266,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         //获取redis锁
         Jedis jedis = RedisUtil.getResource();
         String requestId = UUID.randomUUID().toString();
-        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
-        if (!getLock) throw new WMSException(SysErrorCode.SYSTEM_ERROR);
+        RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
 
         // 判断订单号是否锁定库存过
         String orderNoKey = RedisUtil.getLockOrderKey(clientCode, header.getOrderNo());
@@ -348,13 +344,13 @@ public class BasicDataServiceImpl implements BasicDataService {
         //设置调用api主体信息
         Principal principal = new Principal();
         principal.setClientCode(clientCode);
-        principal.setCustomerId(config.getCustomerId());
-        principal.setWarehouseId(config.getWarehouseId());
+        principal.setCustomerId(config.getCustomerCode());
+        principal.setWarehouseId(config.getWarehouseCode());
         SessionLocal.setPrincipal(principal);
 
         StorageParam param = new StorageParam();
-        param.setWarehouseId(config.getWarehouseId());
-        param.setCustomerId(config.getCustomerId());
+        param.setWarehouseId(config.getWarehouseCode());
+        param.setCustomerId(config.getCustomerCode());
         param.setPage(1);
         param.setLimit(10000);
         List<StorageInfo> list = skuDao.queryBy(param);
@@ -364,8 +360,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         //获取redis锁
         Jedis jedis = RedisUtil.getResource();
         String requestId = UUID.randomUUID().toString();
-        boolean getLock = RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
-        if (!getLock) throw new WMSException(SysErrorCode.SYSTEM_ERROR);
+        RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
 
         //构建差异数据
         List<StorageInfo> diffList = new ArrayList<>();

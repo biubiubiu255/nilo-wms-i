@@ -23,8 +23,6 @@ public class SystemConfigInit implements InitializingBean {
 
         systemService.loadingAndRefreshRole();
 
-        systemService.loadingAndRefreshSystemCode();
-
 
     }
 }

@@ -1,7 +1,5 @@
 package com.nilo.wms.dto.common;
 
-import java.util.Map;
-
 /**
  * Created by ronny on 2017/8/30.
  */
@@ -15,24 +13,24 @@ public class ClientConfig {
 
     private String wmsKey;
 
-    private String customerId;
+    private String customerCode;
 
-    private String warehouseId;
+    private String warehouseCode;
 
-    public String getCustomerId() {
-        return customerId;
+    public String getCustomerCode() {
+        return customerCode;
     }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
+    public void setCustomerCode(String customerCode) {
+        this.customerCode = customerCode;
     }
 
-    public String getWarehouseId() {
-        return warehouseId;
+    public String getWarehouseCode() {
+        return warehouseCode;
     }
 
-    public void setWarehouseId(String warehouseId) {
-        this.warehouseId = warehouseId;
+    public void setWarehouseCode(String warehouseCode) {
+        this.warehouseCode = warehouseCode;
     }
 
     private Integer status;

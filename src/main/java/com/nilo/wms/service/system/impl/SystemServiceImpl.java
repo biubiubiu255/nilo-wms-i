@@ -6,7 +6,7 @@ import com.nilo.wms.dto.common.Dictionary;
 import com.nilo.wms.dto.common.InterfaceConfig;
 import com.nilo.wms.dto.fee.FeeConfig;
 import com.nilo.wms.dto.fee.FeePrice;
-import com.nilo.wms.dto.parameter.RoleParameter;
+import com.nilo.wms.dto.platform.parameter.RoleParam;
 import com.nilo.wms.dto.system.Permission;
 import com.nilo.wms.dto.system.Role;
 import com.nilo.wms.service.config.SystemConfig;
@@ -34,9 +34,6 @@ public class SystemServiceImpl implements SystemService {
     private RoleDao roleDao;
     @Autowired
     private PermissionDao permissionDao;
-    @Autowired
-    private DictionaryDao dictionaryDao;
-
     @Override
     public void loadingAndRefreshClientConfig() {
 
@@ -88,7 +85,7 @@ public class SystemServiceImpl implements SystemService {
     @Override
     public void loadingAndRefreshRole() {
 
-        List<Role> roles = roleDao.queryBy(new RoleParameter());
+        List<Role> roles = roleDao.queryBy(new RoleParam());
         for (Role r : roles) {
             List<Permission> list = permissionDao.queryByRoleId(r.getRoleId());
             RedisUtil.del(RedisUtil.getRoleKey(r.getRoleId()));
@@ -104,14 +101,4 @@ public class SystemServiceImpl implements SystemService {
 
     }
 
-    @Override
-    public void loadingAndRefreshSystemCode() {
-        List<Dictionary> list = dictionaryDao.queryAll();
-        for (Dictionary d : list) {
-            String keyZh = "wms_system_code_zh_" + d.getType();
-            String keyEn = "wms_system_code_en_" + d.getType();
-            RedisUtil.hset(keyZh, d.getCode(), d.getDescC());
-            RedisUtil.hset(keyEn, d.getCode(), d.getDescE());
-        }
-    }
 }

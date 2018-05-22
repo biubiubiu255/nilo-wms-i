@@ -2,7 +2,7 @@ package com.nilo.wms.service.system;
 
 
 import com.nilo.wms.dto.common.PageResult;
-import com.nilo.wms.dto.parameter.UserParameter;
+import com.nilo.wms.dto.platform.parameter.UserParam;
 import com.nilo.wms.dto.system.User;
 
 public interface UserService {
@@ -13,6 +13,6 @@ public interface UserService {
 
     User queryByUserName(String username);
 
-    PageResult<User> queryUsers(UserParameter parameter);
+    PageResult<User> queryUsers(UserParam parameter);
 
 }

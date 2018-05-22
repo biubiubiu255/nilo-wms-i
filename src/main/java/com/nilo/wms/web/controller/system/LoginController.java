@@ -7,13 +7,14 @@ import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.DateUtil;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.TokenUtil;
+import com.nilo.wms.dto.platform.common.ResultMap;
 import com.nilo.wms.dto.system.Permission;
 import com.nilo.wms.dto.system.User;
+
 import com.nilo.wms.service.system.PermissionService;
 import com.nilo.wms.service.system.RedisUtil;
 import com.nilo.wms.service.system.UserService;
 import com.nilo.wms.web.BaseController;
-import com.nilo.wms.web.model.ResultMap;
 import io.jsonwebtoken.Claims;
 import io.leopard.web.captcha.CaptchaUtil;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -62,7 +63,10 @@ public class LoginController extends BaseController {
         user.setPassword(null);
         user.setToken(token);
 
-        RedisUtil.hset(RedisUtil.getUserKey(user.getUserId()), "roleId", user.getRoleId());
+        String key = RedisUtil.getUserKey(user.getUserId());
+        RedisUtil.hset(key, "userName", user.getUsername());
+        RedisUtil.hset(key, "warehouseCode", ""+user.getWarehouseCode());
+        RedisUtil.hset(key, "roleId", user.getRoleId());
 
         return ResultMap.success().put("token", token).put("user", user).toJson();
     }
@@ -83,4 +87,12 @@ public class LoginController extends BaseController {
         return ResultMap.success().put("menus", list).toJson();
     }
 
+    @RequestMapping(value = "/permissions", method = RequestMethod.GET)
+    @ResponseBody
+    public String permission(HttpServletRequest request) {
+        Claims c = TokenUtil.parseToken(getToken(request));
+        String userId = c.getSubject();
+        List<Permission> list = permissionService.getPermissionByUser(userId);
+        return ResultMap.success().put("permissions", list).toJson();
+    }
 }
