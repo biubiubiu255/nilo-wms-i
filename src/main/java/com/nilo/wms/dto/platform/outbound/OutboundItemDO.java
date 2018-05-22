@@ -8,26 +8,17 @@ import com.nilo.wms.common.BaseDo;
  */
 public class OutboundItemDO extends BaseDo<Long> {
 
-    private String customerId;
-    private String warehouseId;
+    private String clientCode;
     private String referenceNo;
     private String sku;
     private int qty;
 
-    public String getCustomerId() {
-        return customerId;
+    public String getClientCode() {
+        return clientCode;
     }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
-
-    public String getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(String warehouseId) {
-        this.warehouseId = warehouseId;
+    public void setClientCode(String clientCode) {
+        this.clientCode = clientCode;
     }
 
     public String getReferenceNo() {

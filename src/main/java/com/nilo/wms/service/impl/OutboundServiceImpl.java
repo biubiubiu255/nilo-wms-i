@@ -90,6 +90,9 @@ public class OutboundServiceImpl implements OutboundService {
         Principal principal = SessionLocal.getPrincipal();
         String clientCode = principal.getClientCode();
 
+        OutboundDO outboundDO = outboundDao.queryByReferenceNo(clientCode, outBound.getOrderNo());
+        if (outboundDO != null) return;
+
         // 判断订单号是否锁定库存过
         String orderNoKey = RedisUtil.getLockOrderKey(clientCode, outBound.getOrderNo());
         boolean keyExist = RedisUtil.hasKey(orderNoKey);
@@ -106,9 +109,6 @@ public class OutboundServiceImpl implements OutboundService {
             item.setCustomerId(principal.getCustomerId());
             item.setLineNo(lineNo + 1);
         }
-
-        OutboundDO outboundDO = outboundDao.queryByReferenceNo(clientCode, outBound.getOrderNo());
-        if (outboundDO != null) return;
 
         //构建flux请求对象
         FLuxRequest request = new FLuxRequest();
@@ -146,6 +146,7 @@ public class OutboundServiceImpl implements OutboundService {
         if (!response.isSuccess()) {
             throw new RuntimeException(response.getReturnDesc());
         }
+
         //记录出库单信息
         recordOutbound(outBound);
 
@@ -192,7 +193,7 @@ public class OutboundServiceImpl implements OutboundService {
         outboundDao.update(update);
 
         // 增加库存
-        List<OutboundItemDO> itemList = outboundItemDao.queryByReferenceNo(orderNo);
+        List<OutboundItemDO> itemList = outboundItemDao.queryByReferenceNo(principal.getClientCode(), orderNo);
         if (itemList != null) {
             //获取redis锁
             Jedis jedis = RedisUtil.getResource();
@@ -356,12 +357,12 @@ public class OutboundServiceImpl implements OutboundService {
         insert.setStatus(OutBoundStatusEnum.create.getCode());
         insert.setWaybillNum(outBound.getDeliveryNo());
         outboundDao.insert(insert);
+        Principal principal = SessionLocal.getPrincipal();
 
         List<OutboundItemDO> list = new ArrayList<>();
         for (OutboundItem item : outBound.getItemList()) {
             OutboundItemDO itemDO = new OutboundItemDO();
-            itemDO.setWarehouseId(outBound.getWarehouseId());
-            itemDO.setCustomerId(outBound.getCustomerId());
+            itemDO.setClientCode(principal.getClientCode());
             itemDO.setSku(item.getSku());
             itemDO.setQty(item.getQty());
             itemDO.setReferenceNo(outBound.getOrderNo());
