@@ -3,7 +3,7 @@ package com.nilo.wms.service.system;
 
 import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.platform.parameter.UserParam;
-import com.nilo.wms.dto.system.User;
+import com.nilo.wms.dto.platform.system.User;
 
 public interface UserService {
 

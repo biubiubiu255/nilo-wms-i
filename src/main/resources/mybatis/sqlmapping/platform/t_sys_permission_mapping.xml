@@ -4,7 +4,7 @@
 <mapper namespace="com.nilo.wms.dao.platform.PermissionDao">
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="permission" type="com.nilo.wms.dto.system.Permission">
+    <resultMap id="permission" type="com.nilo.wms.dto.platform.system.Permission">
 
         <result property="permissionId" column="permission_Id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>

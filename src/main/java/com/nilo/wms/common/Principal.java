@@ -93,4 +93,17 @@ public class Principal implements Serializable {
         this.clientCode = clientCode;
     }
 
+    @Override
+    public String toString() {
+        return "Principal{" +
+                "clientCode='" + clientCode + '\'' +
+                ", method='" + method + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", warehouseId='" + warehouseId + '\'' +
+                ", userId='" + userId + '\'' +
+                ", userName='" + userName + '\'' +
+                ", warehouseCode='" + warehouseCode + '\'' +
+                ", roleId='" + roleId + '\'' +
+                '}';
+    }
 }

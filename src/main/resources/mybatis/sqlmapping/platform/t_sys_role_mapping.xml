@@ -4,7 +4,7 @@
 <mapper namespace="com.nilo.wms.dao.platform.RoleDao">
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="role" type="com.nilo.wms.dto.system.Role">
+    <resultMap id="role" type="com.nilo.wms.dto.platform.system.Role">
 
         <result property="roleId" column="role_Id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
@@ -24,7 +24,7 @@
     </resultMap>
 
     <!-- 插入语句 -->
-    <insert id="insert" parameterType="com.nilo.wms.dto.system.Role" statementType="PREPARED"
+    <insert id="insert" parameterType="com.nilo.wms.dto.platform.system.Role" statementType="PREPARED"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_sys_role
@@ -42,7 +42,7 @@
     </select>
 
     <!-- 动态更新语句 -->
-    <update id="update" parameterType="com.nilo.wms.dto.system.Role" statementType="PREPARED">
+    <update id="update" parameterType="com.nilo.wms.dto.platform.system.Role" statementType="PREPARED">
         update t_sys_role
         <trim prefix="set" suffixOverrides="," suffix="where role_id=#{roleId}">
             <if test="roleName != null and roleName != ''">

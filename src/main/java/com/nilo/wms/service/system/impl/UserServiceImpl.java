@@ -9,7 +9,7 @@ import com.nilo.wms.common.util.IdWorker;
 import com.nilo.wms.dao.platform.UserDao;
 import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.platform.parameter.UserParam;
-import com.nilo.wms.dto.system.User;
+import com.nilo.wms.dto.platform.system.User;
 import com.nilo.wms.service.system.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;

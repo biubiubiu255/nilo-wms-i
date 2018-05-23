@@ -31,7 +31,7 @@ public class Permission implements Serializable {
 
     private Integer orderNumber;
 
-    private List<com.nilo.wms.dto.system.Permission> subMenus;
+    private List<Permission> subMenus;
 
     public String getParentName() {
         return StringUtil.equals(SystemCodeUtil.getLang(), "zh") ? this.parent_desc_c : this.parent_desc_e;
@@ -54,11 +54,11 @@ public class Permission implements Serializable {
         this.status = status;
     }
 
-    public List<com.nilo.wms.dto.system.Permission> getSubMenus() {
+    public List<Permission> getSubMenus() {
         return subMenus;
     }
 
-    public void setSubMenus(List<com.nilo.wms.dto.system.Permission> subMenus) {
+    public void setSubMenus(List<Permission> subMenus) {
         this.subMenus = subMenus;
     }
 

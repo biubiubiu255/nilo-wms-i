@@ -7,7 +7,7 @@ import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dto.common.ResultMap;
 import com.nilo.wms.dto.common.ZTree;
 import com.nilo.wms.dto.platform.parameter.RoleParam;
-import com.nilo.wms.dto.system.Role;
+import com.nilo.wms.dto.platform.system.Role;
 import com.nilo.wms.service.system.PermissionService;
 import com.nilo.wms.service.system.RoleService;
 import com.nilo.wms.web.BaseController;

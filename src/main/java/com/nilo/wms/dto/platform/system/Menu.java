@@ -21,7 +21,7 @@ public class Menu implements Serializable{
 
     private Boolean isHeader;
 
-    private List<com.nilo.wms.dto.system.Menu> children;
+    private List<Menu> children;
 
     public String getId() {
         return id;
@@ -71,11 +71,11 @@ public class Menu implements Serializable{
         isHeader = header;
     }
 
-    public List<com.nilo.wms.dto.system.Menu> getChildren() {
+    public List<Menu> getChildren() {
         return children;
     }
 
-    public void setChildren(List<com.nilo.wms.dto.system.Menu> children) {
+    public void setChildren(List<Menu> children) {
         this.children = children;
     }
 }

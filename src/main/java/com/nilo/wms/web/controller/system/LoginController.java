@@ -8,9 +8,9 @@ import com.nilo.wms.common.util.DateUtil;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.TokenUtil;
 import com.nilo.wms.dto.platform.common.ResultMap;
-import com.nilo.wms.dto.system.Permission;
-import com.nilo.wms.dto.system.User;
 
+import com.nilo.wms.dto.platform.system.Permission;
+import com.nilo.wms.dto.platform.system.User;
 import com.nilo.wms.service.system.PermissionService;
 import com.nilo.wms.service.system.RedisUtil;
 import com.nilo.wms.service.system.UserService;

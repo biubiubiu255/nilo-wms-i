@@ -4,7 +4,7 @@
 <mapper namespace="com.nilo.wms.dao.platform.UserDao">
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="user" type="com.nilo.wms.dto.system.User">
+    <resultMap id="user" type="com.nilo.wms.dto.platform.system.User">
         <result property="userId" column="user_id" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="warehouseCode" column="warehouse_code" javaType="java.lang.Integer"
@@ -44,7 +44,7 @@
     </sql>
 
     <!-- 插入语句 -->
-    <insert id="insert" parameterType="com.nilo.wms.dto.system.User" statementType="PREPARED"
+    <insert id="insert" parameterType="com.nilo.wms.dto.platform.system.User" statementType="PREPARED"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_sys_user
@@ -54,7 +54,7 @@
     </insert>
 
     <!-- 动态更新语句 -->
-    <update id="update" parameterType="com.nilo.wms.dto.system.User" statementType="PREPARED">
+    <update id="update" parameterType="com.nilo.wms.dto.platform.system.User" statementType="PREPARED">
         update t_sys_user
         <trim prefix="set" suffixOverrides="," suffix="where user_id=#{userId}">
             <if test="warehouseCode != null">

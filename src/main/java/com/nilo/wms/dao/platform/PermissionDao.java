@@ -2,7 +2,7 @@ package com.nilo.wms.dao.platform;
 
 import com.nilo.wms.common.BaseDao;
 import com.nilo.wms.dto.platform.parameter.PermissionParam;
-import com.nilo.wms.dto.system.Permission;
+import com.nilo.wms.dto.platform.system.Permission;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

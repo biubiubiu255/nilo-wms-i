@@ -5,7 +5,7 @@ import com.nilo.wms.common.util.BeanUtils;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dto.common.ResultMap;
 import com.nilo.wms.dto.platform.parameter.PermissionParam;
-import com.nilo.wms.dto.system.Permission;
+import com.nilo.wms.dto.platform.system.Permission;
 import com.nilo.wms.service.system.PermissionService;
 import com.nilo.wms.web.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;

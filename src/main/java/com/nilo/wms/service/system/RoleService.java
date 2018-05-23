@@ -3,7 +3,7 @@ package com.nilo.wms.service.system;
 
 import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.platform.parameter.RoleParam;
-import com.nilo.wms.dto.system.Role;
+import com.nilo.wms.dto.platform.system.Role;
 
 
 public interface RoleService {
