@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nilo.wms.dao.flux.DailyReportDao">
+
+	<!-- 实体bean与数据字段对应关系 -->
+	<resultMap id="staffWorkDO" type="com.nilo.wms.dto.flux.StaffWork">
+		<id property="userId" column="user_id" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result property="date" column="edittime" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result property="logisticsType" column="logisticsType"
+			javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="num" column="num" javaType="java.lang.Integer"
+			jdbcType="VARCHAR" />
+		<result property="orderNum" column="orderNum" javaType="java.lang.Integer"
+			jdbcType="VARCHAR" />
+		<result property="skuNum" column="skuNum" javaType="java.lang.Integer"
+			jdbcType="VARCHAR" />
+		<result property="orderNo" column="orderNo" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result property="price" column="price" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result property="driver" column="driver" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result property="carrier" column="carrier" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result property="customerName" column="consigneename"
+			javaType="java.lang.String" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="queryDailySKUPicked" resultMap="staffWorkDO"
+		parameterType="map">
+		select
+		d.pickedwho as user_id,
+		count(distinct d.orderno) as orderNum,
+		count(sku) as skuNum
+		from
+		ACT_Allocation_Details d
+		where 1 = 1
+		<if test="dateFrom != null and dateFrom != '' ">
+			and to_char(d.pickedtime,'yyyy-mm-dd') >= #{dateFrom}
+		</if>
+		<if test="dateTo != null and dateTo != '' ">
+			<![CDATA[ and to_char(d.pickedtime,'yyyy-mm-dd')  <= #{dateTo}]]>
+		</if>
+		<if test="pickedAccountNo != null and pickedAccountNo != '' ">
+			and pickedwho = #{pickedAccountNo}
+		</if>
+		group by d.pickedwho
+		order by count(sku) desc
+	</select>
+
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="queryDailyOrderPicked" resultMap="staffWorkDO"
+		parameterType="map">
+		select
+		d.pickedwho as user_id,
+		count(distinct d.orderno) as num
+		from
+		ACT_Allocation_Details d
+		where 1 = 1
+		<if test="dateFrom != null and dateFrom != '' ">
+			and to_char(d.pickedtime,'yyyy-mm-dd') >= #{dateFrom}
+		</if>
+		<if test="dateTo != null and dateTo != '' ">
+			<![CDATA[ and to_char(d.pickedtime,'yyyy-mm-dd')  <= #{dateTo}]]>
+		</if>
+		<if test="pickedAccountNo != null and pickedAccountNo != '' ">
+			and pickedwho = #{pickedAccountNo}
+		</if>
+		group by d.pickedwho
+		order by count(sku) desc
+	</select>
+
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="queryDailyVerification" resultMap="staffWorkDO"
+		parameterType="map">
+		select
+		d.checkwho as user_id,
+		count(distinct d.orderno) as num
+		from
+		ACT_Allocation_Details d
+		where 1 = 1
+		<if test="dateFrom != null and dateFrom != '' ">
+			and to_char(d.checktime,'yyyy-mm-dd') >= #{dateFrom}
+		</if>
+		<if test="dateTo != null and dateTo != '' ">
+			<![CDATA[ and to_char(d.checktime,'yyyy-mm-dd')  <= #{dateTo}]]>
+		</if>
+		<if test="pickedAccountNo != null and pickedAccountNo != '' ">
+			and checkwho = #{pickedAccountNo}
+		</if>
+		group by d.checkwho
+		order by count(distinct d.orderno) desc
+	</select>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="queryDailyDispatched" resultMap="staffWorkDO"
+		parameterType="map">
+		select d.editwho as user_id,
+		d.userdefine1 as logisticsType,
+		count(distinct d.orderno) as num
+		from doc_order_header d
+		where 1=1 and
+		d.sostatus='99' and d.userdefine1 in ('FBK','GS','DS' )
+		<if test="dateFrom != null and dateFrom != '' ">
+			and to_char(d.edittime,'yyyy-mm-dd') >= #{dateFrom}
+		</if>
+		<if test="dateTo != null and dateTo != '' ">
+			<![CDATA[ and to_char(d.edittime,'yyyy-mm-dd')  <= #{dateTo}]]>
+		</if>
+		<if test="pickedAccountNo != null and pickedAccountNo != '' ">
+			and editwho = #{pickedAccountNo}
+		</if>
+
+		group by d.editwho,d.userdefine1
+		order by d.editwho,d.userdefine1
+
+	</select>
+
+</mapper>
