@@ -6,12 +6,12 @@ import com.nilo.wms.common.BaseDo;
 /**
  * Created by ronny on 2017/8/30.
  */
-public class OutboundItemDO extends BaseDo<Long> {
+public class OutboundDetail extends BaseDo<Long> {
 
     private String clientCode;
     private String referenceNo;
     private String sku;
-    private int qty;
+    private Integer qty;
 
     public String getClientCode() {
         return clientCode;
@@ -37,11 +37,11 @@ public class OutboundItemDO extends BaseDo<Long> {
         this.sku = sku;
     }
 
-    public int getQty() {
+    public Integer getQty() {
         return qty;
     }
 
-    public void setQty(int qty) {
+    public void setQty(Integer qty) {
         this.qty = qty;
     }
 }

@@ -13,9 +13,7 @@ import java.util.List;
 @XmlRootElement(name = "header")
 public class InboundHeader {
     private String customerId;
-    @JSONField(name = "client_ordersn")
     private String referenceNo;
-    @JSONField(name = "client_ordersn2")
     private String referenceNo2;
     @JSONField(name = "order_type")
     private String asnType;
@@ -42,19 +40,23 @@ public class InboundHeader {
     public void setItemList(List<InboundItem> itemList) {
         this.itemList = itemList;
     }
+
     @XmlElement(name = "OrderNo")
+    @JSONField(name = "client_ordersn")
     public String getReferenceNo() {
         return referenceNo;
     }
-
+    @JSONField(name = "client_ordersn")
     public void setReferenceNo(String referenceNo) {
         this.referenceNo = referenceNo;
     }
+
     @XmlElement(name = "ASNReference2")
+    @JSONField(name = "client_ordersn2")
     public String getReferenceNo2() {
         return referenceNo2;
     }
-
+    @JSONField(name = "client_ordersn2")
     public void setReferenceNo2(String referenceNo2) {
         this.referenceNo2 = referenceNo2;
     }

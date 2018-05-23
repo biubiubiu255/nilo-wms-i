@@ -24,8 +24,8 @@ import com.nilo.wms.dto.flux.FluxResponse;
 import com.nilo.wms.dto.flux.FluxWeight;
 import com.nilo.wms.dto.outbound.OutboundHeader;
 import com.nilo.wms.dto.outbound.OutboundItem;
-import com.nilo.wms.dto.platform.outbound.OutboundDO;
-import com.nilo.wms.dto.platform.outbound.OutboundItemDO;
+import com.nilo.wms.dto.platform.outbound.Outbound;
+import com.nilo.wms.dto.platform.outbound.OutboundDetail;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.OutboundService;
@@ -90,7 +90,7 @@ public class OutboundServiceImpl implements OutboundService {
         Principal principal = SessionLocal.getPrincipal();
         String clientCode = principal.getClientCode();
 
-        OutboundDO outboundDO = outboundDao.queryByReferenceNo(clientCode, outBound.getOrderNo());
+        Outbound outboundDO = outboundDao.queryByReferenceNo(clientCode, outBound.getOrderNo());
         if (outboundDO != null) return;
 
         // 判断订单号是否锁定库存过
@@ -161,7 +161,7 @@ public class OutboundServiceImpl implements OutboundService {
 
         Principal principal = SessionLocal.getPrincipal();
         String clientCode = principal.getClientCode();
-        OutboundDO outboundDO = outboundDao.queryByReferenceNo(clientCode, orderNo);
+        Outbound outboundDO = outboundDao.queryByReferenceNo(clientCode, orderNo);
         if (outboundDO == null) throw new WMSException(BizErrorCode.NOT_EXIST, orderNo);
         if (outboundDO.getStatus() == OutBoundStatusEnum.cancelled.getCode()) return;
 
@@ -186,20 +186,20 @@ public class OutboundServiceImpl implements OutboundService {
             throw new RuntimeException(response.getReturnDesc());
         }
 
-        OutboundDO update = new OutboundDO();
+        Outbound update = new Outbound();
         update.setClientCode(clientCode);
         update.setReferenceNo(orderNo);
         update.setStatus(OutBoundStatusEnum.cancelled.getCode());
         outboundDao.update(update);
 
         // 增加库存
-        List<OutboundItemDO> itemList = outboundItemDao.queryByReferenceNo(principal.getClientCode(), orderNo);
+        List<OutboundDetail> itemList = outboundItemDao.queryByReferenceNo(principal.getClientCode(), orderNo);
         if (itemList != null) {
             //获取redis锁
             Jedis jedis = RedisUtil.getResource();
             String requestId = UUID.randomUUID().toString();
             RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
-            for (OutboundItemDO item : itemList) {
+            for (OutboundDetail item : itemList) {
                 String key = RedisUtil.getSkuKey(clientCode, item.getSku());
                 String sto = jedis.hget(key, RedisUtil.STORAGE);
                 int stoInt = sto == null ? 0 : Integer.parseInt(sto) + item.getQty();
@@ -214,14 +214,14 @@ public class OutboundServiceImpl implements OutboundService {
         if (list == null || list.size() == 0) return;
 
         String clientCode = SessionLocal.getPrincipal().getClientCode();
-        List<OutboundDO> outList = outboundDao.queryByList(clientCode, list);
+        List<Outbound> outList = outboundDao.queryByList(clientCode, list);
         if (outList == null || outList.size() == 0) {
             throw new WMSException(BizErrorCode.OUTBOUND_NOT_EXIST);
         }
         ClientConfig clientConfig = SystemConfig.getClientConfig().get(clientCode);
         InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("wms_outbound_notify");
 
-        for (OutboundDO out : outList) {
+        for (Outbound out : outList) {
             Map<String, Object> map = new HashMap<>();
             if (result) {
                 map.put("status", 99);
@@ -255,7 +255,7 @@ public class OutboundServiceImpl implements OutboundService {
 
         // 修改DMS重量
         List<String> waybillList = new ArrayList<>();
-        for (OutboundDO o : outList) {
+        for (Outbound o : outList) {
             waybillList.add(o.getWaybillNum());
         }
         InterfaceConfig config = SystemConfig.getInterfaceConfig().get(clientCode).get("update_weight");
@@ -348,7 +348,7 @@ public class OutboundServiceImpl implements OutboundService {
     private void recordOutbound(OutboundHeader outBound) {
 
         //保存
-        OutboundDO insert = new OutboundDO();
+        Outbound insert = new Outbound();
         insert.setClientCode(SessionLocal.getPrincipal().getClientCode());
         insert.setReferenceNo(outBound.getOrderNo());
         insert.setOrderType(outBound.getOrderType());
@@ -359,9 +359,9 @@ public class OutboundServiceImpl implements OutboundService {
         outboundDao.insert(insert);
         Principal principal = SessionLocal.getPrincipal();
 
-        List<OutboundItemDO> list = new ArrayList<>();
+        List<OutboundDetail> list = new ArrayList<>();
         for (OutboundItem item : outBound.getItemList()) {
-            OutboundItemDO itemDO = new OutboundItemDO();
+            OutboundDetail itemDO = new OutboundDetail();
             itemDO.setClientCode(principal.getClientCode());
             itemDO.setSku(item.getSku());
             itemDO.setQty(item.getQty());

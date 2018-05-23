@@ -16,7 +16,8 @@ import com.nilo.wms.common.util.XmlUtil;
 import com.nilo.wms.dao.flux.FluxInboundDao;
 import com.nilo.wms.dao.flux.SkuDao;
 import com.nilo.wms.dao.platform.InboundDao;
-import com.nilo.wms.dto.*;
+import com.nilo.wms.dto.StorageInfo;
+import com.nilo.wms.dto.StorageParam;
 import com.nilo.wms.dto.common.ClientConfig;
 import com.nilo.wms.dto.common.InterfaceConfig;
 import com.nilo.wms.dto.flux.FLuxRequest;
@@ -29,8 +30,8 @@ import com.nilo.wms.dto.platform.inbound.Inbound;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.InboundService;
-import com.nilo.wms.service.system.RedisUtil;
 import com.nilo.wms.service.config.SystemConfig;
+import com.nilo.wms.service.system.RedisUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,11 +121,12 @@ public class InboundServiceImpl implements InboundService {
         }
         //保存记录
         Inbound insert = new Inbound();
+        insert.setClientCode(clientCode);
         insert.setReferenceNo(inbound.getReferenceNo());
         insert.setReferenceNo2(inbound.getReferenceNo2());
         insert.setCustomerCode(inbound.getCustomerId());
         insert.setWarehouseCode(inbound.getWarehouseId());
-        insert.setStatus((short) InboundStatusEnum.create.getCode());
+        insert.setStatus(InboundStatusEnum.create.getCode());
         insert.setAsnType(inbound.getAsnType());
         inboundDao.insert(insert);
     }
@@ -153,8 +155,9 @@ public class InboundServiceImpl implements InboundService {
         }
         //修改状态
         Inbound update = new Inbound();
+        update.setClientCode(clientCode);
         update.setReferenceNo(referenceNo);
-        update.setStatus((short) InboundStatusEnum.cancelled.getCode());
+        update.setStatus(InboundStatusEnum.cancelled.getCode());
         inboundDao.update(update);
     }
 
@@ -212,7 +215,7 @@ public class InboundServiceImpl implements InboundService {
         for (InboundHeader in : list) {
             Inbound update = new Inbound();
             update.setReferenceNo(in.getReferenceNo());
-            update.setStatus((short) InboundStatusEnum.closed.getCode());
+            update.setStatus(InboundStatusEnum.closed.getCode());
             inboundDao.update(update);
             for (InboundItem item : in.getItemList()) {
                 skuList.add(item.getSku());

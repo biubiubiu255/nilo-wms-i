@@ -5,15 +5,24 @@ import com.nilo.wms.common.BaseDo;
 
 public class Inbound extends BaseDo<Integer> {
 
+    private String clientCode;
     private String customerCode;
     private String warehouseCode;
     private String asnNo;
     private String referenceNo;
     private String referenceNo2;
     private String asnType;
-    private Short  status;
+    private Integer  status;
     private String supplierId;
     private String supplierName;
+
+    public String getClientCode() {
+        return clientCode;
+    }
+
+    public void setClientCode(String clientCode) {
+        this.clientCode = clientCode;
+    }
 
     public String getCustomerCode() {
         return customerCode;
@@ -63,11 +72,11 @@ public class Inbound extends BaseDo<Integer> {
         this.asnType = asnType;
     }
 
-    public Short getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Short status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

@@ -19,7 +19,7 @@ import java.util.List;
 public class OutboundHeader {
     private String customerId;
     private String warehouseId;
-    @JSONField(name = "client_ordersn")
+
     private String orderNo;
     private String wmsNo;
     @JSONField(name = "add_time")
@@ -82,12 +82,13 @@ public class OutboundHeader {
     public void setWarehouseId(String warehouseId) {
         this.warehouseId = warehouseId;
     }
-
+    @JSONField(name = "client_ordersn")
     public String getOrderNo() {
         return orderNo;
     }
 
     @XmlElement(name = "OrderNo")
+    @JSONField(name = "client_ordersn")
     public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
     }

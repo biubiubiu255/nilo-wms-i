@@ -19,7 +19,9 @@
                 jdbcType="VARCHAR"/>
         <result property="asnType" column="asn_type" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
-        <result property="storeId" column="store_id" javaType="java.lang.String"
+        <result property="supplierId" column="supplier_Id" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="supplierName" column="supplier_name" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="status" column="status" javaType="java.lang.Integer"
                 jdbcType="INTEGER"/>
@@ -30,7 +32,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id ,client_code,customer_code,warehouse_code,reference_no,reference_no2,asn_type,store_id,status,created_time , updated_time ,version
+        id ,client_code,customer_code,warehouse_code,reference_no,reference_no2,asn_type,supplier_Id,supplier_name,status,created_time , updated_time ,version
     </sql>
 
     <!-- 插入语句 -->
@@ -38,9 +40,9 @@
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_inbound
-        ( client_code,customer_code,warehouse_code,reference_no,reference_no2,asn_type,store_id,status,created_time , updated_time ,version)
+        ( client_code,customer_code,warehouse_code,reference_no,reference_no2,asn_type,supplier_Id,supplier_name,status,created_time , updated_time ,version)
         VALUES
-        (#{clientCode},#{customerCode},#{warehouseCode}, #{referenceNo},#{referenceNo2},#{asnType},#{storeId},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+        (#{clientCode},#{customerCode},#{warehouseCode}, #{referenceNo},#{referenceNo2},#{asnType},#{supplierId},#{supplierName},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
     </insert>
     <!-- 动态更新语句 -->
     <update id="update" parameterType="com.nilo.wms.dto.platform.inbound.Inbound" statementType="PREPARED">

@@ -6,7 +6,7 @@ import com.nilo.wms.common.BaseDo;
 /**
  * Created by ronny on 2017/8/30.
  */
-public class OutboundDO extends BaseDo<Long> {
+public class Outbound extends BaseDo<Long> {
 
     private String clientCode;
     private String customerCode;
@@ -14,7 +14,7 @@ public class OutboundDO extends BaseDo<Long> {
     private String referenceNo;
     private String orderType;
     private String waybillNum;
-    private int status;
+    private Integer status;
 
     public String getWaybillNum() {
         return waybillNum;
@@ -64,11 +64,11 @@ public class OutboundDO extends BaseDo<Long> {
         this.orderType = orderType;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 }
