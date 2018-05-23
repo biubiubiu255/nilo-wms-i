@@ -45,13 +45,12 @@ public class BaseController {
         return JSON.toJSONString(map);
     }
 
-    protected String toPaginationLayUIData(Integer totalCount, Integer limit, List data) {
+    protected String toLayUIData(Integer totalCount, List data) {
         JSONObject jo = new JSONObject();
         jo.put("count", totalCount);
         jo.put("code", 0);
         jo.put("msg", 0);
         jo.put("data", data);
-        jo.put("pages", totalCount / limit);
         return jo.toJSONString();
     }
 

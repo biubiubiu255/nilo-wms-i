@@ -12,6 +12,8 @@ public class StorageInfo implements Serializable{
     @JSONField(name = "sku")
     private String sku;
     private Integer storage;
+    @JSONField(name = "cache_storage")
+    private Integer cacheStorage;
     @JSONField(name = "lock_storage")
     private Integer lockStorage;
     @JSONField(name = "store_id")
@@ -57,5 +59,13 @@ public class StorageInfo implements Serializable{
 
     public void setSafeStorage(Integer safeStorage) {
         this.safeStorage = safeStorage;
+    }
+
+    public Integer getCacheStorage() {
+        return cacheStorage;
+    }
+
+    public void setCacheStorage(Integer cacheStorage) {
+        this.cacheStorage = cacheStorage;
     }
 }

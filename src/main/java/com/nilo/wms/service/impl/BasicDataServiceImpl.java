@@ -139,6 +139,10 @@ public class BasicDataServiceImpl implements BasicDataService {
                 String key = RedisUtil.getSkuKey(principal.getClientCode(), s.getSku());
                 String lockSto = RedisUtil.hget(key, RedisUtil.LOCK_STORAGE);
                 int lockStoInt = ((lockSto == null ? 0 : Integer.parseInt(lockSto)));
+
+                String sto = RedisUtil.hget(key, RedisUtil.STORAGE);
+                int stoInt = ((sto == null ? 0 : Integer.parseInt(sto)));
+                s.setCacheStorage(stoInt);
                 s.setLockStorage(lockStoInt);
             }
             pageResult.setData(list);
@@ -187,7 +191,7 @@ public class BasicDataServiceImpl implements BasicDataService {
             if (sto == null || lockStoInt + qty > stoInt) {
                 Map<String, String> notEnoughMap = new HashMap<>();
                 notEnoughMap.put("sku", sku);
-                notEnoughMap.put("storage", "" + stoInt);
+                notEnoughMap.put("inventory", "" + stoInt);
                 notEnoughMap.put("lock_storage", "" + lockStoInt);
                 result.add(notEnoughMap);
                 lockSuccess = false;
