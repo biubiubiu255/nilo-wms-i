@@ -7,7 +7,7 @@ import com.nilo.wms.common.exception.IllegalTokenException;
 import com.nilo.wms.common.exception.NoPermissionException;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.TokenUtil;
-import com.nilo.wms.service.system.RedisUtil;
+import com.nilo.wms.service.platform.RedisUtil;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;

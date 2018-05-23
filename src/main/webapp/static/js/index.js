@@ -11,7 +11,7 @@ $(function () {
     Q.reg('home', function () {
         load('home');
     }).reg('system', function (path) {
-        load('system/' + path);
+        load('platform/' + path);
     }).reg('basic', function (path) {
         load('basic/' + path);
     }).reg('inbound', function (path) {

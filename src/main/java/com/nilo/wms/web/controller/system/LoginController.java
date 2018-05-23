@@ -11,9 +11,9 @@ import com.nilo.wms.dto.platform.common.ResultMap;
 
 import com.nilo.wms.dto.platform.system.Permission;
 import com.nilo.wms.dto.platform.system.User;
-import com.nilo.wms.service.system.PermissionService;
-import com.nilo.wms.service.system.RedisUtil;
-import com.nilo.wms.service.system.UserService;
+import com.nilo.wms.service.platform.PermissionService;
+import com.nilo.wms.service.platform.RedisUtil;
+import com.nilo.wms.service.platform.UserService;
 import com.nilo.wms.web.BaseController;
 import io.jsonwebtoken.Claims;
 import io.leopard.web.captcha.CaptchaUtil;

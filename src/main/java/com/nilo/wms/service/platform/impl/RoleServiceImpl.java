@@ -1,4 +1,4 @@
-package com.nilo.wms.service.system.impl;
+package com.nilo.wms.service.platform.impl;
 
 import com.nilo.wms.common.exception.CheckErrorCode;
 import com.nilo.wms.common.exception.SysErrorCode;
@@ -10,8 +10,8 @@ import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.platform.parameter.RoleParam;
 import com.nilo.wms.dto.platform.system.Permission;
 import com.nilo.wms.dto.platform.system.Role;
-import com.nilo.wms.service.system.RedisUtil;
-import com.nilo.wms.service.system.RoleService;
+import com.nilo.wms.service.platform.RedisUtil;
+import com.nilo.wms.service.platform.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

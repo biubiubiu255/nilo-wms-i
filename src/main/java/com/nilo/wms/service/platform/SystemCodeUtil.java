@@ -1,4 +1,4 @@
-package com.nilo.wms.service.system;
+package com.nilo.wms.service.platform;
 
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

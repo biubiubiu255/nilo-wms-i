@@ -1,4 +1,4 @@
-package com.nilo.wms.service.system.impl;
+package com.nilo.wms.service.platform.impl;
 
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.CheckErrorCode;
@@ -11,8 +11,8 @@ import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.common.ZTree;
 import com.nilo.wms.dto.platform.parameter.PermissionParam;
 import com.nilo.wms.dto.platform.system.Permission;
-import com.nilo.wms.service.system.PermissionService;
-import com.nilo.wms.service.system.RedisUtil;
+import com.nilo.wms.service.platform.PermissionService;
+import com.nilo.wms.service.platform.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

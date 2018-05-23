@@ -1,4 +1,4 @@
-package com.nilo.wms.service.system;
+package com.nilo.wms.service.platform;
 
 /**
  * 系统服务

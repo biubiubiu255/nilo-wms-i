@@ -2,7 +2,7 @@ package com.nilo.wms.web.tag;
 
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.TokenUtil;
-import com.nilo.wms.service.system.RedisUtil;
+import com.nilo.wms.service.platform.RedisUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;

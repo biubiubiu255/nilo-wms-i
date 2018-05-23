@@ -6,7 +6,7 @@ import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dto.platform.common.ResultMap;
 import com.nilo.wms.dto.platform.parameter.UserParam;
 import com.nilo.wms.dto.platform.system.User;
-import com.nilo.wms.service.system.UserService;
+import com.nilo.wms.service.platform.UserService;
 import com.nilo.wms.web.BaseController;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;

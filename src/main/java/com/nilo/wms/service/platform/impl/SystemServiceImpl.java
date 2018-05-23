@@ -1,8 +1,7 @@
-package com.nilo.wms.service.system.impl;
+package com.nilo.wms.service.platform.impl;
 
 import com.nilo.wms.dao.platform.*;
 import com.nilo.wms.dto.common.ClientConfig;
-import com.nilo.wms.dto.common.Dictionary;
 import com.nilo.wms.dto.common.InterfaceConfig;
 import com.nilo.wms.dto.fee.FeeConfig;
 import com.nilo.wms.dto.fee.FeePrice;
@@ -10,8 +9,8 @@ import com.nilo.wms.dto.platform.parameter.RoleParam;
 import com.nilo.wms.dto.platform.system.Permission;
 import com.nilo.wms.dto.platform.system.Role;
 import com.nilo.wms.service.config.SystemConfig;
-import com.nilo.wms.service.system.RedisUtil;
-import com.nilo.wms.service.system.SystemService;
+import com.nilo.wms.service.platform.RedisUtil;
+import com.nilo.wms.service.platform.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -28,7 +28,7 @@ import com.nilo.wms.dto.outbound.OutboundItem;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.config.SystemConfig;
-import com.nilo.wms.service.system.RedisUtil;
+import com.nilo.wms.service.platform.RedisUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

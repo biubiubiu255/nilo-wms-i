@@ -1,4 +1,4 @@
-package com.nilo.wms.service.system.impl;
+package com.nilo.wms.service.platform.impl;
 
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.CheckErrorCode;
@@ -10,7 +10,7 @@ import com.nilo.wms.dao.platform.UserDao;
 import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.platform.parameter.UserParam;
 import com.nilo.wms.dto.platform.system.User;
-import com.nilo.wms.service.system.UserService;
+import com.nilo.wms.service.platform.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.nilo.wms.service.system;
+package com.nilo.wms.service.platform;
 
 import com.nilo.wms.common.Principal;
 import com.nilo.wms.common.exception.SysErrorCode;

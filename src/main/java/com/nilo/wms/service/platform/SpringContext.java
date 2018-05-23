@@ -3,7 +3,7 @@
  * Copyright (c) 2016. All Rights Reserved.
  */
 
-package com.nilo.wms.service.system;
+package com.nilo.wms.service.platform;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;

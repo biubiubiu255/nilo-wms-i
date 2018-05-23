@@ -6,7 +6,6 @@ package com.nilo.wms.web.controller;
 
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.CheckErrorCode;
-import com.nilo.wms.common.exception.SysErrorCode;
 import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.StringUtil;
@@ -14,7 +13,7 @@ import com.nilo.wms.dao.flux.SkuDao;
 import com.nilo.wms.dto.common.ClientConfig;
 import com.nilo.wms.dto.StorageInfo;
 import com.nilo.wms.dto.StorageParam;
-import com.nilo.wms.service.system.RedisUtil;
+import com.nilo.wms.service.platform.RedisUtil;
 import com.nilo.wms.service.config.SystemConfig;
 import com.nilo.wms.web.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
