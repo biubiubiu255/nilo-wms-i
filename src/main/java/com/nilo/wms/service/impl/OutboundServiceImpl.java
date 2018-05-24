@@ -16,6 +16,7 @@ import com.nilo.wms.common.util.XmlUtil;
 import com.nilo.wms.dao.flux.FluxOutboundDao;
 import com.nilo.wms.dao.platform.OutboundDao;
 import com.nilo.wms.dao.platform.OutboundItemDao;
+import com.nilo.wms.dto.StorageInfo;
 import com.nilo.wms.dto.common.ClientConfig;
 import com.nilo.wms.dto.common.InterfaceConfig;
 import com.nilo.wms.dto.flux.FLuxRequest;
@@ -99,7 +100,7 @@ public class OutboundServiceImpl implements OutboundService {
         boolean keyExist = RedisUtil.hasKey(orderNoKey);
         //锁定库存记录不存在
         if (!keyExist) {
-            List<Map<String, String>> lockResp = basicDataService.lockStorage(outBound);
+            List<StorageInfo> lockResp = basicDataService.lockStorage(outBound);
             if (lockResp != null) {
                 throw new WMSException(BizErrorCode.STORAGE_NOT_ENOUGH);
             }

@@ -7,7 +7,7 @@ import java.util.Map;
  * Created by admin on 2018/2/6.
  */
 public enum MethodEnum {
-    STORAGE("nos.inventory.info", "Storage Info "),
+    STORAGE("nos.storage.info", "Storage Info "),
     SKU("nos.sku.info", "SKU Info"),
     CUSTOMER("nos.customer.info", "Customer Info "),
     OUTBOUND_INFO("nos.outbound.info", "Outbound Info "),
@@ -17,8 +17,8 @@ public enum MethodEnum {
     CREATE_OUTBOUND("nos.outbound.create", "nos.outbound.create"),
     CANCEL_OUTBOUND("nos.outbound.cancel", "nos.outbound.cancel"),
     OUTBOUND_STATUS_UPDATE("nos.outbound.status", "outbound.status"),
-    LOCK_STORAGE("nos.inventory.lock", "Storage Lock "),
-    UN_LOCK_STORAGE("nos.inventory.unlock", "Storage UnLock "),;
+    LOCK_STORAGE("nos.storage.lock", "Storage Lock "),
+    UN_LOCK_STORAGE("nos.storage.unlock", "Storage UnLock "),;
     private String code;
     private String value;
 

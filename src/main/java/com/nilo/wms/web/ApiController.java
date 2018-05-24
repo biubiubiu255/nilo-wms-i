@@ -117,7 +117,7 @@ public class ApiController extends BaseController {
             }
             case LOCK_STORAGE: {
                 OutboundHeader outBound = JSON.parseObject(data, OutboundHeader.class);
-                List<Map<String, String>> response = basicDataService.lockStorage(outBound);
+                List<StorageInfo> response = basicDataService.lockStorage(outBound);
                 if (response == null) {
                     break;
                 } else {

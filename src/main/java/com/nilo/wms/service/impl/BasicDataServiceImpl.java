@@ -151,7 +151,7 @@ public class BasicDataServiceImpl implements BasicDataService {
     }
 
     @Override
-    public List<Map<String, String>> lockStorage(OutboundHeader header) {
+    public List<StorageInfo> lockStorage(OutboundHeader header) {
 
         //check
         AssertUtil.isNotNull(header, SysErrorCode.REQUEST_IS_NULL);
@@ -175,7 +175,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         String requestId = UUID.randomUUID().toString();
         RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
 
-        List<Map<String, String>> result = new ArrayList<>();
+        List<StorageInfo> result = new ArrayList<>();
 
         Map<String, Integer> lockRecord = new HashMap<>();
         boolean lockSuccess = true;
@@ -189,11 +189,11 @@ public class BasicDataServiceImpl implements BasicDataService {
             int stoInt = sto == null ? 0 : Integer.parseInt(sto);
             //校验库存是否足够
             if (sto == null || lockStoInt + qty > stoInt) {
-                Map<String, String> notEnoughMap = new HashMap<>();
-                notEnoughMap.put("sku", sku);
-                notEnoughMap.put("inventory", "" + stoInt);
-                notEnoughMap.put("lock_storage", "" + lockStoInt);
-                result.add(notEnoughMap);
+                StorageInfo s = new StorageInfo();
+                s.setSku(sku);
+                s.setStorage(stoInt);
+                s.setLockStorage(lockStoInt);
+                result.add(s);
                 lockSuccess = false;
                 continue;
             }

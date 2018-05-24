@@ -18,7 +18,7 @@ public interface BasicDataService {
 
     PageResult<StorageInfo> queryStorageDetail(StorageParam param);
 
-    List<Map<String, String>> lockStorage(OutboundHeader header);
+    List<StorageInfo> lockStorage(OutboundHeader header);
 
     void unLockStorage(String orderNo);
 
