@@ -19,6 +19,7 @@ public enum BizErrorCode implements ErrorCode {
     USERNAME_EXIST("username is already exist.", "200011"),
     PERMISSION_ID_EXIST("permissionId is already exist.", "200013"),
     NOT_LOCK_STORAGE("need lock inventory first", "200014"),
+    CLIENT_ORDER_SN_NOT_EXIST("client_ordersn not exist", "200015"),
 
     ;
 

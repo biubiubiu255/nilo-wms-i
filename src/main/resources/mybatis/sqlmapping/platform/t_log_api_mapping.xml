@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nilo.wms.dao.platform.ApiLogDao">
+
+    <!-- 实体bean与数据字段对应关系 -->
+    <resultMap id="apiLog" type="com.nilo.wms.dto.platform.ApiLog">
+        <result property="id" column="id" javaType="java.lang.Long"
+                jdbcType="INTEGER"/>
+
+        <result property="method" column="method" javaType="java.lang.String"
+                 jdbcType="VARCHAR"/>
+        <result property="appKey" column="app_key" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="data" column="data" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="sign" column="sign" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="response" column="response" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" javaType="java.lang.Long"
+                jdbcType="INTEGER"/>
+        <result property="status" column="status" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id ,method,app_key,data,sign,response,status,created_time
+    </sql>
+
+    <!-- 插入语句 -->
+    <insert id="insert" parameterType="com.nilo.wms.dto.platform.ApiLog" statementType="PREPARED"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO t_log_api
+        ( method,app_key,data,sign,response,status,created_time)
+        VALUES
+        (#{method},#{appKey},#{data},#{sign},#{response},#{status} ,UNIX_TIMESTAMP(NOW()))
+    </insert>
+    <!-- 动态更新语句 -->
+    <update id="update" parameterType="com.nilo.wms.dto.platform.ApiLog" statementType="PREPARED">
+        update t_log_api
+        <trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="response != null and response != ''">
+                result = #{result},
+            </if>
+        </trim>
+    </update>
+
+
+    <select id="queryById" resultMap="apiLog" statementType="PREPARED">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_log_api where id=#{id}
+    </select>
+
+
+    <select id="queryFailed" resultMap="apiLog" statementType="PREPARED">
+        SELECT <include refid="Base_Column_List"/> FROM t_log_api WHERE  status = 0
+    </select>
+</mapper>

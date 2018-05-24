@@ -5,12 +5,17 @@ import com.alibaba.fastjson.JSONArray;
 import com.nilo.wms.common.enums.MethodEnum;
 import com.nilo.wms.common.exception.BizErrorCode;
 import com.nilo.wms.common.exception.WMSException;
-import com.nilo.wms.dto.*;
+import com.nilo.wms.dao.platform.ApiLogDao;
+import com.nilo.wms.dto.SkuInfo;
+import com.nilo.wms.dto.StorageInfo;
+import com.nilo.wms.dto.StorageParam;
+import com.nilo.wms.dto.SupplierInfo;
 import com.nilo.wms.dto.common.PageResult;
 import com.nilo.wms.dto.flux.FluxInbound;
 import com.nilo.wms.dto.flux.FluxOutbound;
 import com.nilo.wms.dto.inbound.InboundHeader;
 import com.nilo.wms.dto.outbound.OutboundHeader;
+import com.nilo.wms.dto.platform.ApiLog;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.InboundService;
 import com.nilo.wms.service.OutboundService;
@@ -26,7 +31,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by ronny on 2017/8/30.
@@ -35,7 +39,8 @@ import java.util.Map;
 public class ApiController extends BaseController {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-
+    @Autowired
+    private ApiLogDao apiLogDao;
     @Autowired
     private OutboundService outBoundService;
     @Autowired
@@ -138,13 +143,41 @@ public class ApiController extends BaseController {
                     break;
             }
         } catch (WMSException e) {
-            log.error("API Exception ",e);
+            addApiLog(param, e.getMessage(), false);
+            log.error("API Exception ", e);
             return ResultMap.error(e.getCode(), e.getMessage()).put("response", response).toJson();
         } catch (Exception e) {
-            log.error("API Exception ",e);
+            addApiLog(param, e.getMessage(), false);
+            log.error("API Exception ", e);
             return ResultMap.error(e.getMessage()).put("response", response).toJson();
         }
+        addApiLog(param, "SUCCESS", true);
         return ResultMap.success().put("response", response).toJson();
+    }
+
+    private void addApiLog(RequestParam param, String response, boolean result) {
+
+        MethodEnum[] need = new MethodEnum[]{MethodEnum.CREATE_INBOUND, MethodEnum.CREATE_OUTBOUND};
+
+        boolean record = false;
+        for (MethodEnum methodEnum : need) {
+            if (methodEnum == param.getMethod()) {
+                record = true;
+                break;
+            }
+        }
+        if (!record) return;
+
+
+        ApiLog log = new ApiLog();
+        log.setAppKey(param.getApp_key());
+        log.setData(param.getData());
+        log.setMethod(param.getMethod().getCode());
+        log.setSign(param.getSign());
+        log.setResponse(response);
+        log.setStatus(result ? 1 : 0);
+
+        apiLogDao.insert(log);
     }
 
 }

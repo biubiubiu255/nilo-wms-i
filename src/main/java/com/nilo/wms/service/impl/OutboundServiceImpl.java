@@ -283,7 +283,7 @@ public class OutboundServiceImpl implements OutboundService {
         Principal principal = SessionLocal.getPrincipal();
 
         FluxOutbound order = fluxOutboundDao.queryByReferenceNo(principal.getCustomerId(), orderNo);
-        if (order == null) return null;
+        if (order == null) throw new WMSException(BizErrorCode.CLIENT_ORDER_SN_NOT_EXIST);
         order.setStatusDesc(OutBoundStatusEnum.getEnum(order.getStatus()).getDesc_e());
         return order;
     }
