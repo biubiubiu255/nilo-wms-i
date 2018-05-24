@@ -28,6 +28,17 @@
 		<result property="customerName" column="consigneename"
 			javaType="java.lang.String" jdbcType="VARCHAR" />
 	</resultMap>
+	<!-- 实体bean与数据字段对应关系 -->
+	<resultMap id="inventoryLocation" type="com.nilo.wms.dto.flux.InventoryLocation">
+		<id property="sku" column="sku" javaType="java.lang.String"
+			jdbcType="VARCHAR" />
+		<result property="skuDesc" column="sku_desc" javaType="java.lang.String"
+				jdbcType="VARCHAR" />
+		<result property="locationId" column="locationid"
+				javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="traceId" column="traceid" javaType="java.lang.String"
+				jdbcType="VARCHAR" />
+	</resultMap>
 
 	<!-- 查询（根据主键ID查询） -->
 	<select id="daily_pick" resultMap="staffWorkDO"
@@ -99,4 +110,31 @@
 
 	</select>
 
+	<select id="queryByShelf" resultMap="inventoryLocation">
+		SELECT
+		a.sku as sku,
+		substr(b.descr_e,0,70) as sku_desc,
+		a.locationid,
+		a.traceid,
+		SUM(A.QTY ) as qty
+		from inv_lot_loc_id a
+		LEFT JOIN BAS_SKU B
+		ON A.SKU = B.SKU and
+		b.customerid=a.customerid
+		LEFT JOIN INV_LOT_ATT D
+		ON d.lotnum=a.lotnum
+		LEFT JOIN VIEW_MULTIWAREHOUSE C
+		ON A.LOCATIONID = C.LOCATIONID
+		LEFT JOIN
+		BAS_LOCATION E ON E.LOCATIONID=A.LOCATIONID
+		WHERE
+		<![CDATA[
+    D.LOTATT08 = 'N'
+    AND E.PICKZONE <>'KE010301'
+    AND A.LOCATIONID NOT IN ('STAGEKE01','SORTATIONKE01')	]]>
+		and a.LOCATIONID LIKE CONCAT( CONCAT('%KE01-01-',#{shelf}),'%')
+		group BY a.sku,b.descr_e,a.locationid, a.traceid
+		order by a.locationid
+		,a.traceid
+	</select>
 </mapper>

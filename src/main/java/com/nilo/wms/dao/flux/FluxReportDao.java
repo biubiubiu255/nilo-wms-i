@@ -4,6 +4,7 @@
  */
 package com.nilo.wms.dao.flux;
 
+import com.nilo.wms.dto.flux.InventoryLocation;
 import com.nilo.wms.dto.flux.StaffWork;
 import org.springframework.stereotype.Repository;
 
@@ -19,5 +20,7 @@ public interface FluxReportDao {
     List<StaffWork> daily_verify(Map<String, String> param);
 
     List<StaffWork> daily_dispatch(Map<String, String> param);
+
+    List<InventoryLocation> queryByShelf(String shelf);
 
 }

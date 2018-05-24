@@ -3,6 +3,7 @@ package com.nilo.wms.web.controller.report;
 import com.nilo.wms.common.annotation.RequiresPermissions;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dao.flux.FluxReportDao;
+import com.nilo.wms.dto.flux.InventoryLocation;
 import com.nilo.wms.dto.flux.StaffWork;
 import com.nilo.wms.web.BaseController;
 import org.apache.commons.beanutils.MethodUtils;
@@ -73,4 +74,15 @@ public class FluxReportController extends BaseController {
         List<StaffWork> list = fluxReportDao.daily_dispatch(param);
         return toLayUIData(list.size(), list);
     }
+
+    @RequiresPermissions("3003")
+    @GetMapping("/inventory_location")
+    @ResponseBody
+    public String inventory_location( String shelf) {
+
+        List<InventoryLocation> list = fluxReportDao.queryByShelf(shelf);
+        return toLayUIData(list.size(), list);
+    }
+
+
 }

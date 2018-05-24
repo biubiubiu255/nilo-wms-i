@@ -59,7 +59,7 @@
                 {type: 'numbers'},
                 {field: 'userId', sort: true, title: getI18nAttr('system_user_username')},
                 {field: 'orderType', sort: true, title: getI18nAttr('orderType')},
-                {field: 'orderNum', sort: true, title: getI18nAttr('orderNum')},
+                {field: 'orderNum', sort: true, title: getI18nAttr('report_order_num')},
             ]],
             done: function (res, curr, count) {
                 refreshI18n();
@@ -76,6 +76,11 @@
             var value = $("#searchValue").val();
             if (value == '') {
                 key = '';
+            }
+            var date_range = $("#date_range").val();
+            if(!date_range){
+                layer.msg("Pls select date.", {icon: 2});
+                return;
             }
             layui.table.reload('table', {
                 where: {

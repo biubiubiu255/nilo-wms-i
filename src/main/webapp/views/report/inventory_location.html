@@ -1,0 +1,92 @@
+<div class="content-header">
+	<span class="layui-breadcrumb">
+	  <a href="#!home"><span i18n="home_page"></span></a>
+	  <a><cite><span i18n="report_daily_pick"></span> </cite></a>
+	</span>
+    <div class="layui-form toolbar">
+
+        <div class="layui-inline">
+            <label class="layui-form-label"><span i18n="location_shelf"></span>：</label>
+            <div class="layui-input-inline">
+                <select id="shelf">
+                    <option value="" i18n="please_select"></option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value=20">20</option>
+                </select>
+            </div>
+        </div>
+
+        <button id="searchBtn" class="layui-btn search-btn" permission="10011"><i class="layui-icon">&#xe615;</i><span
+                i18n="search"/></button>
+        &emsp;
+        <button id="exportBtn" class="layui-btn search-btn" permission="10012"><i class="layui-icon">&#xe654;</i><span
+                i18n="Export"/>
+        </button>
+    </div>
+
+</div>
+<table class="layui-table" id="table" lay-filter="table"></table>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        refreshPermission();
+        refreshI18n();
+
+        //渲染表格
+        layui.table.render({
+            elem: '#table',
+            url: '/servlet/report/inventory_location',
+            where: {
+                token: getToken()
+            },
+            page: true,
+            cols: [[
+                {type: 'numbers'},
+                {field: 'userId', sort: true, title: getI18nAttr('system_user_username')},
+                {field: 'orderNum', sort: true, title: getI18nAttr('report_order_num')},
+            ]],
+            done: function (res, curr, count) {
+                refreshI18n();
+            }
+        });
+
+        //搜索按钮点击事件
+        $("#searchBtn").click(function () {
+            doSearch(table);
+        });
+
+        function doSearch(table) {
+            var shelf = $("#shelf").val();
+            if(!shelf){
+                layer.msg("Pls select shelf.", {icon: 2});
+                return;
+            }
+            layui.table.reload('table', {
+                where: {
+                    shelf: shelf
+                }
+            });
+        }
+    });
+
+</script>
