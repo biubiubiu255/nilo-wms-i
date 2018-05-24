@@ -14,23 +14,27 @@ public class NotifyDispatchTest {
 
     public static void main(String[] args) {
 
-        String orderNo = "10000000557501";
-        String url = "http://localhost:8082/servlet/api.html";
-        String method = "confirmSOData";
-        String data = "{\"data\":{\"orderinfo\":[{\"CustomerID\":\"KILIMALL\",\"DeliveryNo\":\"KE10102410\",\"OrderNo\":" + orderNo + ",\"OrderType\":\"SELL\",\"Udf03\":\"Timothy Ngari\",\"Udf04\":\"0792001361\",\"Udf05\":\"Exdous\",\"Udf06\":\"0\",\"Udf08\":\"\",\"Udf09\":\"\",\"WarehouseID\":\"KE01\"}]}}";
-        String sign = DigestUtils.md5Hex("12345678" + data + "12345678").toUpperCase();
+        String[] list = new String[]{"10000000573165"
+        };
+        for(String orderNo:list) {
 
-        Map<String, String> param = new HashMap<>();
-        param.put("data", URLEncoder.encode(data));
-        param.put("sign", sign);
-        param.put("op", method);
-        try {
-            String response = HttpUtil.post(url, param);
+            String url = "https://mobile.kilimall.co.ke/index.php?act=wms_api";
+            String method = "confirmSOData";
+            String data = "{\"data\":{\"orderinfo\":[{\"CustomerID\":\"KILIMALL\",\"DeliveryNo\":\"KE10102410\",\"OrderNo\":" + orderNo + ",\"OrderType\":\"SELL\",\"Udf03\":\"Timothy Ngari\",\"Udf04\":\"0792001361\",\"Udf05\":\"Exdous\",\"Udf06\":\"0\",\"Udf08\":\"\",\"Udf09\":\"\",\"WarehouseID\":\"KE01\"}]}}";
+            String sign = DigestUtils.md5Hex("12345678" + data + "12345678").toUpperCase();
 
-            System.out.println(response);
+            Map<String, String> param = new HashMap<>();
+            param.put("data", URLEncoder.encode(data));
+            param.put("sign", sign);
+            param.put("op", method);
+            try {
+                String response = HttpUtil.post(url, param);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+                System.out.println(response);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

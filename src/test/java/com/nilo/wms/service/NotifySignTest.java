@@ -14,23 +14,28 @@ public class NotifySignTest {
 
     public static void main(String[] args) {
 
-        String orderNo = "10000000557179";
-        String url = "https://mobile.kilimall.co.ke/index.php?act=dms_api";
-        String method = "confirmorder";
-        String data = "{\"carrier\":\"Nilo\",\"consignee\":\"loise mghoi\",\"operateTime\":\"2018-04-11 12:29:15\",\"orderInfo\":[{\"orderNo\":"+orderNo+",\"status\":\"10\"}],\"orderNo\":"+orderNo+",\"orderPrice\":\"0\",\"remark\":\"loise mghoi\",\"rider\":\"40001\",\"transId\":\"\"}";
-        String sign = DigestUtils.md5Hex("12345678" + data + "12345678").toUpperCase();
+        String[] list = new String[]{
 
-        Map<String, String> param = new HashMap<>();
-        param.put("data", URLEncoder.encode(data));
-        param.put("sign", sign);
-        param.put("op", method);
-        try {
-            String response = HttpUtil.post(url, param);
+        };
 
-            System.out.println(response);
+        for(String orderNo :list) {
+            String url = "https://mobile.kilimall.co.ke/index.php?act=dms_api";
+            String method = "confirmorder";
+            String data = "{\"carrier\":\"Nilo\",\"consignee\":\"loise mghoi\",\"operateTime\":\"2018-04-11 12:29:15\",\"orderInfo\":[{\"orderNo\":" + orderNo + ",\"status\":\"10\"}],\"orderNo\":" + orderNo + ",\"orderPrice\":\"0\",\"remark\":\"loise mghoi\",\"rider\":\"40001\",\"transId\":\"\"}";
+            String sign = DigestUtils.md5Hex("12345678" + data + "12345678").toUpperCase();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            Map<String, String> param = new HashMap<>();
+            param.put("data", URLEncoder.encode(data));
+            param.put("sign", sign);
+            param.put("op", method);
+            try {
+                String response = HttpUtil.post(url, param);
+
+                System.out.println(response);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

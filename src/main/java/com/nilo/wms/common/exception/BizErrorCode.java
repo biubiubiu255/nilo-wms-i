@@ -11,14 +11,14 @@ public enum BizErrorCode implements ErrorCode {
     NOT_EXIST("{0} not exist.", "200003"),
     OUTBOUND_ALREADY_EXIST("referenceNo {0} already exist.", "200004"),
     INBOUND_ALREADY_EXIST("referenceNo {0} already exist.", "200005"),
-    STORAGE_NOT_ENOUGH("storage not enough.", "200006"),
+    STORAGE_NOT_ENOUGH("inventory not enough.", "200006"),
     OUTBOUND_NOT_EXIST("referenceNo not exist.", "200007"),
     ORDER_TYPE_NOT_EXIST("order_type not exist.", "20008"),
     RANDOM_CODE_ERROR("random code error.", "20009"),
     USERNAME_PASSWORD_ERROR("username or password error.", "200010"),
     USERNAME_EXIST("username is already exist.", "200011"),
     PERMISSION_ID_EXIST("permissionId is already exist.", "200013"),
-    NOT_LOCK_STORAGE("need lock storage first", "200014"),
+    NOT_LOCK_STORAGE("need lock inventory first", "200014"),
 
     ;
 

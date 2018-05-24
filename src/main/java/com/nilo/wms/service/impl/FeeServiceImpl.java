@@ -57,11 +57,11 @@ public class FeeServiceImpl implements FeeService {
             f.setSeller_id(d.getStoreId());
             f.setFactor1(d.getCategories());
 
-            f.setFactor2(getFactor2(clientCode, "storage", d));
+            f.setFactor2(getFactor2(clientCode, "inventory", d));
             f.setClass_id(d.getCategories());
             f.setQty(d.getQty());
             f.setSku(d.getSku());
-            f.setReceivable_money(getMoney(clientCode, "storage", d.getCategories(), d.getQty(), false));
+            f.setReceivable_money(getMoney(clientCode, "inventory", d.getCategories(), d.getQty(), false));
             resultList.add(f);
         }
 

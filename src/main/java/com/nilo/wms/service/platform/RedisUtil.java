@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class RedisUtil {
 
-    public static final String STORAGE = "storage";
+    public static final String STORAGE = "inventory";
 
     public static final String SAFE_STORAGE = "safeStorage";
 
@@ -276,7 +276,10 @@ public class RedisUtil {
         p.setRoleId(RedisUtil.hget(key, "roleId"));
         p.setUserId(userId);
         p.setWarehouseCode(RedisUtil.hget(key, "warehouseCode"));
+        p.setCustomerId(RedisUtil.hget(key, "customerCode"));
+        p.setWarehouseId(RedisUtil.hget(key, "warehouseCode"));
         p.setUserName(RedisUtil.hget(key, "userName"));
+        p.setClientCode(RedisUtil.hget(key, "clientCode"));
         return p;
     }
 

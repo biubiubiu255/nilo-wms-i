@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.nilo.wms.dao.flux.DailyReportDao">
+<mapper namespace="com.nilo.wms.dao.flux.FluxReportDao">
 
 	<!-- 实体bean与数据字段对应关系 -->
 	<resultMap id="staffWorkDO" type="com.nilo.wms.dto.flux.StaffWork">
@@ -30,7 +30,7 @@
 	</resultMap>
 
 	<!-- 查询（根据主键ID查询） -->
-	<select id="queryDailySKUPicked" resultMap="staffWorkDO"
+	<select id="daily_pick" resultMap="staffWorkDO"
 		parameterType="map">
 		select
 		d.pickedwho as user_id,
@@ -39,37 +39,14 @@
 		from
 		ACT_Allocation_Details d
 		where 1 = 1
-		<if test="dateFrom != null and dateFrom != '' ">
-			and to_char(d.pickedtime,'yyyy-mm-dd') >= #{dateFrom}
+		<if test="start_date != null and start_date != '' ">
+			and to_char(d.pickedtime,'yyyy-mm-dd') >= #{start_date}
 		</if>
-		<if test="dateTo != null and dateTo != '' ">
-			<![CDATA[ and to_char(d.pickedtime,'yyyy-mm-dd')  <= #{dateTo}]]>
+		<if test="end_date != null and end_date != '' ">
+			<![CDATA[ and to_char(d.pickedtime,'yyyy-mm-dd')  <= #{end_date}]]>
 		</if>
-		<if test="pickedAccountNo != null and pickedAccountNo != '' ">
-			and pickedwho = #{pickedAccountNo}
-		</if>
-		group by d.pickedwho
-		order by count(sku) desc
-	</select>
-
-
-	<!-- 查询（根据主键ID查询） -->
-	<select id="queryDailyOrderPicked" resultMap="staffWorkDO"
-		parameterType="map">
-		select
-		d.pickedwho as user_id,
-		count(distinct d.orderno) as num
-		from
-		ACT_Allocation_Details d
-		where 1 = 1
-		<if test="dateFrom != null and dateFrom != '' ">
-			and to_char(d.pickedtime,'yyyy-mm-dd') >= #{dateFrom}
-		</if>
-		<if test="dateTo != null and dateTo != '' ">
-			<![CDATA[ and to_char(d.pickedtime,'yyyy-mm-dd')  <= #{dateTo}]]>
-		</if>
-		<if test="pickedAccountNo != null and pickedAccountNo != '' ">
-			and pickedwho = #{pickedAccountNo}
+		<if test="username != null and username != '' ">
+			and pickedwho = #{username}
 		</if>
 		group by d.pickedwho
 		order by count(sku) desc
@@ -77,7 +54,7 @@
 
 
 	<!-- 查询（根据主键ID查询） -->
-	<select id="queryDailyVerification" resultMap="staffWorkDO"
+	<select id="daily_verify" resultMap="staffWorkDO"
 		parameterType="map">
 		select
 		d.checkwho as user_id,
@@ -85,21 +62,21 @@
 		from
 		ACT_Allocation_Details d
 		where 1 = 1
-		<if test="dateFrom != null and dateFrom != '' ">
-			and to_char(d.checktime,'yyyy-mm-dd') >= #{dateFrom}
+		<if test="start_date != null and start_date != '' ">
+			and to_char(d.checktime,'yyyy-mm-dd') >= #{start_date}
 		</if>
-		<if test="dateTo != null and dateTo != '' ">
-			<![CDATA[ and to_char(d.checktime,'yyyy-mm-dd')  <= #{dateTo}]]>
+		<if test="end_date != null and end_date != '' ">
+			<![CDATA[ and to_char(d.checktime,'yyyy-mm-dd')  <= #{end_date}]]>
 		</if>
-		<if test="pickedAccountNo != null and pickedAccountNo != '' ">
-			and checkwho = #{pickedAccountNo}
+		<if test="username != null and username != '' ">
+			and checkwho = #{username}
 		</if>
 		group by d.checkwho
 		order by count(distinct d.orderno) desc
 	</select>
 
 	<!-- 查询（根据主键ID查询） -->
-	<select id="queryDailyDispatched" resultMap="staffWorkDO"
+	<select id="daily_dispatch" resultMap="staffWorkDO"
 		parameterType="map">
 		select d.editwho as user_id,
 		d.userdefine1 as logisticsType,
@@ -107,14 +84,14 @@
 		from doc_order_header d
 		where 1=1 and
 		d.sostatus='99' and d.userdefine1 in ('FBK','GS','DS' )
-		<if test="dateFrom != null and dateFrom != '' ">
-			and to_char(d.edittime,'yyyy-mm-dd') >= #{dateFrom}
+		<if test="start_date != null and start_date != '' ">
+			and to_char(d.edittime,'yyyy-mm-dd') >= #{start_date}
 		</if>
-		<if test="dateTo != null and dateTo != '' ">
-			<![CDATA[ and to_char(d.edittime,'yyyy-mm-dd')  <= #{dateTo}]]>
+		<if test="end_date != null and end_date != '' ">
+			<![CDATA[ and to_char(d.edittime,'yyyy-mm-dd')  <= #{end_date}]]>
 		</if>
-		<if test="pickedAccountNo != null and pickedAccountNo != '' ">
-			and editwho = #{pickedAccountNo}
+		<if test="username != null and username != '' ">
+			and editwho = #{username}
 		</if>
 
 		group by d.editwho,d.userdefine1

@@ -16,6 +16,7 @@ import com.nilo.wms.common.util.XmlUtil;
 import com.nilo.wms.dao.flux.FluxOutboundDao;
 import com.nilo.wms.dao.platform.OutboundDao;
 import com.nilo.wms.dao.platform.OutboundItemDao;
+import com.nilo.wms.dto.StorageInfo;
 import com.nilo.wms.dto.common.ClientConfig;
 import com.nilo.wms.dto.common.InterfaceConfig;
 import com.nilo.wms.dto.flux.FLuxRequest;
@@ -31,6 +32,7 @@ import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.OutboundService;
 import com.nilo.wms.service.config.SystemConfig;
 import com.nilo.wms.service.platform.RedisUtil;
+import com.nilo.wms.web.model.ResultMap;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +100,10 @@ public class OutboundServiceImpl implements OutboundService {
         boolean keyExist = RedisUtil.hasKey(orderNoKey);
         //锁定库存记录不存在
         if (!keyExist) {
-            throw new WMSException(BizErrorCode.NOT_LOCK_STORAGE);
+            List<StorageInfo> lockResp = basicDataService.lockStorage(outBound);
+            if (lockResp != null) {
+                throw new WMSException(BizErrorCode.STORAGE_NOT_ENOUGH);
+            }
         }
 
         outBound.setCustomerId(principal.getCustomerId());

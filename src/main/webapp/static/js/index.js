@@ -11,17 +11,17 @@ $(function () {
     Q.reg('home', function () {
         load('home');
     }).reg('system', function (path) {
-        load('platform/' + path);
+        load('system/' + path);
     }).reg('basic', function (path) {
         load('basic/' + path);
     }).reg('inbound', function (path) {
         load('inbound/' + path);
     }).reg('outbound', function (path) {
         load('outbound/' + path);
-    }).reg('storage', function (path) {
-        load('storage/' + path);
-    }).reg('config', function (path) {
-        load('config/' + path);
+    }).reg('inventory', function (path) {
+        load('inventory/' + path);
+    }).reg('report', function (path) {
+        load('report/' + path);
     }).init({
         index: 'home'
     });
