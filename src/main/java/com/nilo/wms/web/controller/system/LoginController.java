@@ -67,6 +67,7 @@ public class LoginController extends BaseController {
         RedisUtil.hset(key, "userName", user.getUsername());
         RedisUtil.hset(key, "warehouseCode", "KE01");
         RedisUtil.hset(key, "customerCode", "KILIMALL");
+        RedisUtil.hset(key, "clientCode", "kilimall");
         RedisUtil.hset(key, "roleId", user.getRoleId());
 
         return ResultMap.success().put("token", token).put("user", user).toJson();

@@ -20,7 +20,10 @@ $(function () {
             {field: 'lock_storage', sort: true, title: getI18nAttr('inventory_lock_storage')},
             {field: 'safe_storage', sort: true, title: getI18nAttr('inventory_safe_storage')},
             {align: 'center', toolbar: '#barTpl', minWidth: 180, title: getI18nAttr('opt')}
-        ]]
+        ]],
+        done: function(res, curr, count){
+            refreshI18n();
+        }
     });
 
 
@@ -48,7 +51,30 @@ $(function () {
         if (layEvent === 'edit') { //修改
             showEditModel(data);
         }
+        if (layEvent === 'sync') { //同步
+            syncInventory(data);
+        }
     });
+
+    function syncInventory(obj) {
+        layer.confirm("Confirm Sync", function (index) {
+            layer.close(index);
+            layer.load(2);
+            $.ajax({
+                url: "/servlet/inventory/balance/sync/" + obj.sku + "?token=" + getToken(),
+                type: "POST",
+                dataType: "JSON",
+                success: function (data) {
+                    layer.closeAll('loading');
+                    if ("succ" == data.status) {
+                        layer.msg("SUCCESS", {icon: 1});
+                    } else {
+                        layer.msg(data.error, {icon: 2});
+                    }
+                }
+            });
+        });
+    }
 
 
     //搜索按钮点击事件

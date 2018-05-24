@@ -279,6 +279,7 @@ public class RedisUtil {
         p.setCustomerId(RedisUtil.hget(key, "customerCode"));
         p.setWarehouseId(RedisUtil.hget(key, "warehouseCode"));
         p.setUserName(RedisUtil.hget(key, "userName"));
+        p.setClientCode(RedisUtil.hget(key, "clientCode"));
         return p;
     }
 

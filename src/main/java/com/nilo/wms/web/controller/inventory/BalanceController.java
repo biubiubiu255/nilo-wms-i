@@ -69,24 +69,26 @@ public class BalanceController extends BaseController {
     @PostMapping
     @RequiresPermissions("20012")
     public String update(String sku, Integer cache_storage, Integer lock_storage, Integer safe_storage) {
-
-        AssertUtil.isNotBlank(sku, CheckErrorCode.SKU_EMPTY);
-
-        Principal principal = SessionLocal.getPrincipal();
-
-        String key = RedisUtil.getSkuKey(principal.getClientCode(), sku);
-        if (cache_storage != null) {
-            RedisUtil.hset(key, RedisUtil.STORAGE, cache_storage.toString());
-        }
-        if (lock_storage != null) {
-            RedisUtil.hset(key, RedisUtil.LOCK_STORAGE, lock_storage.toString());
-        }
-
-        if (safe_storage != null) {
-            skuDao.updateSafeQty(principal.getCustomerId(), sku, safe_storage.toString());
-        }
+        basicDataService.updateStorage(sku, cache_storage, lock_storage, safe_storage);
         return ResultMap.success().toJson();
     }
 
+    @PostMapping("/sync/{sku}")
+    @RequiresPermissions("20013")
+    public String sync(@PathVariable("sku") String sku) {
 
+        AssertUtil.isNotBlank(sku, CheckErrorCode.SKU_EMPTY);
+        List<String> list = new ArrayList<>();
+        list.add(sku);
+        basicDataService.sync(list);
+        return ResultMap.success().toJson();
+    }
+
+    @PostMapping("/sync/all")
+    @RequiresPermissions("20014")
+    public String syncAll() {
+        Principal principal = SessionLocal.getPrincipal();
+        basicDataService.syncStock(principal.getClientCode());
+        return ResultMap.success().toJson();
+    }
 }

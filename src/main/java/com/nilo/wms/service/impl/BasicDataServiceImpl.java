@@ -412,7 +412,7 @@ public class BasicDataServiceImpl implements BasicDataService {
 
         String clientCode = SessionLocal.getPrincipal().getClientCode();
         ClientConfig clientConfig = SystemConfig.getClientConfig().get(clientCode);
-        InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("storage_change_notify");
+        InterfaceConfig interfaceConfig = SystemConfig.getInterfaceConfig().get(clientCode).get("update_storage");
 
         Map<String, Object> map = new HashMap<>();
         map.put("list", list);
@@ -433,6 +433,52 @@ public class BasicDataServiceImpl implements BasicDataService {
         } catch (Exception e) {
             logger.error("confirmSO send message failed.", e);
         }
+    }
+
+    @Override
+    public void updateStorage(String sku, Integer cacheStorage, Integer lockStorage, Integer safeStorage) {
+        AssertUtil.isNotBlank(sku, CheckErrorCode.SKU_EMPTY);
+
+        Principal principal = SessionLocal.getPrincipal();
+
+        String key = RedisUtil.getSkuKey(principal.getClientCode(), sku);
+        if (cacheStorage != null) {
+            RedisUtil.hset(key, RedisUtil.STORAGE, cacheStorage.toString());
+        }
+        if (lockStorage != null) {
+            RedisUtil.hset(key, RedisUtil.LOCK_STORAGE, lockStorage.toString());
+        }
+
+        if (safeStorage != null) {
+            skuDao.updateSafeQty(principal.getCustomerId(), sku, safeStorage.toString());
+        }
+    }
+
+    @Override
+    public void sync(List<String> sku) {
+
+        if (sku == null || sku.size() == 0) return;
+        Principal principal = SessionLocal.getPrincipal();
+        String clientCode = principal.getClientCode();
+
+        List<StorageInfo> notifyList = new ArrayList<>();
+
+        for (String s : sku) {
+            String key = RedisUtil.getSkuKey(clientCode, s);
+            String sto = RedisUtil.hget(key, RedisUtil.STORAGE);
+            String lockSto = RedisUtil.hget(key, RedisUtil.LOCK_STORAGE);
+            int lockStoInt = lockSto == null ? 0 : Integer.parseInt(lockSto);
+            int stoInt = sto == null ? 0 : Integer.parseInt(sto);
+            StorageInfo storageInfo = new StorageInfo();
+            storageInfo.setSku(s);
+            storageInfo.setCacheStorage(stoInt);
+            storageInfo.setStorage(stoInt);
+            storageInfo.setLockStorage(lockStoInt);
+            notifyList.add(storageInfo);
+        }
+
+        //通知上游系统 库存变更
+        storageChangeNotify(notifyList);
     }
 
     private String createNOSSign(String data, String key) {

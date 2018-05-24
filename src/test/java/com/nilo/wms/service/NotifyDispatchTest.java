@@ -15,11 +15,7 @@ public class NotifyDispatchTest {
     public static void main(String[] args) {
 
         String[] list = new String[]{
-
-                "10000000573465",
-                "10000000574205"
         };
-
         for(String orderNo:list) {
 
             String url = "https://mobile.kilimall.co.ke/index.php?act=wms_api";

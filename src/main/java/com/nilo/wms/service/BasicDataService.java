@@ -28,4 +28,7 @@ public interface BasicDataService {
 
     void storageChangeNotify(List<StorageInfo> list);
 
+    void updateStorage(String sku, Integer cacheStorage,Integer lockStorage,Integer safeStorage);
+
+    void sync(List<String> sku);
 }

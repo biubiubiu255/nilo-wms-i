@@ -1,5 +1,3 @@
-
-
 <div class="content-header">
 	<span class="layui-breadcrumb">
 	  <a href="#!home"><span i18n="home_page"></span></a>
@@ -15,8 +13,12 @@
 
         <input id="searchValue" class="layui-input search-input" type="text"/>&emsp;
 
-        <button id="searchBtn" class="layui-btn search-btn" permission="20011"><i class="layui-icon">&#xe615;</i><span i18n="search"/></button>
-            &emsp;
+        <button id="searchBtn" class="layui-btn search-btn" permission="20011"><i class="layui-icon">&#xe615;</i><span
+                i18n="search"/></button>
+        &emsp;
+        <button id="syncAllBtn" class="layui-btn search-btn" permission="20014"><i class="layui-icon">&#xe615;</i><span
+                i18n="inventory_sync_all"/></button>
+        &emsp;
     </div>
 
 </div>
@@ -25,7 +27,7 @@
 <!-- 表单弹窗 -->
 <script type="text/html" id="addModel">
     <form id="editForm" class="layui-form model-form" action="">
-        <input name="_method" value="POST" type="hidden" />
+        <input name="_method" value="POST" type="hidden"/>
         <div class="layui-form-item">
             <label class="layui-form-label"><span i18n="basic_supplier"></span></label>
             <div class="layui-input-block">
@@ -47,33 +49,36 @@
         <div class="layui-form-item">
             <label class="layui-form-label"><span i18n="inventory_cache_storage"></span></label>
             <div class="layui-input-block">
-                <input name="cache_storage" type="text" class="layui-input"  />
+                <input name="cache_storage" type="text" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label"><span i18n="inventory_lock_storage"></span></label>
             <div class="layui-input-block">
-                <input name="lock_storage" type="text" class="layui-input"  />
+                <input name="lock_storage" type="text" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label"><span i18n="inventory_safe_storage"></span></label>
             <div class="layui-input-block">
-                <input name="safe_storage" type="text" class="layui-input"  />
+                <input name="safe_storage" type="text" class="layui-input"/>
             </div>
         </div>
         <div class="layui-form-item model-form-footer">
-            <button class="layui-btn layui-btn-primary" type="button" id="btnCancel"><span i18n="cancel"></span></button>
+            <button class="layui-btn layui-btn-primary" type="button" id="btnCancel"><span i18n="cancel"></span>
+            </button>
             <button class="layui-btn" lay-filter="btnSubmit" lay-submit><span i18n="ok"></span></button>
         </div>
     </form>
 </script>
 <!-- 表格操作列 -->
-<div id="barTpl" style="display:none;">
+<script type="text/html" id="barTpl">
+    <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit" permission="20012"><span
+        i18n="edit"></span></button>
+    <button class="layui-btn layui-btn-normal layui-btn-xs" lay-event="sync" permission="20013"><span
+        i18n="inventory_sync"></span></button>
 
-    <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit" permission="20012"><span i18n="edit"></span></button>
-
-</div>
+</script>
 
 
 <script type="text/javascript" src="/static/js/inventory/balance.js"></script>

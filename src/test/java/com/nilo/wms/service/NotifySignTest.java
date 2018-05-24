@@ -16,8 +16,6 @@ public class NotifySignTest {
 
         String[] list = new String[]{
 
-                "10000000572349"
-
         };
 
         for(String orderNo :list) {
