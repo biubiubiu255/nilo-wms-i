@@ -15,6 +15,6 @@ public interface FluxInboundDao {
 
     FluxInbound queryByReferenceNo(@Param(value = "customerId") String customerId, @Param(value = "referenceNo") String referenceNo);
 
-    List<FluxInboundDetails> queryDetailsByAsnNo(@Param(value = "customerId") String customerId, @Param(value = "asnNo") String asnNo);
+    List<FluxInboundDetails> queryDetailsByAsnNo(@Param(value = "customerId") String customerId, @Param(value = "referenceNo") String referenceNo);
 
 }

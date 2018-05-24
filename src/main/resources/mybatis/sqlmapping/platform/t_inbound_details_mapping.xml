@@ -4,4 +4,54 @@
 <mapper namespace="com.nilo.wms.dao.platform.InboundDao">
 
 
+    <!-- 实体bean与数据字段对应关系 -->
+    <resultMap id="OutboundItemDO" type="com.nilo.wms.dto.platform.inbound.InboundDetail">
+        <result property="id" column="id" javaType="java.lang.Long"
+                jdbcType="BIGINT"/>
+        <result property="clientCode" column="client_Code" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="referenceNo" column="reference_no" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+        <result property="sku" column="sku" javaType="java.lang.String"
+                jdbcType="VARCHAR"/>
+
+        <result property="qty" column="qty" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+        <result property="receiveQty" column="receive_qty" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+        <result property="receiveTime" column="receive_time" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+
+        <result property="status" column="status" javaType="java.lang.Short"
+                jdbcType="TINYINT"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List_2">
+        client_code, reference_no, sku, qty, receive_qty, receive_time, status
+    </sql>
+
+    <!-- 插入语句 -->
+    <insert id="insertDetail" parameterType="com.nilo.wms.dto.platform.inbound.InboundDetail" statementType="PREPARED"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO
+        t_inbound_detail
+        ( <include refid="Base_Column_List_2"/> )
+        VALUES
+        (#{clientCode}, #{referenceNo}, #{sku}, #{qty}, #{receiveQty}, #{receiveTime}, #{status})
+    </insert>
+
+    <update id="updateDetail" parameterType="com.nilo.wms.dto.platform.inbound.InboundDetail">
+        UPDATE t_inbound_detail set
+        <trim prefix="set" suffixOverrides="," suffix="where client_code=#{clientCode} and reference_no=#{referenceNo} and sku=#{sku}">
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </trim>
+    </update>
+
 </mapper>
