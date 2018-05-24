@@ -23,7 +23,7 @@
 
 
     <insert id="insertBatch" parameterType="java.util.List">
-        INSERT INTO t_outbound_item
+        INSERT INTO t_outbound_detail
         ( client_code,reference_no,sku,qty)
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
@@ -35,7 +35,7 @@
     <insert id="insert" parameterType="com.nilo.wms.dto.platform.outbound.OutboundDetail" statementType="PREPARED"
             useGeneratedKeys="true"
             keyProperty="id">
-        INSERT INTO t_outbound_item
+        INSERT INTO t_outbound_detail
         ( client_Code,reference_no,sku,qty)
         VALUES
         (#{clientCode}, #{referenceNo},#{sku},#{qty})
@@ -44,7 +44,7 @@
     <select id="queryByReferenceNo" resultMap="OutboundItemDO" statementType="PREPARED">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM t_outbound_item where client_Code=#{clientCode} and reference_no=#{referenceNo}
+        FROM t_outbound_detail where client_Code=#{clientCode} and reference_no=#{referenceNo}
     </select>
 
 </mapper>

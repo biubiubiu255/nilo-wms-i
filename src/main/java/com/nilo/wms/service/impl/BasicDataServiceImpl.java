@@ -272,42 +272,39 @@ public class BasicDataServiceImpl implements BasicDataService {
         String requestId = UUID.randomUUID().toString();
         RedisUtil.tryGetDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
 
-        // 判断订单号是否锁定库存过
+
         String orderNoKey = RedisUtil.getLockOrderKey(clientCode, header.getOrderNo());
-        boolean keyExist = RedisUtil.hasKey(orderNoKey);
-        //锁定库存记录存在，则扣减锁定库存及库存
-        if (keyExist) {
-            // 查询锁定列表
-            Set<String> skuList = jedis.hkeys(orderNoKey);
-            skuList.remove(RedisUtil.LOCK_TIME);
-            for (String sku : skuList) {
-                int qty = Integer.parseInt(jedis.hget(orderNoKey, sku));
-                //扣减锁定库存
-                String key = RedisUtil.getSkuKey(clientCode, sku);
-                String lockSto = jedis.hget(key, RedisUtil.LOCK_STORAGE);
-                int afterLockStorage = Integer.parseInt(lockSto) - qty;
-                jedis.hset(key, RedisUtil.LOCK_STORAGE, "" + afterLockStorage);
+        // 查询锁定列表
+        Set<String> skuList = jedis.hkeys(orderNoKey);
+        skuList.remove(RedisUtil.LOCK_TIME);
+        for (String sku : skuList) {
+            int qty = Integer.parseInt(jedis.hget(orderNoKey, sku));
+            //扣减锁定库存
+            String key = RedisUtil.getSkuKey(clientCode, sku);
+            String lockSto = jedis.hget(key, RedisUtil.LOCK_STORAGE);
+            int afterLockStorage = Integer.parseInt(lockSto) - qty;
+            jedis.hset(key, RedisUtil.LOCK_STORAGE, "" + afterLockStorage);
 
-                //扣减库存
-                String sto = jedis.hget(key, RedisUtil.STORAGE);
-                int stoInt = Integer.parseInt(sto) - qty;
-                jedis.hset(key, RedisUtil.STORAGE, "" + stoInt);
+            //扣减库存
+            String sto = jedis.hget(key, RedisUtil.STORAGE);
+            int stoInt = Integer.parseInt(sto) - qty;
+            jedis.hset(key, RedisUtil.STORAGE, "" + stoInt);
 
-                //库存少于安全库存 发送通知
-                String safeSto = jedis.hget(key, RedisUtil.SAFE_STORAGE);
-                int safeInt = Integer.parseInt(safeSto == null ? "0" : safeSto);
-                if (stoInt < safeInt) {
-                    String storeId = jedis.hget(key, RedisUtil.STORE);
-                    StorageInfo info = new StorageInfo();
-                    info.setSku(sku);
-                    info.setStoreId(storeId);
-                    info.setSafeStorage(safeInt);
-                    info.setStorage(stoInt);
-                    lessThanSafe.add(info);
-                }
+            //库存少于安全库存 发送通知
+            String safeSto = jedis.hget(key, RedisUtil.SAFE_STORAGE);
+            int safeInt = Integer.parseInt(safeSto == null ? "0" : safeSto);
+            if (stoInt < safeInt) {
+                String storeId = jedis.hget(key, RedisUtil.STORE);
+                StorageInfo info = new StorageInfo();
+                info.setSku(sku);
+                info.setStoreId(storeId);
+                info.setSafeStorage(safeInt);
+                info.setStorage(stoInt);
+                lessThanSafe.add(info);
             }
-            RedisUtil.del(orderNoKey);
         }
+        RedisUtil.del(orderNoKey);
+
         RedisUtil.releaseDistributedLock(jedis, RedisUtil.LOCK_KEY, requestId);
 
         if (lessThanSafe.size() == 0) {
