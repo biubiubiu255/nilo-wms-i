@@ -252,10 +252,11 @@ public class InboundServiceImpl implements InboundService {
 
         Principal principal = SessionLocal.getPrincipal();
         FluxInbound inbound = fluxInboundDao.queryByReferenceNo(principal.getCustomerId(), referenceNo);
-        if (inbound != null) {
-            List<FluxInboundDetails> list = fluxInboundDao.queryDetailsByAsnNo(principal.getCustomerId(), inbound.getWmsAsnNo());
-            inbound.setList(list);
+        if (inbound == null) {
+            throw new WMSException(BizErrorCode.CLIENT_ORDER_SN_NOT_EXIST);
         }
+        List<FluxInboundDetails> list = fluxInboundDao.queryDetailsByAsnNo(principal.getCustomerId(), inbound.getWmsAsnNo());
+        inbound.setList(list);
         return inbound;
     }
 
