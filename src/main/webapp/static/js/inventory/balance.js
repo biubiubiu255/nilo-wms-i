@@ -81,6 +81,11 @@ $(function () {
     $("#searchBtn").click(function () {
         doSearch(table);
     });
+
+    //搜索按钮点击事件
+    $("#syncAllBtn").click(function () {
+        syncAll();
+    });
 });
 
 //显示表单弹窗
@@ -119,3 +124,22 @@ function doSearch(table) {
     layui.table.reload('table', {where: {searchKey: key, searchValue: value}});
 }
 
+function syncAll() {
+    layer.confirm("Confirm Sync", function (index) {
+        layer.close(index);
+        layer.load(2);
+        $.ajax({
+            url: "/servlet/inventory/balance/sync/all?token=" + getToken(),
+            type: "POST",
+            dataType: "JSON",
+            success: function (data) {
+                layer.closeAll('loading');
+                if ("succ" == data.status) {
+                    layer.msg("SUCCESS", {icon: 1});
+                } else {
+                    layer.msg(data.error, {icon: 2});
+                }
+            }
+        });
+    });
+}

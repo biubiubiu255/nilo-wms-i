@@ -20,8 +20,8 @@ $(function () {
         load('outbound/' + path);
     }).reg('inventory', function (path) {
         load('inventory/' + path);
-    }).reg('config', function (path) {
-        load('config/' + path);
+    }).reg('report', function (path) {
+        load('report/' + path);
     }).init({
         index: 'home'
     });

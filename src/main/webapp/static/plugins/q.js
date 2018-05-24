@@ -3,95 +3,96 @@
  * Version: 1.2
  * Built: 2014/12/28
  */
-var 
-Q=function(W,D,HTML,hash,view,arg,_arg,i,index,Regex,key,Q){
-	HTML=D.documentElement;
-	Regex=[];
-	key='!';
-	onhashchange=function(){
-		Q.hash=hash=location.hash.substring(key.length+1);
+var
+    Q = function (W, D, HTML, hash, view, arg, _arg, i, index, Regex, key, Q) {
+        HTML = D.documentElement;
+        Regex = [];
+        key = '!';
+        onhashchange = function () {
 
-		arg=hash.split('/');
+            Q.hash = hash = location.hash.substring(key.length + 1);
 
-		i=Regex.length;
-		while(i--)
-			if(_arg=hash.match(Regex[i])){
-				arg=_arg;
-				arg[0]=Regex[i];
-				break;
-			}
+            arg = hash.split('/');
+
+            i = Regex.length;
+            while (i--)
+                if (_arg = hash.match(Regex[i])) {
+                    arg = _arg;
+                    arg[0] = Regex[i];
+                    break;
+                }
 
 
-		if(!Q[arg[0]]) // default
-			arg[0]=index;
-		
-		if(Q.pop)
-			Q.pop.apply(W,arg);
+            if (!Q[arg[0]]) // default
+                arg[0] = index;
 
-		Q.lash=view=arg.shift();
+            if (Q.pop)
+                Q.pop.apply(W, arg);
 
-		HTML.setAttribute('view',view);
+            Q.lash = view = arg.shift();
+            HTML.setAttribute('view', view);
 
-		Q[view].apply(W,arg);
-	};
+            Q[view].apply(W, arg);
+        };
 
-	
-	if(!'onhashchange' in W){
-		Q.path=location.hash;
-		setInterval(function(){
-			if(Q.path!=location.hash){
-				onhashchange();
-				Q.path=location.hash;
-			}
-		},100);
-	}
 
-	Q={
-		init:function(o){
+        if (!'onhashchange' in W) {
+            Q.path = location.hash;
+            setInterval(function () {
+                if (Q.path != location.hash) {
+                    onhashchange();
+                    Q.path = location.hash;
+                }
+            }, 100);
+        }
 
-			if(o.key!==undefined)
-				key=o.key;
+        Q = {
+            init: function (o) {
 
-			index=o.index||'V';
+                if (o.key !== undefined)
+                    key = o.key;
 
-			if(o.pop&&typeof o.pop=='function')
-				Q.pop=o.pop;
+                index = o.index || 'V';
 
-			onhashchange();
+                if (o.pop && typeof o.pop == 'function')
+                    Q.pop = o.pop;
 
-			return this
-		},
-		reg:function(r,u){
-			if(!r)
-				return;
+                onhashchange();
 
-			if(u == undefined)
-				u=function(){};
+                return this
+            },
+            reg: function (r, u) {
+                
+                if (!r)
+                    return;
 
-			if(r instanceof RegExp){ //正则注册
-				Q[r]=u;
-				Regex.push(r);
-			}else if(r instanceof Array){ //数组注册
-				for(var i in r){
-					this.reg.apply(this,[].concat(r[i]).concat(u));
-				}
-			}else if(typeof r=='string'){ //关键字注册
-				if(typeof u=='function')
-					Q[r]=u;
-				else if(typeof u=='string'&&Q[u])
-					Q[r]=Q[u];
-			}	
-			
-			return this
-		},
-		V:function(){
-			console.log('Q.js <https://github.com/itorr/q.js> 2014/12/28');
-			return this
-		},
-		go:function(u){
-			location.hash='#'+key+u;
-			return this
-		}
-	};
-	return Q;
-}(this,document);
+                if (u == undefined)
+                    u = function () {
+                    };
+
+                if (r instanceof RegExp) { //正则注册
+                    Q[r] = u;
+                    Regex.push(r);
+                } else if (r instanceof Array) { //数组注册
+                    for (var i in r) {
+                        this.reg.apply(this, [].concat(r[i]).concat(u));
+                    }
+                } else if (typeof r == 'string') { //关键字注册
+                    if (typeof u == 'function')
+                        Q[r] = u;
+                    else if (typeof u == 'string' && Q[u])
+                        Q[r] = Q[u];
+                }
+
+                return this
+            },
+            V: function () {
+                return this
+            },
+            go: function (u) {
+                location.hash = '#' + key + u;
+                return this
+            }
+        };
+        return Q;
+    }(this, document);

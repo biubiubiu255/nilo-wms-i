@@ -14,7 +14,7 @@ public class NotifyDispatchTest {
 
     public static void main(String[] args) {
 
-        String[] list = new String[]{
+        String[] list = new String[]{"10000000573165"
         };
         for(String orderNo:list) {
 
