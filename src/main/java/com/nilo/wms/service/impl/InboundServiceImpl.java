@@ -129,6 +129,8 @@ public class InboundServiceImpl implements InboundService {
         insert.setStatus(InboundStatusEnum.create.getCode());
         insert.setAsnType(inbound.getAsnType());
         inboundDao.insert(insert);
+
+        //inbound.getItemList().get(0)
     }
 
     @Override

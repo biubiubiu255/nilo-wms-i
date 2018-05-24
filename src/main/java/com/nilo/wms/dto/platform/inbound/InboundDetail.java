@@ -5,30 +5,28 @@ import com.nilo.wms.common.BaseDo;
 
 public class InboundDetail extends BaseDo<Integer> {
 
-    private String asnNo;
-    private Integer lineNo;
+    private String  clientCode;
+    private String  referenceNo;
     private String  sku;
-    private String  descE;
-    private String  descC;
-    private Integer expectedQty;
-    private Integer receivedQty;
-    private String  receivedLocation;
+    private Integer qty;
+    private Integer receiveQty;
+    private Integer receiveTime;
     private Short   status;
 
-    public String getAsnNo() {
-        return asnNo;
+    public String getClientCode() {
+        return clientCode;
     }
 
-    public void setAsnNo(String asnNo) {
-        this.asnNo = asnNo;
+    public void setClientCode(String clientCode) {
+        this.clientCode = clientCode;
     }
 
-    public Integer getLineNo() {
-        return lineNo;
+    public String getReferenceNo() {
+        return referenceNo;
     }
 
-    public void setLineNo(Integer lineNo) {
-        this.lineNo = lineNo;
+    public void setReferenceNo(String referenceNo) {
+        this.referenceNo = referenceNo;
     }
 
     public String getSku() {
@@ -39,44 +37,28 @@ public class InboundDetail extends BaseDo<Integer> {
         this.sku = sku;
     }
 
-    public String getDescE() {
-        return descE;
+    public Integer getQty() {
+        return qty;
     }
 
-    public void setDescE(String descE) {
-        this.descE = descE;
+    public void setQty(Integer qty) {
+        this.qty = qty;
     }
 
-    public String getDescC() {
-        return descC;
+    public Integer getReceiveQty() {
+        return receiveQty;
     }
 
-    public void setDescC(String descC) {
-        this.descC = descC;
+    public void setReceiveQty(Integer receiveQty) {
+        this.receiveQty = receiveQty;
     }
 
-    public Integer getExpectedQty() {
-        return expectedQty;
+    public Integer getReceiveTime() {
+        return receiveTime;
     }
 
-    public void setExpectedQty(Integer expectedQty) {
-        this.expectedQty = expectedQty;
-    }
-
-    public Integer getReceivedQty() {
-        return receivedQty;
-    }
-
-    public void setReceivedQty(Integer receivedQty) {
-        this.receivedQty = receivedQty;
-    }
-
-    public String getReceivedLocation() {
-        return receivedLocation;
-    }
-
-    public void setReceivedLocation(String receivedLocation) {
-        this.receivedLocation = receivedLocation;
+    public void setReceiveTime(Integer receiveTime) {
+        this.receiveTime = receiveTime;
     }
 
     public Short getStatus() {
@@ -90,14 +72,12 @@ public class InboundDetail extends BaseDo<Integer> {
     @Override
     public String toString() {
         return "InboundDetail{" +
-                "asnNo='" + asnNo + '\'' +
-                ", lineNo=" + lineNo +
+                "clientCode='" + clientCode + '\'' +
+                ", referenceNo='" + referenceNo + '\'' +
                 ", sku='" + sku + '\'' +
-                ", descE='" + descE + '\'' +
-                ", descC='" + descC + '\'' +
-                ", expectedQty=" + expectedQty +
-                ", receivedQty=" + receivedQty +
-                ", receivedLocation='" + receivedLocation + '\'' +
+                ", qty=" + qty +
+                ", receiveQty=" + receiveQty +
+                ", receiveTime=" + receiveTime +
                 ", status=" + status +
                 '}';
     }

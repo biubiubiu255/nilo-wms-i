@@ -9,8 +9,6 @@ import java.util.Map;
 public enum OutBoundStatusEnum {
 
     create(0, "创建订单", "Create SO"),
-    part_pre_all(10, "部分预配", "Partially Pre-Allocated"),
-    pre_all(20, "预配完成", "Pre-Allocated"),
     part_all(30, "部分分配", "Partially Allocated"),
     allocated(40, "分配完成", "Allocated"),
     part_picked(50, "部分拣货", "Partially Picked"),

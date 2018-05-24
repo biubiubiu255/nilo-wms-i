@@ -345,7 +345,7 @@ public class OutboundServiceImpl implements OutboundService {
     }
 
     @Transactional
-    private void recordOutbound(OutboundHeader outBound) {
+    void recordOutbound(OutboundHeader outBound) {
 
         //保存
         Outbound insert = new Outbound();
