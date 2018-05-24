@@ -26,11 +26,11 @@
 
 
     <select id="queryByReferenceNo" resultMap="inbound">
-        select h.asnno, h.asnreference1,h.asnstatus from doc_asn_header h where h.customerid=#{customerCode} and h.asnreference1=#{referenceNo}
+        select h.asnno, h.asnreference1,h.asnstatus from doc_asn_header h where h.customerid=#{customerId} and h.asnreference1=#{referenceNo}
     </select>
 
     <select id="queryDetailsByAsnNo" resultMap="details">
         select d.sku,d.expectedqty expected_qty,nvl(d.receivedqty,0) received_qty ,d.linestatus status from doc_asn_details d
-        where d.customerid=#{customerCode} and d.asnno=#{asnNo}
+        where d.customerid=#{customerId} and d.asnno=#{asnNo}
     </select>
 </mapper>

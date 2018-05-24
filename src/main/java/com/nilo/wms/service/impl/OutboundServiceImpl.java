@@ -278,6 +278,8 @@ public class OutboundServiceImpl implements OutboundService {
     @Override
     public FluxOutbound queryFlux(String orderNo) {
 
+        AssertUtil.isNotBlank(orderNo, CheckErrorCode.CLIENT_ORDER_EMPTY);
+
         Principal principal = SessionLocal.getPrincipal();
 
         FluxOutbound order = fluxOutboundDao.queryByReferenceNo(principal.getCustomerId(), orderNo);

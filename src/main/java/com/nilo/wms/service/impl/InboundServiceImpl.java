@@ -246,6 +246,8 @@ public class InboundServiceImpl implements InboundService {
     @Override
     public FluxInbound queryFlux(String referenceNo) {
 
+        AssertUtil.isNotBlank(referenceNo, CheckErrorCode.CLIENT_ORDER_EMPTY);
+
         Principal principal = SessionLocal.getPrincipal();
         FluxInbound inbound = fluxInboundDao.queryByReferenceNo(principal.getCustomerId(), referenceNo);
         if (inbound != null) {

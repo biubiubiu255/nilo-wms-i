@@ -21,28 +21,28 @@
     </resultMap>
 
     <select id="queryStorage" resultMap="orderHandlerDO">
-        select sku,qty,udf1 storeId,udf2 categories from idx_v_inv where customerCode=#{customerCode} and warehouseCode=#{warehouseCode}
+        select sku,qty,udf1 storeId,udf2 categories from idx_v_inv where customerId=#{customerId} and warehouseId=#{warehouseId}
     </select>
 
     <select id="queryInBoundOrderHandler" resultMap="orderHandlerDO">
-            select
-                   t.asnno           no,
-                   t.asnreference1  order_no,
-                   b.freightclass    categories,
-                   b.sku_group7      storeId,
-                   c.descr_c         storeDesc,
-                   s.sku           sku,
-                   s.receivedqty_each     qty
-              from doc_asn_header t
-              left join doc_asn_details s on t.asnno = s.asnno
-              left join bas_sku b
-                on s.sku = b.sku
-              left join bas_customer c
-                on b.sku_group7 = c.customerid
-             where t.customerCode=#{customerCode} and t.warehouseCode=#{warehouseCode}
-               and t.asntype = 'PO'
-               and to_char(t.edittime,'yyyy-MM-dd') = #{date}
-               and t.asnstatus = '99'
+        select
+        t.asnno           no,
+        t.asnreference1  order_no,
+        b.freightclass    categories,
+        b.sku_group7      storeId,
+        c.descr_c         storeDesc,
+        s.sku           sku,
+        s.receivedqty_each     qty
+        from doc_asn_header t
+        left join doc_asn_details s on t.asnno = s.asnno
+        left join bas_sku b
+        on s.sku = b.sku
+        left join bas_customer c
+        on b.sku_group7 = c.customerid
+        where t.customerId=#{customerId} and t.warehouseId=#{warehouseId}
+        and t.asntype = 'PO'
+        and to_char(t.edittime,'yyyy-MM-dd') = #{date}
+        and t.asnstatus = '99'
     </select>
 
     <select id="queryOrderHandler" resultMap="orderHandlerDO">
@@ -62,7 +62,7 @@
         left join bas_customer c
         on b.sku_group7 = c.customerid
 
-        where d.customerCode=#{customerCode} and d.warehouseCode=#{warehouseCode}
+        where d.customerId=#{customerId} and d.warehouseId=#{warehouseId}
         and to_char(a.checktime, 'yyyy-MM-dd') = #{date}
         and d.ordertype = 'SELL'
         order by a.orderno
@@ -84,7 +84,7 @@
                 on s.sku = b.sku
               left join bas_customer c
                 on b.sku_group7 = c.customerid
-             where  t.customerCode=#{customerCode} and t.warehouseCode=#{warehouseCode}
+             where  t.customerId=#{customerId} and t.warehouseId=#{warehouseId}
                and t.asntype in ( 'TH','JS','TR')
                and t.asnstatus = '99'
                and to_char(t.edittime, 'yyyy-MM-dd') = #{date}
