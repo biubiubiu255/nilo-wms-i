@@ -9,7 +9,7 @@
                 jdbcType="INTEGER"/>
 
         <result property="method" column="method" javaType="java.lang.String"
-                 jdbcType="VARCHAR"/>
+                jdbcType="VARCHAR"/>
         <result property="appKey" column="app_key" javaType="java.lang.String"
                 jdbcType="VARCHAR"/>
         <result property="data" column="data" javaType="java.lang.String"
@@ -51,14 +51,34 @@
     </update>
 
 
-    <select id="queryById" resultMap="apiLog" statementType="PREPARED">
+    <select id="queryBy" resultMap="apiLog" statementType="PREPARED">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM t_log_api where id=#{id}
+        FROM t_log_api where 1 = 1
+        <if test="method != null and method != ''">
+            and method = #{method}
+        </if>
+        <if test="data != null and data != ''">
+            and data LIKE CONCAT( CONCAT('%',#{data}),'%')
+        </if>
+        <![CDATA[ and  created_time >= #{start_date} and created_time <= #{end_date} ]]>
+        order by created_time desc
+        limit #{offset},#{limit}
+
     </select>
 
+    <select id="queryCountBy" statementType="PREPARED" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM t_log_api where 1 = 1
+        <if test="method != null and method != ''">
+            and method = #{method}
+        </if>
+        <if test="data != null and data != ''">
+            and data LIKE CONCAT( CONCAT('%',#{data}),'%')
+        </if>
+        <![CDATA[ and created_time >= #{start_date} and created_time <= #{end_date} ]]>
 
-    <select id="queryFailed" resultMap="apiLog" statementType="PREPARED">
-        SELECT <include refid="Base_Column_List"/> FROM t_log_api WHERE  status = 0
     </select>
+
 </mapper>

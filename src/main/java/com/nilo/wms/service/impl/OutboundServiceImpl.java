@@ -12,6 +12,7 @@ import com.nilo.wms.common.exception.SysErrorCode;
 import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.DateUtil;
+import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.XmlUtil;
 import com.nilo.wms.dao.flux.FluxOutboundDao;
 import com.nilo.wms.dao.platform.OutboundDao;
@@ -85,8 +86,9 @@ public class OutboundServiceImpl implements OutboundService {
         AssertUtil.isNotBlank(outBound.getReceiverInfo().getReceiverName(), CheckErrorCode.RECEIVER_NAME_EMPTY);
         AssertUtil.isNotBlank(outBound.getReceiverInfo().getReceiverPhone(), CheckErrorCode.RECEIVER_PHONE_EMPTY);
 
-
-        outBound.setOrderTime(DateUtil.getSysTimeStamp());
+        if (StringUtil.isEmpty(outBound.getOrderTime())) {
+            outBound.setOrderTime(DateUtil.getSysTimeStamp());
+        }
 
         //设置仓库信息
         Principal principal = SessionLocal.getPrincipal();

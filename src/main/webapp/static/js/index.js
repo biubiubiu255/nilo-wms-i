@@ -22,6 +22,8 @@ $(function () {
         load('inventory/' + path);
     }).reg('report', function (path) {
         load('report/' + path);
+    }).reg('log', function (path) {
+        load('log/' + path);
     }).init({
         index: 'home'
     });

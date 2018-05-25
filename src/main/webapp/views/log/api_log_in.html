@@ -1,0 +1,96 @@
+<div class="content-header">
+	<span class="layui-breadcrumb">
+	  <a href="#!home"><span i18n="home_page"></span></a>
+	  <a><cite><span i18n="log_api_in"></span> </cite></a>
+	</span>
+    <div class="layui-form toolbar">
+        <span i18n="search"></span>：
+        <select id="searchKey">
+            <option value="" i18n="please_select"></option>
+            <option value="method" i18n="log_api_method"></option>
+            <option value="data" i18n="log_api_data"></option>
+        </select>
+
+        <input id="searchValue" class="layui-input search-input" type="text"/>&emsp;
+
+        <div class="layui-inline">
+            <label class="layui-form-label"><span i18n="date_range"></span></label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="date_range" placeholder=" - ">
+            </div>
+        </div>
+        <button id="searchBtn" class="layui-btn search-btn" permission="10011"><i class="layui-icon">&#xe615;</i><span
+                i18n="search"/></button>
+        &emsp;
+
+    </div>
+
+</div>
+<table class="layui-table" id="table" lay-filter="table"></table>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        refreshPermission();
+        refreshI18n();
+
+        var initDateRange=layui.util.toDateString(new Date(),"yyyy-MM-dd") + " - " + layui.util.toDateString(new Date(),"yyyy-MM-dd");
+        //日期范围
+        layui.laydate.render({
+            elem: '#date_range'
+            , range: true
+            , lang: getNavLanguage() == 'en' ? 'en' : 'cn'
+            , value: initDateRange
+        });
+
+        //渲染表格
+        layui.table.render({
+            elem: '#table',
+            url: '/servlet/log/api_log_in',
+            where: {
+                token: getToken(),
+                dateRange: initDateRange
+            },
+            page: true,
+            cols: [[
+                {type: 'numbers'},
+                {field: 'method', sort: true, title: getI18nAttr('log_api_method')},
+                {field: 'sign', sort: true, title: getI18nAttr('log_api_sign')},
+                {field: 'data', sort: true, title: getI18nAttr('log_api_data')},
+                {field: 'response', sort: true, title: getI18nAttr('log_api_response')},
+                {field: 'status', sort: true, title: getI18nAttr('status')},
+
+            ]],
+            done: function (res, curr, count) {
+                refreshI18n();
+            }
+        });
+
+        //搜索按钮点击事件
+        $("#searchBtn").click(function () {
+            doSearch(table);
+        });
+
+        function doSearch(table) {
+            var key = $("#searchKey").val();
+            var value = $("#searchValue").val();
+            if (value == '') {
+                key = '';
+            }
+            var date_range = $("#date_range").val();
+            if(!date_range){
+                layer.msg("Pls select date.", {icon: 2});
+                return;
+            }
+            layui.table.reload('table', {
+                where: {
+                    searchKey: key,
+                    searchValue: value,
+                    dateRange: date_range
+                }
+            });
+        }
+    });
+
+</script>
