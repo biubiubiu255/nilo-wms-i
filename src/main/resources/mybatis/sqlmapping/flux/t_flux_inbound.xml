@@ -31,6 +31,6 @@
 
     <select id="queryDetailsByAsnNo" resultMap="details">
         select d.sku,d.expectedqty expected_qty,nvl(d.receivedqty,0) received_qty ,d.linestatus status from doc_asn_details d
-        where d.customerid=#{customerId} and d.asnno=#{asnNo}
+        where d.customerid=#{customerId} and d.asnno=#{referenceNo}
     </select>
 </mapper>
