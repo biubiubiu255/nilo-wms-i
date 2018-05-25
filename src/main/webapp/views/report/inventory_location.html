@@ -10,15 +10,15 @@
             <div class="layui-input-inline">
                 <select id="shelf">
                     <option value="" i18n="please_select"></option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
+                    <option value="01">1</option>
+                    <option value="02">2</option>
+                    <option value="03">3</option>
+                    <option value="04">4</option>
+                    <option value="05">5</option>
+                    <option value="06">6</option>
+                    <option value="07">7</option>
+                    <option value="08">8</option>
+                    <option value="09">9</option>
                     <option value="10">10</option>
                     <option value="11">11</option>
                     <option value="12">12</option>
@@ -37,8 +37,8 @@
         <button id="searchBtn" class="layui-btn search-btn" permission="10011"><i class="layui-icon">&#xe615;</i><span
                 i18n="search"/></button>
         &emsp;
-        <button id="exportBtn" class="layui-btn search-btn" permission="10012"><i class="layui-icon">&#xe654;</i><span
-                i18n="Export"/>
+        <button id="exportBtn" class="layui-btn search-btn" permission="10012"><i class="layui-icon">&#xe601;</i><span
+                i18n="export"/>
         </button>
     </div>
 
@@ -62,8 +62,12 @@
             page: true,
             cols: [[
                 {type: 'numbers'},
-                {field: 'userId', sort: true, title: getI18nAttr('system_user_username')},
-                {field: 'orderNum', sort: true, title: getI18nAttr('report_order_num')},
+                {field: 'sku', sort: true, title: getI18nAttr('basic_sku')},
+                {field: 'skuDesc', sort: true, title: getI18nAttr('basic_sku_desc')},
+                {field: 'locationId', sort: true, title: getI18nAttr('location')},
+                {field: 'traceId', sort: true, title: getI18nAttr('location_trace')},
+                {field: 'qty', sort: true, title: getI18nAttr('qty')},
+
             ]],
             done: function (res, curr, count) {
                 refreshI18n();
@@ -87,6 +91,35 @@
                 }
             });
         }
+
+        $("#exportBtn").click(function () {
+            exportLocation();
+        });
+
+        function exportLocation(table) {
+            var shelf = $("#shelf").val();
+            if(!shelf){
+                layer.msg("Pls select shelf.", {icon: 2});
+                return;
+            }
+            layer.confirm("Confirm Shelf："+shelf, function (index) {
+                layer.close(index);
+                layer.load(2);
+
+                $.post("/servlet/report/inventory_location/build_excel/" + shelf, {
+                    token: getToken()
+                }, function (data) {
+                    layer.closeAll('loading');
+                    if (data.status == 'succ') {
+                        window.location.href = "/servlet/report/inventory_location/export/" + data.fileName + "?token=" + getToken();
+                    } else {
+                        layer.msg(data.error, {icon: 2});
+                    }
+                }, "JSON");
+
+            });
+        }
+
     });
 
 </script>

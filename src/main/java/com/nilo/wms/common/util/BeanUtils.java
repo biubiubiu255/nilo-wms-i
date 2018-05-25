@@ -22,6 +22,38 @@ public class BeanUtils {
         }
     }
 
+    public static void setProperty(Object obj, String field, String value) {
+        try {
+            org.apache.commons.beanutils.BeanUtils.setProperty(obj, field, value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getProperty(Object obj, String field) {
+
+        Object value = null;
+        try {
+            value = PropertyUtils.getSimpleProperty(obj, field);
+        } catch (Exception e) {
+        }
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Long) {
+            return "" + (Long) value;
+        }
+        if (value instanceof Double) {
+            return "" + (Double) value;
+        }
+        if (value instanceof Integer) {
+            return "" + (Integer) value;
+        }
+        if (value instanceof Float) {
+            return "" + (Float) value;
+        }
+        return (String) value;
+    }
 
     public static <T> T readField(Object owner, String name, Class<T> type) {
         Class clz = owner.getClass();
@@ -52,16 +84,4 @@ public class BeanUtils {
             }
         }
     }
-
-    public static void setProperty(Object obj, String key, String value) {
-        try {
-            org.apache.commons.beanutils.BeanUtils.setProperty(obj, key, value);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
-    }
-
 }

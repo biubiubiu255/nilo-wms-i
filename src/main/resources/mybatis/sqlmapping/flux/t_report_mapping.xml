@@ -38,6 +38,8 @@
 				javaType="java.lang.String" jdbcType="VARCHAR" />
 		<result property="traceId" column="traceid" javaType="java.lang.String"
 				jdbcType="VARCHAR" />
+		<result property="qty" column="qty" javaType="java.lang.Integer"
+				jdbcType="VARCHAR" />
 	</resultMap>
 
 	<!-- 查询（根据主键ID查询） -->
@@ -132,7 +134,7 @@
     D.LOTATT08 = 'N'
     AND E.PICKZONE <>'KE010301'
     AND A.LOCATIONID NOT IN ('STAGEKE01','SORTATIONKE01')	]]>
-		and a.LOCATIONID LIKE CONCAT( CONCAT('%KE01-01-',#{shelf}),'%')
+		and a.LOCATIONID LIKE CONCAT( CONCAT('KE01-01-',#{shelf}),'%')
 		group BY a.sku,b.descr_e,a.locationid, a.traceid
 		order by a.locationid
 		,a.traceid

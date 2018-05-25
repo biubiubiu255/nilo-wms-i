@@ -4,15 +4,28 @@
  */
 package com.nilo.wms.dto.flux;
 
+import com.nilo.wms.common.annotation.Excel;
+
 public class InventoryLocation {
 
+    @Excel(name = "Sku", order = 1)
     private String  sku;
-
+    @Excel(name = "Sku Desc", order = 2)
     private String  skuDesc;
-
+    @Excel(name = "Location", order = 3)
     private String  locationId;
-
+    @Excel(name = "Trace", order = 4)
     private String traceId;
+    @Excel(name = "Qty", order = 5)
+    private Integer qty;
+
+    public Integer getQty() {
+        return qty;
+    }
+
+    public void setQty(Integer qty) {
+        this.qty = qty;
+    }
 
     public String getSku() {
         return sku;

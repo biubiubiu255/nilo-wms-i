@@ -1,26 +1,31 @@
 package com.nilo.wms.web.controller.report;
 
 import com.nilo.wms.common.annotation.RequiresPermissions;
+import com.nilo.wms.common.util.BeanUtils;
+import com.nilo.wms.common.util.ExportExcel;
+import com.nilo.wms.common.util.IdWorker;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dao.flux.FluxReportDao;
 import com.nilo.wms.dto.flux.InventoryLocation;
 import com.nilo.wms.dto.flux.StaffWork;
+import com.nilo.wms.dto.platform.common.ResultMap;
 import com.nilo.wms.web.BaseController;
 import org.apache.commons.beanutils.MethodUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by admin on 2018/5/23.
  */
-@Controller
+@RestController
 @RequestMapping("/report")
 public class FluxReportController extends BaseController {
 
@@ -75,14 +80,80 @@ public class FluxReportController extends BaseController {
         return toLayUIData(list.size(), list);
     }
 
-    @RequiresPermissions("3003")
+    @RequiresPermissions("3004")
     @GetMapping("/inventory_location")
     @ResponseBody
-    public String inventory_location( String shelf) {
+    public String inventory_location(String shelf) {
 
-        List<InventoryLocation> list = fluxReportDao.queryByShelf(shelf);
+        List<InventoryLocation> list = new ArrayList<>();
+        if (StringUtil.isNotBlank(shelf)) {
+            list = fluxReportDao.queryByShelf(shelf);
+        }
         return toLayUIData(list.size(), list);
     }
 
+    @RequiresPermissions("3004")
+    @PostMapping("/inventory_location/build_excel/{shelf}")
+    @ResponseBody
+    public String build_excel(@PathVariable("shelf") String shelf) {
 
+        List<InventoryLocation> list = new ArrayList<>();
+        if (StringUtil.isNotBlank(shelf)) {
+            list = fluxReportDao.queryByShelf(shelf);
+        }
+
+        HSSFWorkbook wb = new HSSFWorkbook();
+        ExportExcel exportExcel = new ExportExcel(wb);
+
+        exportExcel.fillData(list, InventoryLocation.class);
+        String path = System.getProperty("user.home") + File.separator + "temp" + File.separator;
+        String fileName = IdWorker.getInstance().nextId() + "";
+        exportExcel.export(path, fileName + ".xls");
+        return ResultMap.success().put("fileName", fileName).toJson();
+    }
+
+    @RequiresPermissions("3004")
+    @GetMapping("/inventory_location/export/{fileName}")
+    @ResponseBody
+    public String export(@PathVariable("fileName") String fileName, HttpServletResponse response) {
+
+        InputStream is = null;
+        try {
+            String path = System.getProperty("user.home") + File.separator + "temp" + File.separator;
+
+            is = new FileInputStream(new File(path + fileName + ".xls"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 设置response参数，可以打开下载页面
+        response.reset();
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment;filename="+fileName+".xls");
+        ServletOutputStream out = null;
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        try {
+            out = response.getOutputStream();
+            bis = new BufferedInputStream(is);
+            bos = new BufferedOutputStream(out);
+            byte[] buff = new byte[2048];
+            int bytesRead;
+            // Simple read/write loop.
+            while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+                bos.write(buff, 0, bytesRead);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bis != null)
+                    bis.close();
+                if (bos != null)
+                    bos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 }
