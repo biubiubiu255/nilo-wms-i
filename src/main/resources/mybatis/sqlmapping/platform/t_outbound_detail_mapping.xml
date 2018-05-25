@@ -18,7 +18,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id ,client_code,outbound_no,reference_no,sku,qty
+        id ,client_code,reference_no,sku,qty
     </sql>
 
 
