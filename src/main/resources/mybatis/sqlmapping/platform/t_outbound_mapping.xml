@@ -44,7 +44,7 @@
     <update id="update" parameterType="com.nilo.wms.dto.platform.outbound.Outbound" statementType="PREPARED">
         update t_outbound
         <trim prefix="set" suffixOverrides=","
-              suffix="where order_no = #{order_no} and  reference_no=#{referenceNo}">
+              suffix="where client_code = #{clientCode} and  reference_no=#{referenceNo}">
             <if test="status != null">
                 status = #{status},
             </if>
