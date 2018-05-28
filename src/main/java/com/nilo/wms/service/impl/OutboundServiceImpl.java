@@ -33,7 +33,6 @@ import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.OutboundService;
 import com.nilo.wms.service.config.SystemConfig;
 import com.nilo.wms.service.platform.RedisUtil;
-import com.nilo.wms.web.model.ResultMap;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

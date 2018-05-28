@@ -33,6 +33,7 @@ public class SystemServiceImpl implements SystemService {
     private RoleDao roleDao;
     @Autowired
     private PermissionDao permissionDao;
+
     @Override
     public void loadingAndRefreshClientConfig() {
 
@@ -44,7 +45,7 @@ public class SystemServiceImpl implements SystemService {
 
         for (ClientConfig c : list) {
             clientConfigMap.put(c.getClientCode(), c);
-            List<InterfaceConfig> interfaceConfigList = interfaceConfigDao.queryByCode(c.getClientCode());
+            List<InterfaceConfig> interfaceConfigList = interfaceConfigDao.queryByClientCode(c.getClientCode());
             Map<String, InterfaceConfig> map = new HashMap<>();
             for (InterfaceConfig i : interfaceConfigList) {
                 map.put(i.getBizType(), i);

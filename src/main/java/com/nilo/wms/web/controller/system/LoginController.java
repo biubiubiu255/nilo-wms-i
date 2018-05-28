@@ -7,8 +7,7 @@ import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.DateUtil;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.TokenUtil;
-import com.nilo.wms.dto.platform.common.ResultMap;
-
+import com.nilo.wms.dto.common.ResultMap;
 import com.nilo.wms.dto.platform.system.Permission;
 import com.nilo.wms.dto.platform.system.User;
 import com.nilo.wms.service.platform.PermissionService;
