@@ -230,9 +230,9 @@ public class OutboundServiceImpl implements OutboundService {
         for (Outbound out : outList) {
             Map<String, Object> map = new HashMap<>();
             if (result) {
-                map.put("status", 99);
+                map.put("status", 240);
             } else {
-                map.put("status", 90);
+                map.put("status", 0);
             }
             map.put("client_ordersn", out.getReferenceNo());
             map.put("order_type", out.getOrderType());
