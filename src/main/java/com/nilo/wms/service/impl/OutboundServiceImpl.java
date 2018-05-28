@@ -264,16 +264,34 @@ public class OutboundServiceImpl implements OutboundService {
         for (Outbound o : outList) {
             waybillList.add(o.getWaybillNum());
         }
+        notifyWeight(waybillList);
+
+    }
+
+    private void notifyWeight(List<String> list) {
+
+        String clientCode = SessionLocal.getPrincipal().getClientCode();
+
+        ClientConfig clientConfig = SystemConfig.getClientConfig().get(clientCode);
         InterfaceConfig config = SystemConfig.getInterfaceConfig().get(clientCode).get("update_weight");
-        List<FluxWeight> weightList = fluxOutboundDao.queryWeight(waybillList);
+        List<FluxWeight> weightList = fluxOutboundDao.queryWeight(list);
         String updateData = JSON.toJSONString(weightList);
         Map<String, String> paramsUpdate = new HashMap<>();
         paramsUpdate.put("method", config.getMethod());
         paramsUpdate.put("sign", createNOSSign(updateData, clientConfig.getClientKey()));
         paramsUpdate.put("data", updateData);
-        paramsUpdate.put("app_key", "kiliboss");
+        paramsUpdate.put("app_key", "wms");
         paramsUpdate.put("request_id", UUID.randomUUID().toString());
         paramsUpdate.put("timestamp", "" + DateUtil.getSysTimeStamp());
+        paramsUpdate.put("country_code", "ke");
+        NotifyRequest notify = new NotifyRequest();
+        notify.setParam(paramsUpdate);
+        notify.setUrl(config.getUrl());
+        try {
+            notifyDataBusProducer.sendMessage(notify);
+        } catch (Exception e) {
+            logger.error("confirmSO send message failed.", e);
+        }
     }
 
     @Override
