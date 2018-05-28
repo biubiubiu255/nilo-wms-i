@@ -157,18 +157,6 @@ public class ApiController extends BaseController {
 
     private void addApiLog(RequestParam param, String response, boolean result) {
 
-        MethodEnum[] need = new MethodEnum[]{MethodEnum.LOCK_STORAGE, MethodEnum.UN_LOCK_STORAGE, MethodEnum.CREATE_INBOUND, MethodEnum.CREATE_OUTBOUND};
-
-        boolean record = false;
-        for (MethodEnum methodEnum : need) {
-            if (methodEnum == param.getMethod()) {
-                record = true;
-                break;
-            }
-        }
-        if (!record) return;
-
-
         ApiLog log = new ApiLog();
         log.setAppKey(param.getApp_key());
         log.setData(param.getData());
