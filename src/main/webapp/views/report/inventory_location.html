@@ -53,6 +53,7 @@
         refreshI18n();
 
         //渲染表格
+        layer.load(2);
         layui.table.render({
             elem: '#table',
             url: '/servlet/report/inventory_location',
@@ -70,6 +71,7 @@
 
             ]],
             done: function (res, curr, count) {
+                layer.closeAll('loading');
                 refreshI18n();
             }
         });
@@ -85,6 +87,7 @@
                 layer.msg("Pls select shelf.", {icon: 2});
                 return;
             }
+            layer.load(2);
             layui.table.reload('table', {
                 where: {
                     shelf: shelf

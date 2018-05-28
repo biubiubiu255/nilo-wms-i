@@ -3,7 +3,9 @@ $(function () {
 
     refreshPermission();
     refreshI18n();
+
     //渲染表格
+    layer.load(2);
     layui.table.render({
         elem: '#table',
         url: '/servlet/inventory/balance',
@@ -22,6 +24,7 @@ $(function () {
             {align: 'center', toolbar: '#barTpl', minWidth: 180, title: getI18nAttr('opt')}
         ]],
         done: function(res, curr, count){
+            layer.closeAll('loading');
             refreshI18n();
         }
     });
@@ -121,6 +124,7 @@ function doSearch(table) {
     if (value == '') {
         key = '';
     }
+    layer.load(2);
     layui.table.reload('table', {where: {searchKey: key, searchValue: value}});
 }
 

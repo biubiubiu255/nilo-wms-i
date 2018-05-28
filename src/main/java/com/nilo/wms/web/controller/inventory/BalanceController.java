@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -53,7 +54,10 @@ public class BalanceController extends BaseController {
         param.setPage(parameter.getOffset() / parameter.getLimit() + 1);
         List<String> skuList = new ArrayList<>();
         if (StringUtil.isNotEmpty(parameter.getSku())) {
-            skuList.add(parameter.getSku());
+            String[] str = parameter.getSku().split(",");
+            for (String s : str) {
+                skuList.add(s.trim());
+            }
         }
         param.setSku(skuList);
 
@@ -91,4 +95,5 @@ public class BalanceController extends BaseController {
         basicDataService.syncStock(principal.getClientCode());
         return ResultMap.success().toJson();
     }
+
 }
