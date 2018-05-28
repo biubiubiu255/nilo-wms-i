@@ -5,19 +5,18 @@ $(function () {
     //渲染表格
     layui.table.render({
         elem: '#table',
-        url: '/servlet/interface',
+        url: '/servlet/fee',
         where: {
             token: getToken()
         },
-        limit:30,
         page: true,
         cols: [[
             {type: 'numbers'},
             {field: 'clientCode', sort: true, title: getI18nAttr('config_client_code')},
-            {field: 'bizType', sort: true, title: getI18nAttr('config_interface_biz_type')},
-            {field: 'method', sort: true, title: getI18nAttr('config_interface_method')},
-            {field: 'url', sort: true, title: getI18nAttr('config_interface_url')},
-            {field: 'requestMethod', sort: true, title: getI18nAttr('config_interface_request_method')},
+            {field: 'feeType', sort: true, title: getI18nAttr('config_fee_type')},
+            {field: 'classType', sort: true, title: getI18nAttr('config_fee_class')},
+            {field: 'firstPrice', sort: true, title: getI18nAttr('config_fee_first_price')},
+            {field: 'secondPrice', sort: true, title: getI18nAttr('config_fee_second_price')},
             {
                 field: 'createdTime', sort: true, templet: function (d) {
                 return layui.util.toDateString(d.createdTime * 1000);
@@ -37,7 +36,7 @@ $(function () {
     layui.form.on('submit(btnSubmit)', function (data) {
         data.field.token = getToken();
         layer.load(2);
-        $.post("/servlet/interface", data.field, function (data) {
+        $.post("/servlet/fee", data.field, function (data) {
             layer.closeAll('loading');
             if ("succ" == data.status) {
                 layer.msg("SUCCESS", {icon: 1});
@@ -56,6 +55,8 @@ $(function () {
         var layEvent = obj.event;
         if (layEvent === 'edit') { //修改
             showEditModel(data);
+        }else if (layEvent === 'del') { //删除
+            doDelete(obj);
         }
     });
 
@@ -64,6 +65,31 @@ $(function () {
         doSearch(table);
     });
 });
+
+
+//删除
+function doDelete(obj) {
+    layer.confirm(getI18nAttr('confirm_delete'), function (index) {
+        layer.close(index);
+        layer.load(2);
+        $.ajax({
+            url: "/servlet/fee/"+obj.data.feeType+"/" + obj.data.classType + "?token=" + getToken(),
+            type: "DELETE",
+            dataType: "JSON",
+            success: function (data) {
+                layer.closeAll('loading');
+                if ("succ" == data.status) {
+                    layer.msg("SUCCESS", {icon: 1});
+                    obj.del();
+                } else {
+                    layer.msg(data.error, {icon: 2});
+                }
+            }
+        });
+    });
+}
+
+
 
 //显示表单弹窗
 function showEditModel(data) {
@@ -79,15 +105,13 @@ function showEditModel(data) {
     });
     $("#editForm")[0].reset();
     if (data != null) {
-        $("#editForm input[name=clientCode]").val(data.clientCode);
-        $("#editForm input[name=bizType]").val(data.bizType);
-        $("#editForm input[name=wmsKey]").val(data.wmsKey);
-        $("#editForm input[name=method]").val(data.method);
-        $("#editForm input[name=url]").val(data.url);
-        $("#editForm input[name=requestMethod]").val(data.requestMethod);
+        $("#editForm input[name=feeType]").val(data.feeType);
+        $("#editForm input[name=classType]").val(data.classType);
+        $("#editForm input[name=firstPrice]").val(data.firstPrice);
+        $("#editForm input[name=secondPrice]").val(data.secondPrice);
+
         $("#editForm input[name=_method]").val("PUT");
-        $("#editForm input[name=clientCode]").attr("disabled", true);
-        $("#editForm input[name=bizType]").attr("disabled", true);
+        $("#editForm input[name=feeType]").attr("disabled", true);
 
     }
     $("#btnCancel").click(function () {

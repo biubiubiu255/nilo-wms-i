@@ -2,8 +2,12 @@ package com.nilo.wms.web.controller.log;
 
 import com.nilo.wms.common.annotation.RequiresPermissions;
 import com.nilo.wms.common.util.BeanUtils;
+import com.nilo.wms.common.util.DateUtil;
 import com.nilo.wms.common.util.StringUtil;
+import com.nilo.wms.dao.platform.NotifyDao;
 import com.nilo.wms.dto.common.ResultMap;
+import com.nilo.wms.dto.platform.Notify;
+import com.nilo.wms.dto.platform.parameter.NotifyParam;
 import com.nilo.wms.dto.platform.parameter.UserParam;
 import com.nilo.wms.dto.platform.system.User;
 import com.nilo.wms.service.platform.UserService;
@@ -12,70 +16,36 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
-@RequestMapping("/api_log_out")
+@RequestMapping("/log/api_log_out")
 public class ApiLogOutController extends BaseController {
     @Autowired
-    private UserService userService;
+    private NotifyDao notifyDao;
 
     @GetMapping
-    @RequiresPermissions("10011")
-    public String list(String searchValue, String searchKey) {
+    @RequiresPermissions("40021")
+    public String list(String searchValue, String searchKey, String dateRange) {
 
-        UserParam parameter = new UserParam();
+        NotifyParam parameter = new NotifyParam();
         if (StringUtil.isNotBlank(searchKey)) {
             BeanUtils.setProperty(parameter, searchKey, searchValue);
         }
+        if (StringUtil.isNotBlank(dateRange)) {
+            String[] date = dateRange.split(" - ");
+            parameter.setStart_date(DateUtil.parse(date[0], "yyyy-MM-dd"));
+            parameter.setEnd_date(DateUtil.parse(date[1], "yyyy-MM-dd") + 60 * 60 * 24 - 1);
+        }
         parameter.setPageInfo(getPage());
-        return userService.queryUsers(parameter).toJson();
-    }
 
-    @PostMapping
-    @RequiresPermissions("10012")
-    public String add(User user) {
-
-        userService.add(user);
-
-        return ResultMap.success().toJson();
-    }
-
-    @PutMapping
-    @RequiresPermissions("10013")
-    public String update(User user) {
-
-        userService.update(user);
-
-        return ResultMap.success().toJson();
-    }
-
-    @PutMapping("/status")
-    @RequiresPermissions("10013")
-    public String updateStatus(String userId, int status) {
-
-        User user = new User();
-        user.setUserId(userId);
-        user.setStatus(status);
-        userService.update(user);
-
-        return ResultMap.success().toJson();
-
-    }
-
-    @PutMapping("/psw/{userId}")
-    @RequiresPermissions("10015")
-    public String psw(@PathVariable("userId") String userId) {
-
-        User user = new User();
-        user.setUserId(userId);
-        user.setPassword(DigestUtils.md5Hex("12345678"));
-        userService.update(user);
-        return ResultMap.success().toJson();
-    }
-
-    @DeleteMapping("/{userId}")
-    @RequiresPermissions("10014")
-    public String delete(@PathVariable("userId") String userId) {
-        return ResultMap.success().toJson();
+        List<Notify> list = new ArrayList<>();
+        Long count = notifyDao.queryCountBy(parameter);
+        if (count != 0) {
+            list = notifyDao.queryBy(parameter);
+        }
+        return toLayUIData(count.intValue(), list);
     }
 
 }

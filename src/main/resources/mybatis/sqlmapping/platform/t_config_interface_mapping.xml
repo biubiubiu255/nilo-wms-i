@@ -41,9 +41,18 @@
 
     <update id="update" parameterType="com.nilo.wms.dto.common.InterfaceConfig" statementType="PREPARED">
         update t_config_interface
-        <trim prefix="set" suffixOverrides="," suffix="where client_code=#{clientCode} and reference_no=#{referenceNo}">
+        <trim prefix="set" suffixOverrides="," suffix="where client_code=#{clientCode} and biz_type=#{bizType}">
             <if test="status != null">
                 status = #{status},
+            </if>
+            <if test="method != null">
+                method = #{method},
+            </if>
+            <if test="url != null">
+                url = #{url},
+            </if>
+            <if test="requestMethod != null">
+                request_method = #{requestMethod},
             </if>
             updated_time=UNIX_TIMESTAMP(NOW()),version=UUID()
         </trim>

@@ -23,7 +23,7 @@ public class ApiLogInController extends BaseController {
     private ApiLogDao apiLogDao;
 
     @GetMapping
-    @RequiresPermissions("4001")
+    @RequiresPermissions("40011")
     public String list(String searchValue, String searchKey, String dateRange) {
 
         ApiLogParam parameter = new ApiLogParam();
@@ -36,12 +36,12 @@ public class ApiLogInController extends BaseController {
             parameter.setEnd_date(DateUtil.parse(date[1], "yyyy-MM-dd") + 60 * 60 * 24 - 1);
         }
         parameter.setPageInfo(getPage());
-        Integer count = apiLogDao.queryCountBy(parameter);
+        Long count = apiLogDao.queryCountBy(parameter);
         List<ApiLog> list = new ArrayList<>();
-        if (count > 0) {
+        if (count != 0) {
             list = apiLogDao.queryBy(parameter);
         }
 
-        return toLayUIData(count, list);
+        return toLayUIData(count.intValue(), list);
     }
 }

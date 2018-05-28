@@ -27,19 +27,57 @@
         id ,client_code,fee_type,class,first_price,second_price,created_time , updated_time ,version
     </sql>
     <!-- 插入语句 -->
-    <insert id="insert" parameterType="com.nilo.wms.dto.common.ClientConfig" statementType="PREPARED"
+    <insert id="insert" parameterType="com.nilo.wms.dto.fee.FeeConfig" statementType="PREPARED"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_config_fee
         ( client_code,fee_type,class,first_price,second_price,created_time , updated_time ,version)
         VALUES
-        (#{clientCode},#{feeType}, #{class},#{firstPrice},#{secondPrice} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
+        (#{clientCode},#{feeType}, #{classType},#{firstPrice},#{secondPrice} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
     </insert>
 
-    <select id="queryByClientCode" resultMap="feeConfig" statementType="PREPARED">
+    <update id="update" parameterType="com.nilo.wms.dto.fee.FeeConfig" statementType="PREPARED">
+        update t_config_fee
+        <trim prefix="set" suffixOverrides="," suffix="where client_code=#{clientCode} and fee_type=#{feeType} and class=#{classType}">
+            <if test="firstPrice != null">
+                first_price = #{firstPrice},
+            </if>
+            second_price = #{secondPrice},
+            updated_time=UNIX_TIMESTAMP(NOW()),version=UUID()
+        </trim>
+    </update>
+
+
+    <select id="queryBy" resultMap="feeConfig" statementType="PREPARED">
         SELECT
         <include refid="Base_Column_List"/>
         FROM t_config_fee where client_code = #{clientCode}
+
+        <if test="classType != null">
+            and class = #{classType}
+        </if>
+        <if test="feeType != null">
+           and  fee_Type = #{feeType}
+        </if>
+
+        limit #{offset},#{limit}
     </select>
 
+    <select id="queryCountBy" resultType="java.lang.Integer" statementType="PREPARED">
+        SELECT count(1)
+        FROM t_config_fee
+        where client_code = #{clientCode}
+
+        <if test="classType != null">
+            and class = #{classType}
+        </if>
+        <if test="feeType != null">
+            and  fee_Type = #{feeType}
+        </if>
+    </select>
+
+    <delete id="delete">
+        delete from t_config_fee  where client_code = #{clientCode} and class = #{classType} and  fee_Type = #{feeType}
+
+    </delete>
 </mapper>

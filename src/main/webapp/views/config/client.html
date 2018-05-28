@@ -9,7 +9,8 @@
 <!-- 表单弹窗 -->
 <script type="text/html" id="addModel">
     <form id="editForm" class="layui-form model-form" action="">
-        <input name="clientCode" type="hidden"/>
+        <input name="_method" value="POST" type="hidden"/>
+
         <div class="layui-form-item">
             <label class="layui-form-label"><span i18n="config_client_code"></span></label>
             <div class="layui-input-block">
@@ -55,9 +56,7 @@
 <!-- 表格操作列 -->
 <div id="barTpl" style="display:none;">
 
-    <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit" permission="10013"><span i18n="edit"></span></button>
-
-    <button class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" permission="10014"><span i18n="delete"></span></button>
+    <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit" permission="50012"><span i18n="edit"></span></button>
 
 </div>
 

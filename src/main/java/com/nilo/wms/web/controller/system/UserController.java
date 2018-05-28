@@ -75,6 +75,9 @@ public class UserController extends BaseController {
     @DeleteMapping("/{userId}")
     @RequiresPermissions("10014")
     public String delete(@PathVariable("userId") String userId) {
+
+        userService.delete(userId);
+
         return ResultMap.success().toJson();
     }
 

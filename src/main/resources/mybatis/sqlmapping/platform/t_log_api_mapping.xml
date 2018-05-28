@@ -67,7 +67,7 @@
 
     </select>
 
-    <select id="queryCountBy" statementType="PREPARED" resultType="java.lang.Integer">
+    <select id="queryCountBy" statementType="PREPARED" resultType="java.lang.Long">
         SELECT
         count(1)
         FROM t_log_api where 1 = 1

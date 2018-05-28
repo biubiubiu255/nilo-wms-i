@@ -42,12 +42,4 @@ public class InterfaceController extends BaseController {
         return ResultMap.success().toJson();
     }
 
-    @PutMapping("/status")
-    @RequiresPermissions("50023")
-    public String updateStatus(InterfaceConfig interfaceConfig) {
-
-        return ResultMap.success().toJson();
-
-    }
-
 }
