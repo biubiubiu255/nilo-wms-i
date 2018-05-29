@@ -63,6 +63,10 @@ $(function () {
     $("#searchBtn").click(function () {
         doSearch(table);
     });
+
+    $("#refreshBtn").click(function () {
+        refreshConfig();
+    });
 });
 
 //显示表单弹窗
@@ -103,4 +107,26 @@ function doSearch(table) {
         key = '';
     }
     layui.table.reload('table', {where: {searchKey: key, searchValue: value}});
+}
+
+//refresh config
+function refreshConfig(obj) {
+    layer.confirm(getI18nAttr('confirm_refresh'), function (index) {
+        layer.close(index);
+        layer.load(2);
+        $.ajax({
+            url: "/servlet/interface/refresh?token=" + getToken(),
+            type: "POST",
+            dataType: "JSON",
+            success: function (data) {
+                layer.closeAll('loading');
+                if ("succ" == data.status) {
+                    layer.msg("SUCCESS", {icon: 1});
+                    obj.del();
+                } else {
+                    layer.msg(data.error, {icon: 2});
+                }
+            }
+        });
+    });
 }

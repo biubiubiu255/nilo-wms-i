@@ -12,6 +12,11 @@ public interface SystemService {
     void loadingAndRefreshClientConfig();
 
     /**
+     * 刷新 wms 客户配置
+     */
+    void loadingAndRefreshInterfaceConfig();
+
+    /**
      * 刷新 wms 费用配置
      */
     void loadingAndRefreshWMSFeeConfig();

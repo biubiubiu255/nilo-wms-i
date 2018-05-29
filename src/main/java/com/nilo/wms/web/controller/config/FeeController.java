@@ -12,6 +12,7 @@ import com.nilo.wms.dto.common.ResultMap;
 import com.nilo.wms.dto.fee.FeeConfig;
 import com.nilo.wms.dto.platform.parameter.FeeConfigParam;
 import com.nilo.wms.dto.platform.parameter.UserParam;
+import com.nilo.wms.service.platform.SystemService;
 import com.nilo.wms.web.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,8 @@ import java.util.List;
 public class FeeController extends BaseController {
     @Autowired
     private FeeConfigDao feeConfigDao;
-
+    @Autowired
+    private SystemService systemService;
     @GetMapping
     @RequiresPermissions("50031")
     public String list(String searchValue, String searchKey) {
@@ -66,6 +68,13 @@ public class FeeController extends BaseController {
 
         feeConfigDao.delete(SessionLocal.getPrincipal().getClientCode(), feeType, classType);
 
+        return ResultMap.success().toJson();
+    }
+
+    @PostMapping("/refresh")
+    @RequiresPermissions("50035")
+    public String refresh() {
+        systemService.loadingAndRefreshWMSFeeConfig();
         return ResultMap.success().toJson();
     }
 }

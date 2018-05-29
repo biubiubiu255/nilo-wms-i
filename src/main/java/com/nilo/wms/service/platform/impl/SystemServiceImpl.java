@@ -41,19 +41,27 @@ public class SystemServiceImpl implements SystemService {
         List<ClientConfig> list = clientConfigDao.queryAll();
 
         Map<String, ClientConfig> clientConfigMap = new HashMap<>();
+        for (ClientConfig c : list) {
+            clientConfigMap.put(c.getClientCode(), c);
+        }
+        SystemConfig.setClientConfig(clientConfigMap);
+    }
+
+    @Override
+    public void loadingAndRefreshInterfaceConfig() {
 
         Map<String, Map<String, InterfaceConfig>> interfaceConfigMap = new HashMap<>();
 
-        for (ClientConfig c : list) {
-            clientConfigMap.put(c.getClientCode(), c);
-            List<InterfaceConfig> interfaceConfigList = interfaceConfigDao.queryByClientCode(c.getClientCode());
+        for (Map.Entry<String, ClientConfig> entry : SystemConfig.getClientConfig().entrySet()) {
+
+            ClientConfig clientConfig = entry.getValue();
+            List<InterfaceConfig> interfaceConfigList = interfaceConfigDao.queryByClientCode(clientConfig.getClientCode());
             Map<String, InterfaceConfig> map = new HashMap<>();
             for (InterfaceConfig i : interfaceConfigList) {
                 map.put(i.getBizType(), i);
             }
-            interfaceConfigMap.put(c.getClientCode(), map);
+            interfaceConfigMap.put(clientConfig.getClientCode(), map);
         }
-        SystemConfig.setClientConfig(clientConfigMap);
         SystemConfig.setInterfaceConfig(interfaceConfigMap);
     }
 

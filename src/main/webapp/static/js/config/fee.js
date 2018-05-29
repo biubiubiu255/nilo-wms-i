@@ -31,7 +31,10 @@ $(function () {
     $("#addBtn").click(function () {
         showEditModel(null);
     });
-
+    //refresh
+    $("#refreshBtn").click(function () {
+        refreshConfig();
+    });
     //表单提交事件
     layui.form.on('submit(btnSubmit)', function (data) {
         data.field.token = getToken();
@@ -90,6 +93,27 @@ function doDelete(obj) {
 }
 
 
+//refresh config
+function refreshConfig(obj) {
+    layer.confirm(getI18nAttr('confirm_refresh'), function (index) {
+        layer.close(index);
+        layer.load(2);
+        $.ajax({
+            url: "/servlet/fee/refresh?token=" + getToken(),
+            type: "POST",
+            dataType: "JSON",
+            success: function (data) {
+                layer.closeAll('loading');
+                if ("succ" == data.status) {
+                    layer.msg("SUCCESS", {icon: 1});
+                    obj.del();
+                } else {
+                    layer.msg(data.error, {icon: 2});
+                }
+            }
+        });
+    });
+}
 
 //显示表单弹窗
 function showEditModel(data) {

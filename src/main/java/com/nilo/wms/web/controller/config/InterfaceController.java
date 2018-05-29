@@ -10,6 +10,7 @@ import com.nilo.wms.dto.common.InterfaceConfig;
 import com.nilo.wms.dto.common.ResultMap;
 import com.nilo.wms.dto.platform.parameter.UserParam;
 import com.nilo.wms.dto.platform.system.User;
+import com.nilo.wms.service.platform.SystemService;
 import com.nilo.wms.web.BaseController;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,8 @@ import java.util.List;
 public class InterfaceController extends BaseController {
     @Autowired
     private InterfaceConfigDao interfaceConfigDao;
-
+    @Autowired
+    private SystemService systemService;
     @GetMapping
     @RequiresPermissions("50021")
     public String list() {
@@ -38,8 +40,15 @@ public class InterfaceController extends BaseController {
     public String update(InterfaceConfig interfaceConfig) {
 
         interfaceConfigDao.update(interfaceConfig);
-
         return ResultMap.success().toJson();
     }
+    @PostMapping("/refresh")
+    @RequiresPermissions("50023")
+    public String refresh() {
+
+        systemService.loadingAndRefreshInterfaceConfig();
+        return ResultMap.success().toJson();
+    }
+
 
 }

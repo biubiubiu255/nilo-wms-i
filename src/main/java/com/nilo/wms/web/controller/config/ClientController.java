@@ -8,12 +8,10 @@ import com.nilo.wms.dao.platform.InterfaceConfigDao;
 import com.nilo.wms.dto.common.ClientConfig;
 import com.nilo.wms.dto.common.InterfaceConfig;
 import com.nilo.wms.dto.common.ResultMap;
+import com.nilo.wms.service.platform.SystemService;
 import com.nilo.wms.web.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,6 +20,8 @@ import java.util.List;
 public class ClientController extends BaseController {
     @Autowired
     private ClientConfigDao clientConfigDao;
+    @Autowired
+    private SystemService systemService;
 
     @GetMapping
     @RequiresPermissions("50011")
@@ -39,5 +39,11 @@ public class ClientController extends BaseController {
         return ResultMap.success().toJson();
     }
 
+    @PostMapping("/refresh")
+    @RequiresPermissions("50013")
+    public String refresh() {
 
+        systemService.loadingAndRefreshClientConfig();
+        return ResultMap.success().toJson();
+    }
 }
