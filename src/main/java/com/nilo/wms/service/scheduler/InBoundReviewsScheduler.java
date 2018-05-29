@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 检测入库是否完毕
@@ -22,7 +23,17 @@ public class InBoundReviewsScheduler {
     @Autowired
     private InboundService inboundService;
 
+    private static final AtomicBoolean RUN = new AtomicBoolean(false);
+
     public void execute() throws Throwable {
-        inboundService.inboundScan();
+        if (RUN.compareAndSet(false, true)) {
+            try {
+                inboundService.inboundScan();
+            } catch (Exception e) {
+                logger.error("InBoundReviewsScheduler Failed.", e);
+            }
+        } else {
+            logger.info("InBoundReviewsScheduler is already running.");
+        }
     }
 }
