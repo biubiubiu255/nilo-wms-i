@@ -235,6 +235,7 @@ public class FeeServiceImpl implements FeeService {
         params.put("sign", createNOSSign(data, config.getClientKey()));
         params.put("data", data);
         params.put("app_key", "wms");
+        params.put("country_code", "ke");
         params.put("timestamp", ""+DateUtil.getSysTimeStamp());
         String request_id = UUID.randomUUID().toString();
         params.put("request_id", request_id);

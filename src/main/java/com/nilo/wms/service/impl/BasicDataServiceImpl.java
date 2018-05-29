@@ -321,6 +321,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
         params.put("data", data);
         params.put("app_key", "wms");
+        params.put("country_code", "ke");
         params.put("request_id", UUID.randomUUID().toString());
         params.put("timestamp", "" + DateUtil.getSysTimeStamp());
         NotifyRequest notify = new NotifyRequest();
@@ -419,6 +420,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
         params.put("data", data);
         params.put("app_key", "wms");
+        params.put("country_code", "ke");
         params.put("request_id", UUID.randomUUID().toString());
         params.put("timestamp", "" + DateUtil.getSysTimeStamp());
 
