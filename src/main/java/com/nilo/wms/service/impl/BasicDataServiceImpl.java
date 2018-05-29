@@ -330,7 +330,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         try {
             notifyDataBusProducer.sendMessage(notify);
         } catch (Exception e) {
-            logger.error("confirmSO send message failed.", e);
+            logger.error("storage_not_enough send message failed.", e);
         }
     }
 
@@ -430,7 +430,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         try {
             notifyDataBusProducer.sendMessage(notify);
         } catch (Exception e) {
-            logger.error("confirmSO send message failed.", e);
+            logger.error("update_storage send message failed.", e);
         }
     }
 
