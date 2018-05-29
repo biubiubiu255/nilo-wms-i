@@ -12,6 +12,7 @@ import com.nilo.wms.common.exception.SysErrorCode;
 import com.nilo.wms.common.exception.WMSException;
 import com.nilo.wms.common.util.AssertUtil;
 import com.nilo.wms.common.util.DateUtil;
+import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.common.util.XmlUtil;
 import com.nilo.wms.dao.flux.FluxInboundDao;
 import com.nilo.wms.dao.flux.SkuDao;
@@ -26,7 +27,8 @@ import com.nilo.wms.dto.flux.FluxInboundDetails;
 import com.nilo.wms.dto.flux.FluxResponse;
 import com.nilo.wms.dto.inbound.InboundHeader;
 import com.nilo.wms.dto.inbound.InboundItem;
-import com.nilo.wms.dto.platform.inbound.Inbound;
+import com.nilo.wms.dto.inbound.Inbound;
+import com.nilo.wms.dto.inbound.InboundDetail;
 import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.InboundService;
@@ -265,6 +267,55 @@ public class InboundServiceImpl implements InboundService {
     private String createNOSSign(String data, String key) {
         String str = key + data + key;
         return DigestUtils.md5Hex(str).toUpperCase();
+    }
+
+    @Override
+    public void inboundScan() {
+
+        List<InboundDetail> inboundDetails = inboundDao.queryNotComplete();  //获取wms未完成的详细列表
+        if (inboundDetails.isEmpty()){
+            return;
+        }
+        Set<String> referenceNos = new HashSet<String>();
+        for (InboundDetail e : inboundDetails){                              //抽取wsm所有未完成的订单号Set集合
+            referenceNos.add(e.getReferenceNo());
+        }
+        List<FluxInboundDetails> fluxInboundDetails1 = fluxInboundDao.queryNotCompleteR(referenceNos);   //获取Fl未完成的详细列表
+        //比对数据获取完毕
+
+        //比对详细、并修改wms状态
+        for (InboundDetail e : inboundDetails){
+            for (FluxInboundDetails f : fluxInboundDetails1){
+                if(StringUtil.equals(e.getReferenceNo(), f.getReferenceNo()) && StringUtil.equals(e.getSku(), f.getSku()) && (!e.getStatus().equals(f.getStatus()) || !e.getReceiveQty().equals(f.getReceivedQty()))){
+                    e.setStatus(Integer.valueOf(f.getStatus()).shortValue());
+                    e.setReceiveQty(f.getReceivedQty());
+                    if(e.getStatus().equals(InboundStatusEnum.closed.getCode())){
+                        e.setReceiveTime(DateUtil.getSysTimeStamp().intValue());
+                    }
+                    //System.out.println("正在修改详细 = " + e);
+                    //inboundDao.updateDetail(e);
+                    break;
+                }
+            }
+        }
+
+        //比对入库单，并修改
+        Set<String> fluxRerenceNos = new HashSet<String>();
+        for (FluxInboundDetails f : fluxInboundDetails1){
+            fluxRerenceNos.add(f.getReferenceNo());
+        }
+        for(String e : referenceNos){
+            if (!fluxRerenceNos.contains(e)){
+                Inbound inbound = new Inbound();
+                inbound.setReferenceNo(e);
+                inbound.setClientCode(inboundDetails.get(inboundDetails.indexOf(e)).getClientCode());
+                inbound.setStatus(InboundStatusEnum.closed.getCode());
+                System.out.println("正在修改入库单 = " + inbound);
+                //inboundDao.update(inbound);
+            }
+        }
+
+
     }
 
 }

@@ -10,6 +10,10 @@ import java.util.List;
  * Created by admin on 2018/3/22.
  */
 public class FluxInboundDetails {
+
+    private String  clientCode;
+    @JSONField(name = "asnno")
+    private String referenceNo;
     @JSONField(name = "sku")
     private String sku;
     @JSONField(name = "goods_num")
@@ -59,5 +63,21 @@ public class FluxInboundDetails {
 
     public void setReceivedQty(Integer receivedQty) {
         this.receivedQty = receivedQty;
+    }
+
+    public String getReferenceNo() {
+        return referenceNo;
+    }
+
+    public void setReferenceNo(String referenceNo) {
+        this.referenceNo = referenceNo;
+    }
+
+    public String getClientCode() {
+        return clientCode;
+    }
+
+    public void setClientCode(String clientCode) {
+        this.clientCode = clientCode;
     }
 }

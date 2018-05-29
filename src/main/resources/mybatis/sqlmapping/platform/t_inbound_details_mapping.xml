@@ -5,7 +5,7 @@
 
 
     <!-- 实体bean与数据字段对应关系 -->
-    <resultMap id="OutboundItemDO" type="com.nilo.wms.dto.platform.inbound.InboundDetail">
+    <resultMap id="detailMap" type="com.nilo.wms.dto.inbound.InboundDetail">
         <result property="id" column="id" javaType="java.lang.Long"
                 jdbcType="BIGINT"/>
         <result property="clientCode" column="client_Code" javaType="java.lang.String"
@@ -22,7 +22,7 @@
         <result property="receiveTime" column="receive_time" javaType="java.lang.Integer"
                 jdbcType="INTEGER"/>
 
-        <result property="status" column="status" javaType="java.lang.Short"
+        <result property="status" column="status" javaType="java.lang.Integer"
                 jdbcType="TINYINT"/>
     </resultMap>
 
@@ -32,7 +32,7 @@
     </sql>
 
     <!-- 插入语句 -->
-    <insert id="insertDetail" parameterType="com.nilo.wms.dto.platform.inbound.InboundDetail" statementType="PREPARED"
+    <insert id="insertDetail" parameterType="com.nilo.wms.dto.inbound.InboundDetail" statementType="PREPARED"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO
@@ -42,16 +42,41 @@
         (#{clientCode}, #{referenceNo}, #{sku}, #{qty}, #{receiveQty}, #{receiveTime}, #{status})
     </insert>
 
-    <update id="updateDetail" parameterType="com.nilo.wms.dto.platform.inbound.InboundDetail">
+    <update id="updateDetail" parameterType="com.nilo.wms.dto.inbound.InboundDetail">
         UPDATE t_inbound_detail set
         <trim prefix="set" suffixOverrides="," suffix="where client_code=#{clientCode} and reference_no=#{referenceNo} and sku=#{sku}">
             <if test="status != null">
                 status = #{status},
-            </if>
-            <if test="status != null">
-                status = #{status},
+                receive_qty = #{receiveQty},
+
             </if>
         </trim>
     </update>
+
+
+<!--    <update id="updateDetails">
+        UPDATE
+        t_inbound_detail
+        SET status = 99
+        WHERE
+        reference_no = #{referenceNo}
+        AND sku IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>-->
+
+    <select id="queryNotComplete" resultMap="detailMap">
+        SELECT
+            b.*
+        FROM
+            t_inbound a
+        INNER JOIN t_inbound_detail b ON b.reference_no = a.reference_no
+        WHERE
+            a.`status` != 99
+        AND b.`status` != 99
+        AND a.`status` != 90
+        AND b.`status` != 90
+    </select>
 
 </mapper>

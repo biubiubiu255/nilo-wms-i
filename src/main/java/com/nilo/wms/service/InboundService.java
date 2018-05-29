@@ -17,4 +17,6 @@ public interface InboundService {
     void confirmASN(List<InboundHeader> list);
 
     FluxInbound queryFlux(String referenceNo);
+
+    void inboundScan();
 }

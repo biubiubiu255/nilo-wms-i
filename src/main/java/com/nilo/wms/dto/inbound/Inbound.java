@@ -1,28 +1,26 @@
-package com.nilo.wms.dto.platform.inbound;
+package com.nilo.wms.dto.inbound;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.nilo.wms.common.BaseDo;
+import com.nilo.wms.common.util.DateUtil;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
+
 
 
 public class Inbound extends BaseDo<Integer> {
 
-    private String clientCode;
-    private String customerCode;
-    private String warehouseCode;
-    private String asnNo;
-    private String referenceNo;
-    private String referenceNo2;
-    private String asnType;
-    private Integer  status;
-    private String supplierId;
-    private String supplierName;
-
-    public String getClientCode() {
-        return clientCode;
-    }
-
-    public void setClientCode(String clientCode) {
-        this.clientCode = clientCode;
-    }
+    private String  clientCode;
+    private String  customerCode;
+    private String  warehouseCode;
+    private String  referenceNo;
+    private String  referenceNo2;
+    private String  asnType;
+    private Integer status;
+    private String  supplierId;
+    private String  supplierName;
 
     public String getCustomerCode() {
         return customerCode;
@@ -38,14 +36,6 @@ public class Inbound extends BaseDo<Integer> {
 
     public void setWarehouseCode(String warehouseCode) {
         this.warehouseCode = warehouseCode;
-    }
-
-    public String getAsnNo() {
-        return asnNo;
-    }
-
-    public void setAsnNo(String asnNo) {
-        this.asnNo = asnNo;
     }
 
     public String getReferenceNo() {
@@ -96,12 +86,19 @@ public class Inbound extends BaseDo<Integer> {
         this.supplierName = supplierName;
     }
 
+    public String getClientCode() {
+        return clientCode;
+    }
+
+    public void setClientCode(String clientCode) {
+        this.clientCode = clientCode;
+    }
+
     @Override
     public String toString() {
         return "Inbound{" +
                 "customerCode='" + customerCode + '\'' +
                 ", warehouseCode='" + warehouseCode + '\'' +
-                ", asnNo='" + asnNo + '\'' +
                 ", referenceNo='" + referenceNo + '\'' +
                 ", referenceNo2='" + referenceNo2 + '\'' +
                 ", asnType='" + asnType + '\'' +

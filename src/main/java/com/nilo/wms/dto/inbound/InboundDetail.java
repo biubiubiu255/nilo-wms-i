@@ -1,9 +1,10 @@
-package com.nilo.wms.dto.platform.inbound;
+package com.nilo.wms.dto.inbound;
 
 import com.nilo.wms.common.BaseDo;
 
 
-public class InboundDetail extends BaseDo<Integer> {
+public class InboundDetail extends BaseDo<Long> {
+
 
     private String  clientCode;
     private String  referenceNo;
