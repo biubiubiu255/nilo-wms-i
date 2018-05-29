@@ -17,7 +17,7 @@ public class Page {
 
     private int count;
 
-    private int offset = 1;
+    private int offset = 0;
 
     private int limit = 10;
 

@@ -5,6 +5,7 @@ import com.nilo.wms.dto.common.ClientConfig;
 import com.nilo.wms.dto.common.InterfaceConfig;
 import com.nilo.wms.dto.fee.FeeConfig;
 import com.nilo.wms.dto.fee.FeePrice;
+import com.nilo.wms.dto.platform.parameter.FeeConfigParam;
 import com.nilo.wms.dto.platform.parameter.RoleParam;
 import com.nilo.wms.dto.platform.system.Permission;
 import com.nilo.wms.dto.platform.system.Role;
@@ -33,25 +34,34 @@ public class SystemServiceImpl implements SystemService {
     private RoleDao roleDao;
     @Autowired
     private PermissionDao permissionDao;
+
     @Override
     public void loadingAndRefreshClientConfig() {
 
         List<ClientConfig> list = clientConfigDao.queryAll();
 
         Map<String, ClientConfig> clientConfigMap = new HashMap<>();
+        for (ClientConfig c : list) {
+            clientConfigMap.put(c.getClientCode(), c);
+        }
+        SystemConfig.setClientConfig(clientConfigMap);
+    }
+
+    @Override
+    public void loadingAndRefreshInterfaceConfig() {
 
         Map<String, Map<String, InterfaceConfig>> interfaceConfigMap = new HashMap<>();
 
-        for (ClientConfig c : list) {
-            clientConfigMap.put(c.getClientCode(), c);
-            List<InterfaceConfig> interfaceConfigList = interfaceConfigDao.queryByCode(c.getClientCode());
+        for (Map.Entry<String, ClientConfig> entry : SystemConfig.getClientConfig().entrySet()) {
+
+            ClientConfig clientConfig = entry.getValue();
+            List<InterfaceConfig> interfaceConfigList = interfaceConfigDao.queryByClientCode(clientConfig.getClientCode());
             Map<String, InterfaceConfig> map = new HashMap<>();
             for (InterfaceConfig i : interfaceConfigList) {
                 map.put(i.getBizType(), i);
             }
-            interfaceConfigMap.put(c.getClientCode(), map);
+            interfaceConfigMap.put(clientConfig.getClientCode(), map);
         }
-        SystemConfig.setClientConfig(clientConfigMap);
         SystemConfig.setInterfaceConfig(interfaceConfigMap);
     }
 
@@ -64,7 +74,11 @@ public class SystemServiceImpl implements SystemService {
         Map<String, Map<String, FeePrice>> feeConfig = new HashMap<>();
 
         for (Map.Entry<String, ClientConfig> entry : SystemConfig.getClientConfig().entrySet()) {
-            List<FeeConfig> list = feeConfigDao.queryByClientCode(entry.getValue().getClientCode());
+
+            FeeConfigParam param = new FeeConfigParam();
+            param.setLimit(10000);
+            param.setClientCode(entry.getValue().getClientCode());
+            List<FeeConfig> list = feeConfigDao.queryBy(param);
             Map<String, FeePrice> feeConf = new HashMap<>();
             for (FeeConfig c : list) {
                 FeePrice fee = new FeePrice();

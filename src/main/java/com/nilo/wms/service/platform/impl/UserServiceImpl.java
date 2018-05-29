@@ -22,6 +22,12 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
+    public void delete(String userId) {
+        AssertUtil.isNotBlank(userId, CheckErrorCode.USER_ID_EMPTY);
+        userDao.delete(userId);
+    }
+
+    @Override
     public void add(User user) {
         AssertUtil.isNotNull(user, SysErrorCode.REQUEST_IS_NULL);
         AssertUtil.isNotBlank(user.getUsername(), CheckErrorCode.USER_NAME_EMPTY);

@@ -321,6 +321,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
         params.put("data", data);
         params.put("app_key", "wms");
+        params.put("country_code", "ke");
         params.put("request_id", UUID.randomUUID().toString());
         params.put("timestamp", "" + DateUtil.getSysTimeStamp());
         NotifyRequest notify = new NotifyRequest();
@@ -329,7 +330,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         try {
             notifyDataBusProducer.sendMessage(notify);
         } catch (Exception e) {
-            logger.error("confirmSO send message failed.", e);
+            logger.error("storage_not_enough send message failed.", e);
         }
     }
 
@@ -419,6 +420,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         params.put("sign", createNOSSign(data, clientConfig.getClientKey()));
         params.put("data", data);
         params.put("app_key", "wms");
+        params.put("country_code", "ke");
         params.put("request_id", UUID.randomUUID().toString());
         params.put("timestamp", "" + DateUtil.getSysTimeStamp());
 
@@ -428,7 +430,7 @@ public class BasicDataServiceImpl implements BasicDataService {
         try {
             notifyDataBusProducer.sendMessage(notify);
         } catch (Exception e) {
-            logger.error("confirmSO send message failed.", e);
+            logger.error("update_storage send message failed.", e);
         }
     }
 

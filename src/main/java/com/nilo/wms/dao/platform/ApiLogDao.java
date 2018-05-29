@@ -14,6 +14,6 @@ public interface ApiLogDao extends BaseDao<Long, ApiLog> {
 
     List<ApiLog> queryBy(ApiLogParam param);
 
-    Integer queryCountBy(ApiLogParam param);
+    Long queryCountBy(ApiLogParam param);
 
 }

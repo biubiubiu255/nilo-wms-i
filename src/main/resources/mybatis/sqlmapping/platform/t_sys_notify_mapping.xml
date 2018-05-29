@@ -58,13 +58,44 @@
         </trim>
     </update>
 
-
-    <select id="queryByNotifyId" resultMap="notify" statementType="PREPARED">
+    <select id="queryBy" resultMap="notify" statementType="PREPARED">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM t_sys_notify where notify_id=#{notifyId}
+        FROM t_sys_notify where 1 = 1
+        <if test="notifyId != null">
+            and notify_id = #{notifyId},
+        </if>
+        <if test="url != null">
+            and url = #{url},
+        </if>
+        <if test="param != null">
+            and param = #{param},
+        </if>
+        <if test="result != null">
+            and result = #{result},
+        </if>
+        <![CDATA[ and  created_time >= #{start_date} and created_time <= #{end_date} ]]>
+        order by created_time desc
+        limit #{offset},#{limit}
     </select>
 
+    <select id="queryCountBy" resultType="java.lang.Long" statementType="PREPARED">
+        SELECT count(1)
+        FROM t_sys_notify where 1 = 1
+        <if test="notifyId != null">
+            and notify_id = #{notifyId},
+        </if>
+        <if test="url != null">
+            and url = #{url},
+        </if>
+        <if test="param != null">
+            and param = #{param},
+        </if>
+        <if test="result != null">
+            and result = #{result},
+        </if>
+        <![CDATA[ and  created_time >= #{start_date} and created_time <= #{end_date} ]]>
+    </select>
 
     <select id="queryFailed" resultMap="notify" statementType="PREPARED">
         SELECT <include refid="Base_Column_List"/> FROM t_sys_notify WHERE  FROM_UNIXTIME(created_time,'%Y%m%d') = date_format(now(),'%Y%m%d') and status = 0

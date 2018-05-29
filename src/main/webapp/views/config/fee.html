@@ -1,0 +1,71 @@
+<div class="content-header">
+	<span class="layui-breadcrumb">
+	  <a href="#!home"><span i18n="home_page"></span></a>
+	  <a><cite><span i18n="config_fee_mgn"></span> </cite></a>
+	</span>
+    <div class="layui-form toolbar">
+        <span i18n="search"></span>：
+        <select id="searchKey">
+            <option value="" i18n="please_select"></option>
+            <option value="feeType" i18n="config_fee_type"></option>
+            <option value="classType" i18n="config_fee_class"></option>
+        </select>
+
+        <input id="searchValue" class="layui-input search-input" type="text"/>&emsp;
+        <button id="searchBtn" class="layui-btn search-btn" permission="50031"><i class="layui-icon">&#xe615;</i><span i18n="search"/></button>
+        &emsp;
+        <button id="addBtn" class="layui-btn search-btn" permission="50032"><i class="layui-icon">&#xe654;</i><span i18n="add"/>
+        </button>
+        &emsp;
+        <button id="refreshBtn" class="layui-btn search-btn" permission="50035"><i class="layui-icon">&#xe9aa;</i><span i18n="refresh"/>
+        </button>
+    </div>
+</div>
+<table class="layui-table" id="table" lay-filter="table"></table>
+<!-- 表单弹窗 -->
+<script type="text/html" id="addModel">
+    <form id="editForm" class="layui-form model-form" action="">
+        <input name="_method" value="POST" type="hidden"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_fee_type"></span></label>
+            <div class="layui-input-block">
+                <input name="feeType" type="text" class="layui-input" maxlength="20" lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_fee_class"></span></label>
+            <div class="layui-input-block">
+                <input name="classType" type="text" class="layui-input" maxlength="20" lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_fee_first_price"></span></label>
+            <div class="layui-input-block">
+                <input name="firstPrice" type="text" class="layui-input" lay-verify="required" required/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_fee_second_price"></span></label>
+            <div class="layui-input-block">
+                <input name="secondPrice" type="text" class="layui-input" maxlength="20"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item model-form-footer">
+            <button class="layui-btn layui-btn-primary" type="button" id="btnCancel"><span i18n="cancel"></span>
+            </button>
+            <button class="layui-btn" lay-filter="btnSubmit" lay-submit><span i18n="ok"></span></button>
+        </div>
+    </form>
+</script>
+<!-- 表格操作列 -->
+<div id="barTpl" style="display:none;">
+
+    <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit" permission="50033"><span
+            i18n="edit"></span></button>
+    <button class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" permission="50034"><span
+            i18n="delete"></span></button>
+</div>
+
+<script type="text/javascript" src="/static/js/config/fee.js"></script>

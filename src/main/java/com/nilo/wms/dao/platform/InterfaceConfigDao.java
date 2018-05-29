@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface InterfaceConfigDao extends BaseDao<Long, InterfaceConfig> {
 
-    List<InterfaceConfig> queryByCode(String clientCode);
+    List<InterfaceConfig> queryByClientCode(String clientCode);
 
 }

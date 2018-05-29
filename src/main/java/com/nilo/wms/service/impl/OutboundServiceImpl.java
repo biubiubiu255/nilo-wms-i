@@ -33,7 +33,6 @@ import com.nilo.wms.service.HttpRequest;
 import com.nilo.wms.service.OutboundService;
 import com.nilo.wms.service.config.SystemConfig;
 import com.nilo.wms.service.platform.RedisUtil;
-import com.nilo.wms.web.model.ResultMap;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -231,9 +230,9 @@ public class OutboundServiceImpl implements OutboundService {
         for (Outbound out : outList) {
             Map<String, Object> map = new HashMap<>();
             if (result) {
-                map.put("status", 99);
+                map.put("status", 240);
             } else {
-                map.put("status", 90);
+                map.put("status", 0);
             }
             map.put("client_ordersn", out.getReferenceNo());
             map.put("order_type", out.getOrderType());
@@ -265,16 +264,34 @@ public class OutboundServiceImpl implements OutboundService {
         for (Outbound o : outList) {
             waybillList.add(o.getWaybillNum());
         }
+        notifyWeight(waybillList);
+
+    }
+
+    private void notifyWeight(List<String> list) {
+
+        String clientCode = SessionLocal.getPrincipal().getClientCode();
+
+        ClientConfig clientConfig = SystemConfig.getClientConfig().get(clientCode);
         InterfaceConfig config = SystemConfig.getInterfaceConfig().get(clientCode).get("update_weight");
-        List<FluxWeight> weightList = fluxOutboundDao.queryWeight(waybillList);
+        List<FluxWeight> weightList = fluxOutboundDao.queryWeight(list);
         String updateData = JSON.toJSONString(weightList);
         Map<String, String> paramsUpdate = new HashMap<>();
         paramsUpdate.put("method", config.getMethod());
         paramsUpdate.put("sign", createNOSSign(updateData, clientConfig.getClientKey()));
         paramsUpdate.put("data", updateData);
-        paramsUpdate.put("app_key", "kiliboss");
+        paramsUpdate.put("app_key", "wms");
         paramsUpdate.put("request_id", UUID.randomUUID().toString());
         paramsUpdate.put("timestamp", "" + DateUtil.getSysTimeStamp());
+        paramsUpdate.put("country_code", "ke");
+        NotifyRequest notify = new NotifyRequest();
+        notify.setParam(paramsUpdate);
+        notify.setUrl(config.getUrl());
+        try {
+            notifyDataBusProducer.sendMessage(notify);
+        } catch (Exception e) {
+            logger.error("confirmSO send message failed.", e);
+        }
     }
 
     @Override

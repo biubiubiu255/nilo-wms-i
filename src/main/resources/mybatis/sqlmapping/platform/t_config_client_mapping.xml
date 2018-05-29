@@ -41,6 +41,28 @@
         (#{clientCode},#{clientName}, #{clientKey},#{wmsKey},#{customerCode},#{warehouseCode},#{status} ,UNIX_TIMESTAMP(NOW()),UNIX_TIMESTAMP(NOW()),UUID())
     </insert>
 
+    <update id="update" parameterType="com.nilo.wms.dto.common.ClientConfig" statementType="PREPARED">
+        update t_config_client
+        <trim prefix="set" suffixOverrides="," suffix="where client_code=#{clientCode}">
+
+            <if test="clientName != null">
+                client_name = #{clientName},
+            </if>
+            <if test="clientKey != null">
+                client_key = #{clientKey},
+            </if>
+            <if test="wmsKey != null">
+                wms_key = #{wmsKey},
+            </if>
+            <if test="customerCode != null">
+                customer_code = #{customerCode},
+            </if>
+            <if test="warehouseCode != null">
+                warehouse_code = #{warehouseCode},
+            </if>
+            updated_time=UNIX_TIMESTAMP(NOW()),version=UUID()
+        </trim>
+    </update>
     <select id="queryAll" resultMap="clientConfig" statementType="PREPARED">
         SELECT
         <include refid="Base_Column_List"/>

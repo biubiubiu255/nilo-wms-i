@@ -7,6 +7,8 @@ import com.nilo.wms.dto.platform.system.User;
 
 public interface UserService {
 
+    void delete(String userId);
+
     void add(User user);
 
     void update(User user);

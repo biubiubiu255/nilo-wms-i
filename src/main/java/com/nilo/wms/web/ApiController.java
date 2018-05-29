@@ -11,6 +11,7 @@ import com.nilo.wms.dto.StorageInfo;
 import com.nilo.wms.dto.StorageParam;
 import com.nilo.wms.dto.SupplierInfo;
 import com.nilo.wms.dto.common.PageResult;
+import com.nilo.wms.dto.common.ResultMap;
 import com.nilo.wms.dto.flux.FluxInbound;
 import com.nilo.wms.dto.flux.FluxOutbound;
 import com.nilo.wms.dto.inbound.InboundHeader;
@@ -20,7 +21,6 @@ import com.nilo.wms.service.BasicDataService;
 import com.nilo.wms.service.InboundService;
 import com.nilo.wms.service.OutboundService;
 import com.nilo.wms.web.model.RequestParam;
-import com.nilo.wms.web.model.ResultMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,18 +156,6 @@ public class ApiController extends BaseController {
     }
 
     private void addApiLog(RequestParam param, String response, boolean result) {
-
-        MethodEnum[] need = new MethodEnum[]{MethodEnum.CREATE_INBOUND, MethodEnum.CREATE_OUTBOUND};
-
-        boolean record = false;
-        for (MethodEnum methodEnum : need) {
-            if (methodEnum == param.getMethod()) {
-                record = true;
-                break;
-            }
-        }
-        if (!record) return;
-
 
         ApiLog log = new ApiLog();
         log.setAppKey(param.getApp_key());

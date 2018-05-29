@@ -1,0 +1,64 @@
+<div class="content-header">
+	<span class="layui-breadcrumb">
+	  <a href="#!home"><span i18n="home_page"></span></a>
+	  <a><cite><span i18n="config_client_mgn"></span> </cite></a>
+	</span>
+    <button id="refreshBtn" class="layui-btn search-btn" permission="50013"><i class="layui-icon">&#xe9aa;</i><span i18n="refresh"/>
+    </button>
+</div>
+<table class="layui-table" id="table" lay-filter="table"></table>
+<!-- 表单弹窗 -->
+<script type="text/html" id="addModel">
+    <form id="editForm" class="layui-form model-form" action="">
+        <input name="_method" value="POST" type="hidden"/>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_client_code"></span></label>
+            <div class="layui-input-block">
+                <input name="clientCode" type="text" class="layui-input" maxlength="20" lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_client_name"></span></label>
+            <div class="layui-input-block">
+                <input name="clientName" type="text" class="layui-input" maxlength="20" lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_client_key"></span></label>
+            <div class="layui-input-block">
+                <input name="clientKey" type="text" class="layui-input" lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_client_wms_key"></span></label>
+            <div class="layui-input-block">
+                <input name="wmsKey" type="text" class="layui-input" lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_client_customer_code"></span></label>
+            <div class="layui-input-block">
+                <input name="customerCode" type="text" class="layui-input" lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_client_warehouse_code"></span></label>
+            <div class="layui-input-block">
+                <input name="warehouseCode" type="text" class="layui-input" lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item model-form-footer">
+            <button class="layui-btn layui-btn-primary" type="button" id="btnCancel"><span i18n="cancel"></span></button>
+            <button class="layui-btn" lay-filter="btnSubmit" lay-submit><span i18n="ok"></span></button>
+        </div>
+    </form>
+</script>
+<!-- 表格操作列 -->
+<div id="barTpl" style="display:none;">
+
+    <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit" permission="50012"><span i18n="edit"></span></button>
+
+</div>
+
+<script type="text/javascript" src="/static/js/config/client.js"></script>

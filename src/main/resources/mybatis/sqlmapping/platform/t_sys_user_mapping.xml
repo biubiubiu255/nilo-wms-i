@@ -117,4 +117,8 @@
             and nick_name LIKE CONCAT( CONCAT('%',#{nickname}),'%')
         </if>
     </select>
+
+    <delete id="delete">
+        delete from t_sys_user where user_id = #{userId}
+    </delete>
 </mapper>

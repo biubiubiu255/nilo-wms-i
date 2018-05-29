@@ -1,0 +1,61 @@
+<div class="content-header">
+	<span class="layui-breadcrumb">
+	  <a href="#!home"><span i18n="home_page"></span></a>
+	  <a><cite><span i18n="config_interface_mgn"></span> </cite></a>
+	</span>
+
+    <button id="refreshBtn" class="layui-btn search-btn" permission="50023"><i class="layui-icon">&#xe9aa;</i><span i18n="refresh"/>
+    </button>
+</div>
+<table class="layui-table" id="table" lay-filter="table"></table>
+<!-- 表单弹窗 -->
+<script type="text/html" id="addModel">
+    <form id="editForm" class="layui-form model-form" action="">
+        <input name="_method" value="POST" type="hidden"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_client_code"></span></label>
+            <div class="layui-input-block">
+                <input name="clientCode" type="text" class="layui-input" maxlength="20" lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_interface_biz_type"></span></label>
+            <div class="layui-input-block">
+                <input name="bizType" type="text" class="layui-input" maxlength="20" lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_interface_method"></span></label>
+            <div class="layui-input-block">
+                <input name="method" type="text" class="layui-input" lay-verify="required" required/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_interface_url"></span></label>
+            <div class="layui-input-block">
+                <input name="url" type="text" class="layui-input" maxlength="20" lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span i18n="config_interface_request_method"></span></label>
+            <div class="layui-input-block">
+                <input name="requestMethod" type="text" class="layui-input" lay-verify="required" required/>
+            </div>
+        </div>
+        <div class="layui-form-item model-form-footer">
+            <button class="layui-btn layui-btn-primary" type="button" id="btnCancel"><span i18n="cancel"></span>
+            </button>
+            <button class="layui-btn" lay-filter="btnSubmit" lay-submit><span i18n="ok"></span></button>
+        </div>
+    </form>
+</script>
+<!-- 表格操作列 -->
+<div id="barTpl" style="display:none;">
+
+    <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit" permission="50022"><span
+            i18n="edit"></span></button>
+
+</div>
+
+<script type="text/javascript" src="/static/js/config/interface.js"></script>

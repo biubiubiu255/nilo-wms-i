@@ -11,7 +11,7 @@ import com.nilo.wms.common.util.BeanUtils;
 import com.nilo.wms.common.util.StringUtil;
 import com.nilo.wms.dao.flux.SkuDao;
 import com.nilo.wms.dto.StorageParam;
-import com.nilo.wms.dto.platform.common.ResultMap;
+import com.nilo.wms.dto.common.ResultMap;
 import com.nilo.wms.dto.platform.parameter.InventoryBalanceParam;
 import com.nilo.wms.dto.platform.parameter.UserParam;
 import com.nilo.wms.dto.platform.system.User;

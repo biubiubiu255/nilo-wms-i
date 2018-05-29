@@ -24,6 +24,8 @@ $(function () {
         load('report/' + path);
     }).reg('log', function (path) {
         load('log/' + path);
+    }).reg('config', function (path) {
+        load('config/' + path);
     }).init({
         index: 'home'
     });

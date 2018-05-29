@@ -16,4 +16,5 @@ public interface UserDao extends BaseDao<Long, User> {
 
     int queryUsersCount(UserParam parameter);
 
+    Integer delete(String userId);
 }
